@@ -252,20 +252,42 @@ function calcResult() {
   }
 }
 function calcSlope() {
-  document.getElementById("slopeResult").style.transform = "scale(1.1)";
-setTimeout(() => {
-  document.getElementById("slopeResult").style.transform = "scale(1)";
-}, 100);
   const x = parseFloat(document.getElementById("x").value) || 0;
   const y = parseFloat(document.getElementById("y").value) || 0;
 
   const d = Math.sqrt(x * x + y * y);
-  document.getElementById("slopeResult").textContent =
-    Math.round(d) + " mm";
+  const resultVal = Math.round(d);
+
+  const slopeEl = document.getElementById("slopeResult");
+
+  slopeEl.textContent = resultVal + " mm";
 
   const angle = Math.atan2(y, x) * (180 / Math.PI);
   document.getElementById("angleResult").textContent =
     angle.toFixed(1) + "°";
+
+  // 🔥 通常演出（ドン）
+  slopeEl.style.transform = "scale(1.1)";
+  setTimeout(() => {
+    slopeEl.style.transform = "scale(1)";
+  }, 100);
+
+  // 🎰 777演出
+  if (resultVal === 777) {
+    slopeEl.textContent = "777 🎉";
+    slopeEl.style.color = "#ffd700";
+    slopeEl.style.textShadow = "0 0 10px #ffd700, 0 0 30px #ffae00";
+
+    slopeEl.animate(
+      [
+        { transform: "translateX(0px)" },
+        { transform: "translateX(-4px)" },
+        { transform: "translateX(4px)" },
+        { transform: "translateX(0px)" }
+      ],
+      { duration: 200, iterations: 2 }
+    );
+  }
 }
 </script>
 </body>
