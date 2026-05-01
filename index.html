@@ -1,329 +1,762 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>現場電卓</title>
 <style>
- body {
-  margin: 0;
-  font-family: system-ui, sans-serif;
-  color: #eaffff;
-  display: flex;
-  justify-content: center;
-  padding: 20px;
-
-  background:
-    linear-gradient(#081018, #081018),
-    repeating-linear-gradient(
-      0deg,
-      #00e5ff11 0px,
-      #00e5ff11 1px,
-      transparent 1px,
-      transparent 40px
-    ),
-    repeating-linear-gradient(
-      90deg,
-      #00e5ff11 0px,
-      #00e5ff11 1px,
-      transparent 1px,
-      transparent 40px
-    );
-}
-  h1 {
-    margin: 0 0 6px;
-    color: #00e5ff;
-    font-size: 26px;
-  }
-  .sub {
-    color: #88a;
-    margin-bottom: 18px;
-    font-size: 13px;
-  }
-  .tabs {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 16px;
-  }
- button {
-  border: 0;
-  border-radius: 10px;
-  padding: 12px;
-  background: #132437;
-  color: #dfffff;
-  font-size: 16px;
-}
-
-button:active {
-  transform: scale(0.96);
-  box-shadow: 0 0 10px #00e5ff;
-}
-    
-  .tab.active {
-  background: #00e5ff;
-  color: #001014;
-  font-weight: bold;
-  box-shadow: 0 0 10px #00e5ff, 0 0 20px #00e5ff44;
-}
-  .panel {
-    display: none;
-  }
-  .panel.active {
-    display: block;
-  }
-  input {
-    width: 100%;
+  * {
     box-sizing: border-box;
-    padding: 14px;
-    margin: 8px 0 14px;
-    border-radius: 10px;
-    border: 1px solid #00e5ff55;
-    background: #07111c;
-    color: #fff;
-    font-size: 22px;
+    -webkit-tap-highlight-color: transparent;
   }
-  .result {
-    margin-top: 12px;
-    padding: 18px;
-    border-radius: 14px;
-    background: #06131d;
-    border: 1px solid #00ff9f66;
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #0a0e0d;
+    color: #e0fff8;
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
+    overscroll-behavior: none;
+  }
+  body {
+    min-height: 100vh;
+    padding-bottom: 76px;
+  }
+  .app {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 14px 14px 14px;
+  }
+  /* ヘッダー */
+  .header {
     text-align: center;
+    padding: 8px 0 14px;
+    border-bottom: 1px solid #0c3d3a;
+    margin-bottom: 14px;
   }
-  .result .label {
-    color: #9ab;
+  .header h1 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: #00ffd5;
+    text-shadow: 0 0 8px #00ffd560, 0 0 16px #00ffd530;
+  }
+  .header .sub {
+    margin-top: 2px;
+    font-size: 11px;
+    color: #4ad9c2;
+    letter-spacing: 1px;
+  }
+  .back-btn {
+    display: inline-block;
+    background: #0c1f1d;
+    color: #00ffd5;
+    border: 1px solid #008c7a;
+    padding: 10px 14px;
+    border-radius: 8px;
     font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 14px;
   }
-  .value {
-  font-size: 52px;
-  font-weight: bold;
-  color: #00ff9f;
-  text-shadow: 0 0 8px #00ff9f, 0 0 20px #00ff9f44;
-}
-  .display {
-    background: #050b12;
-    border: 1px solid #00e5ff44;
+  .back-btn:active { background: #103631; }
+
+  /* ホーム */
+  .home-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .home-btn {
+    background: linear-gradient(160deg, #0d2926, #061613);
+    border: 1px solid #00ffd540;
+    color: #e0fff8;
+    border-radius: 14px;
+    padding: 22px 8px;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: inset 0 0 12px #00ffd510, 0 2px 6px #000;
+    transition: transform .08s;
+  }
+  .home-btn:active {
+    transform: scale(0.97);
+    background: #103631;
+  }
+  .home-btn .ico {
+    font-size: 30px;
+    display: block;
+    margin-bottom: 6px;
+  }
+  .home-btn .label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #00ffd5;
+    letter-spacing: 1px;
+  }
+  .home-btn .num {
+    display: block;
+    font-size: 10px;
+    color: #4ad9c2;
+    margin-bottom: 4px;
+  }
+
+  /* 画面切替 */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  .screen h2 {
+    color: #00ffd5;
+    font-size: 18px;
+    margin: 0 0 12px 0;
+    text-shadow: 0 0 6px #00ffd540;
+    border-left: 4px solid #00ff88;
+    padding-left: 10px;
+  }
+
+  /* 入力 */
+  .input-row {
+    margin-bottom: 10px;
+  }
+  .input-row label {
+    display: block;
+    font-size: 13px;
+    color: #4ad9c2;
+    margin-bottom: 4px;
+    font-weight: 600;
+  }
+  .input-row input {
+    width: 100%;
+    background: #061613;
+    border: 1px solid #008c7a;
+    color: #00ffd5;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 700;
+    -webkit-appearance: none;
+  }
+  .input-row input:focus {
+    outline: none;
+    border-color: #00ffd5;
+    box-shadow: 0 0 0 2px #00ffd530;
+  }
+
+  /* 結果 */
+  .result-box {
+    background: #061613;
+    border: 1px solid #00ff8855;
     border-radius: 12px;
+    padding: 14px;
+    margin-top: 14px;
+    box-shadow: inset 0 0 12px #00ff8810;
+  }
+  .result-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 8px 0;
+    border-bottom: 1px dashed #0c3d3a;
+  }
+  .result-row:last-child { border-bottom: none; }
+  .result-row .lbl {
+    font-size: 13px;
+    color: #4ad9c2;
+  }
+  .result-row .val {
+    font-size: 22px;
+    font-weight: 800;
+    color: #00ff88;
+    text-shadow: 0 0 8px #00ff8850;
+    font-family: "SF Mono", Menlo, monospace;
+  }
+  .note {
+    font-size: 11px;
+    color: #6a8a85;
+    margin-top: 8px;
+    line-height: 1.5;
+  }
+
+  /* 普通電卓 */
+  .calc-display {
+    background: #061613;
+    border: 1px solid #008c7a;
+    border-radius: 10px;
     padding: 16px;
     text-align: right;
-    font-size: 34px;
-    margin-bottom: 12px;
-    min-height: 44px;
-    overflow-x: auto;
+    font-size: 36px;
+    font-weight: 800;
+    color: #00ffd5;
+    text-shadow: 0 0 8px #00ffd540;
+    margin-bottom: 10px;
+    word-break: break-all;
+    min-height: 64px;
+    font-family: "SF Mono", Menlo, monospace;
   }
-  .calc {
+  .calc-sub {
+    font-size: 14px;
+    color: #4ad9c2;
+    min-height: 18px;
+    text-align: right;
+    margin-top: -6px;
+    margin-bottom: 6px;
+  }
+  .calc-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 8px;
   }
-  .calc button {
-    font-size: 20px;
+  .calc-btn {
+    aspect-ratio: 1 / 0.85;
+    background: #102e2a;
+    border: 1px solid #00ffd530;
+    color: #e0fff8;
+    border-radius: 12px;
+    font-size: 22px;
+    font-weight: 700;
+    cursor: pointer;
   }
-  .wide {
-    grid-column: span 2;
+  .calc-btn:active {
+    background: #1a4540;
+    transform: scale(0.96);
   }
-  footer {
-    margin-top: 18px;
-    text-align: center;
-    color: #6f8795;
-    font-size: 12px;
+  .calc-btn.op {
+    background: #0a2622;
+    color: #00ffd5;
+    border-color: #00ffd580;
   }
-  footer a {
-    color: #00e5ff;
-    text-decoration: none;
+  .calc-btn.eq {
+    background: linear-gradient(160deg, #00cc88, #008855);
+    color: #001613;
+    border-color: #00ff88;
+    font-weight: 900;
   }
- .home {
-  display: grid;
-  gap: 10px;
-  margin-bottom: 16px;
-}
+  .calc-btn.fn {
+    background: #2a0e0e;
+    color: #ff7a7a;
+    border-color: #ff7a7a55;
+  }
 
-.home button {
-  width: 100%;
-  padding: 16px;
-  font-size: 18px;
-  font-weight: bold;
-  text-align: left;
-  border: 1px solid #00e5ff44;
-}
+  /* 比重表・生コン表 */
+  .table-list {
+    background: #061613;
+    border: 1px solid #00ff8855;
+    border-radius: 12px;
+    padding: 6px 12px;
+  }
+  .table-list .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 12px 0;
+    border-bottom: 1px dashed #0c3d3a;
+  }
+  .table-list .row:last-child { border-bottom: none; }
+  .table-list .row .name {
+    font-size: 15px;
+    color: #e0fff8;
+    font-weight: 600;
+  }
+  .table-list .row .val {
+    font-size: 18px;
+    color: #00ff88;
+    font-weight: 800;
+    font-family: "SF Mono", Menlo, monospace;
+  }
+  .table-list .row .desc {
+    font-size: 12px;
+    color: #6a8a85;
+    margin-top: 2px;
+  }
+
+  /* 擁壁断面図 */
+  .wall-fig {
+    background: #061613;
+    border: 1px solid #00ffd540;
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    margin: 14px 0;
+  }
+  .wall-fig svg {
+    max-width: 100%;
+    height: auto;
+  }
+  .pending {
+    background: #2a1f08;
+    border: 1px solid #ffaa00;
+    color: #ffd266;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    text-align: center;
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+
+  /* 自販機ボタン（下部固定） */
+  .vending-btn {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(90deg, #ff5e9c, #ffaa3e);
+    color: #1a0a00;
+    text-align: center;
+    padding: 16px 12px;
+    font-size: 16px;
+    font-weight: 800;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 -4px 16px #ff5e9c40;
+    z-index: 100;
+    letter-spacing: 1px;
+    text-decoration: none;
+    display: block;
+  }
+  .vending-btn:active { filter: brightness(0.92); }
+
+  /* グリッド2列 */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
 </style>
 </head>
 <body>
-  <div class="app">
-    <h1>現場電卓</h1>
-   <div class="sub">現場で使う計算をまとめた職人向けツール</div>
+<div class="app">
 
-<div id="home" class="home active">
-  <button onclick="showTab('normal', this)">普通電卓</button>
-  <button onclick="showTab('slope', this)">勾配・斜距離</button>
-  <button onclick="showComingSoon('土間コン')">土間コン</button>
-  <button onclick="showComingSoon('重力式擁壁')">重力式擁壁</button>
-  <button onclick="showComingSoon('ブロックサポート')">ブロックサポート</button>
-  <button onclick="showComingSoon('比重表')">比重表</button>
-</div>
-
-    <section id="normal" class="panel">
-     <button class="back" onclick="showHome()">← メニューに戻る</button>
-      <div id="display" class="display">0</div>
-      <div class="calc">
-        <button onclick="clearCalc()">C</button>
-        <button onclick="delChar()">⌫</button>
-        <button onclick="press('/')">÷</button>
-        <button onclick="press('*')" class="op">×</button>
-
-        <button onclick="press('7')">7</button>
-        <button onclick="press('8')">8</button>
-        <button onclick="press('9')">9</button>
-        <button onclick="press('-')" class="op">−</button>
-
-        <button onclick="press('4')">4</button>
-        <button onclick="press('5')">5</button>
-        <button onclick="press('6')">6</button>
-        <button onclick="press('+')" class="op">＋</button>
-
-        <button onclick="press('1')">1</button>
-        <button onclick="press('2')">2</button>
-        <button onclick="press('3')">3</button>
-        <button onclick="calcResult()" class="op">＝</button>
-
-        <button onclick="press('0')" class="wide">0</button>
-        <button onclick="press('.')">.</button>
-        <button onclick="press('00')">00</button>
-      </div>
-    </section>
-
-    <section id="slope" class="panel">
-     <button class="back" onclick="showHome()">← メニューに戻る</button>
-      <label>横寸法 mm</label>
-      <input id="x" type="number" inputmode="decimal" placeholder="例：3000" oninput="calcSlope()" />
-
-      <label>縦寸法 mm</label>
-      <input id="y" type="number" inputmode="decimal" placeholder="例：600" oninput="calcSlope()" />
-
-      <div class="result">
-        <div class="label">斜距離</div>
-        <div id="slopeResult" class="value">0 mm</div>
-      </div>
-      <div class="result">
-  <div class="label">角度</div>
-  <div id="angleResult" class="value">0°</div>
-</div>
-    </section>
-
-    <footer style="margin-top:16px; text-align:center;">
-
-  <a href="https://wanwancoin.jp" target="_blank"
-     style="
-       display:inline-block;
-       padding:12px 18px;
-       border-radius:12px;
-       background:#00e5ff;
-       color:#001014;
-       font-weight:bold;
-       text-decoration:none;
-       box-shadow:0 0 12px #00e5ff66;
-     ">
-    🐶 ワンコイン自販機を探す
-  </a>
-
-  <div style="margin-top:8px; font-size:12px; color:#6f8795;">
-    powered by わんわんコイン
+  <!-- ホーム -->
+  <div id="home" class="screen active">
+    <div class="header">
+      <h1>⚙ 現場電卓</h1>
+      <div class="sub">GENBA TOOLBOX</div>
+    </div>
+    <div class="home-grid">
+      <button class="home-btn" onclick="show('calc')">
+        <span class="num">01</span>
+        <span class="ico">🔢</span>
+        <span class="label">普通電卓</span>
+      </button>
+      <button class="home-btn" onclick="show('slope')">
+        <span class="num">02</span>
+        <span class="ico">📐</span>
+        <span class="label">勾配・斜距離</span>
+      </button>
+      <button class="home-btn" onclick="show('doma')">
+        <span class="num">03</span>
+        <span class="ico">🏗️</span>
+        <span class="label">土間コン</span>
+      </button>
+      <button class="home-btn" onclick="show('wall')">
+        <span class="num">04</span>
+        <span class="ico">🧱</span>
+        <span class="label">重力式擁壁</span>
+      </button>
+      <button class="home-btn" onclick="show('block')">
+        <span class="num">05</span>
+        <span class="ico">🧱</span>
+        <span class="label">ブロックサポート</span>
+      </button>
+      <button class="home-btn" onclick="show('grav')">
+        <span class="num">06</span>
+        <span class="ico">⚖️</span>
+        <span class="label">比重表</span>
+      </button>
+      <button class="home-btn" onclick="show('namacon')" style="grid-column: span 2;">
+        <span class="num">07</span>
+        <span class="ico">🚛</span>
+        <span class="label">生コン目安</span>
+      </button>
+    </div>
   </div>
 
-</footer>
+  <!-- 1. 普通電卓 -->
+  <div id="calc" class="screen">
+    <button class="back-btn" onclick="show('home')">← メニューに戻る</button>
+    <h2>普通電卓</h2>
+    <div class="calc-sub" id="calcSub"></div>
+    <div class="calc-display" id="calcDisp">0</div>
+    <div class="calc-grid">
+      <button class="calc-btn fn" onclick="cClear()">C</button>
+      <button class="calc-btn fn" onclick="cBack()">⌫</button>
+      <button class="calc-btn op" onclick="cOp('%')">%</button>
+      <button class="calc-btn op" onclick="cOp('/')">÷</button>
+      <button class="calc-btn" onclick="cIn('7')">7</button>
+      <button class="calc-btn" onclick="cIn('8')">8</button>
+      <button class="calc-btn" onclick="cIn('9')">9</button>
+      <button class="calc-btn op" onclick="cOp('*')">×</button>
+      <button class="calc-btn" onclick="cIn('4')">4</button>
+      <button class="calc-btn" onclick="cIn('5')">5</button>
+      <button class="calc-btn" onclick="cIn('6')">6</button>
+      <button class="calc-btn op" onclick="cOp('-')">−</button>
+      <button class="calc-btn" onclick="cIn('1')">1</button>
+      <button class="calc-btn" onclick="cIn('2')">2</button>
+      <button class="calc-btn" onclick="cIn('3')">3</button>
+      <button class="calc-btn op" onclick="cOp('+')">＋</button>
+      <button class="calc-btn" onclick="cIn('00')">00</button>
+      <button class="calc-btn" onclick="cIn('0')">0</button>
+      <button class="calc-btn" onclick="cIn('.')">.</button>
+      <button class="calc-btn eq" onclick="cEq()">=</button>
+    </div>
   </div>
+
+  <!-- 2. 勾配・斜距離 -->
+  <div id="slope" class="screen">
+    <button class="back-btn" onclick="show('home')">← メニューに戻る</button>
+    <h2>勾配・斜距離</h2>
+    <div class="input-row">
+      <label>横寸法（mm）</label>
+      <input type="number" id="slopeH" inputmode="decimal" placeholder="例: 1000" oninput="calcSlope()">
+    </div>
+    <div class="input-row">
+      <label>縦寸法（mm）</label>
+      <input type="number" id="slopeV" inputmode="decimal" placeholder="例: 100" oninput="calcSlope()">
+    </div>
+    <div class="result-box">
+      <div class="result-row"><span class="lbl">斜距離</span><span class="val" id="rSlope">— mm</span></div>
+      <div class="result-row"><span class="lbl">角度</span><span class="val" id="rAngle">— °</span></div>
+      <div class="result-row"><span class="lbl">勾配</span><span class="val" id="rPct">— %</span></div>
+      <div class="result-row"><span class="lbl">分数表記</span><span class="val" id="rRatio">1/—</span></div>
+    </div>
+  </div>
+
+  <!-- 3. 土間コン -->
+  <div id="doma" class="screen">
+    <button class="back-btn" onclick="show('home')">← メニューに戻る</button>
+    <h2>土間コン</h2>
+    <div class="grid-2">
+      <div class="input-row">
+        <label>縦（m）</label>
+        <input type="number" id="domaA" inputmode="decimal" placeholder="例: 5" oninput="calcDoma()">
+      </div>
+      <div class="input-row">
+        <label>横（m）</label>
+        <input type="number" id="domaB" inputmode="decimal" placeholder="例: 4" oninput="calcDoma()">
+      </div>
+    </div>
+    <div class="input-row">
+      <label>厚み（mm）</label>
+      <input type="number" id="domaT" inputmode="decimal" placeholder="例: 100" oninput="calcDoma()">
+    </div>
+    <div class="grid-2">
+      <div class="input-row">
+        <label>メッシュ縦（m）</label>
+        <input type="number" id="meshA" inputmode="decimal" value="2" oninput="calcDoma()">
+      </div>
+      <div class="input-row">
+        <label>メッシュ横（m）</label>
+        <input type="number" id="meshB" inputmode="decimal" value="1" oninput="calcDoma()">
+      </div>
+    </div>
+    <div class="input-row">
+      <label>被せ（mm）</label>
+      <input type="number" id="meshLap" inputmode="decimal" value="100" oninput="calcDoma()">
+    </div>
+    <div class="result-box">
+      <div class="result-row"><span class="lbl">面積</span><span class="val" id="rArea">— ㎡</span></div>
+      <div class="result-row"><span class="lbl">コンクリート体積</span><span class="val" id="rVol">— m³</span></div>
+      <div class="result-row"><span class="lbl">メッシュ枚数</span><span class="val" id="rMesh">— 枚</span></div>
+    </div>
+    <div class="note">※ 1枚目フルサイズ、2枚目以降は被せを差し引いた有効寸法で計算（縦×横方向それぞれ切り上げ）。ロス分は別途見込んでください。</div>
+  </div>
+
+  <!-- 4. 重力式擁壁 -->
+  <div id="wall" class="screen">
+    <button class="back-btn" onclick="show('home')">← メニューに戻る</button>
+    <h2>重力式擁壁</h2>
+    <div class="pending">⚠ 準備中</div>
+    <div class="wall-fig">
+      <svg viewBox="0 0 240 200" xmlns="http://www.w3.org/2000/svg">
+        <line x1="10" y1="180" x2="230" y2="180" stroke="#4ad9c2" stroke-width="1.5" stroke-dasharray="3 3"/>
+        <polygon points="80,40 130,40 170,170 60,170" fill="#102e2a" stroke="#00ffd5" stroke-width="2"/>
+        <rect x="40" y="170" width="150" height="14" fill="#0a2622" stroke="#00ffd5" stroke-width="2"/>
+        <line x1="195" y1="40" x2="195" y2="170" stroke="#00ff88" stroke-width="1"/>
+        <line x1="190" y1="40" x2="200" y2="40" stroke="#00ff88" stroke-width="1"/>
+        <line x1="190" y1="170" x2="200" y2="170" stroke="#00ff88" stroke-width="1"/>
+        <text x="205" y="110" fill="#00ff88" font-size="11" font-family="monospace">H</text>
+        <text x="100" y="198" fill="#4ad9c2" font-size="10" font-family="monospace">延長 L</text>
+      </svg>
+    </div>
+    <div class="note" style="font-size: 13px; color: #4ad9c2; line-height: 1.7;">
+      将来実装予定：<br>
+      ・延長 L（m）と高さ H（m）から<br>
+      　コンクリート体積 m³ を概算<br>
+      ・天端幅／底版幅／勾配の入力対応<br>
+      ・基礎砕石量の目安も追加予定
+    </div>
+  </div>
+
+  <!-- 5. ブロックサポート -->
+  <div id="block" class="screen">
+    <button class="back-btn" onclick="show('home')">← メニューに戻る</button>
+    <h2>ブロックサポート</h2>
+    <div class="grid-2">
+      <div class="input-row">
+        <label>延長（m）</label>
+        <input type="number" id="blkL" inputmode="decimal" placeholder="例: 10" oninput="calcBlock()">
+      </div>
+      <div class="input-row">
+        <label>段数</label>
+        <input type="number" id="blkN" inputmode="numeric" placeholder="例: 5" oninput="calcBlock()">
+      </div>
+    </div>
+    <div class="input-row">
+      <label>ブロック長さ（mm）</label>
+      <input type="number" id="blkLen" inputmode="numeric" value="400" oninput="calcBlock()">
+    </div>
+    <div class="grid-2">
+      <div class="input-row">
+        <label>縦筋ピッチ（mm）</label>
+        <input type="number" id="blkVp" inputmode="numeric" value="800" oninput="calcBlock()">
+      </div>
+      <div class="input-row">
+        <label>横筋（◯段ごと）</label>
+        <input type="number" id="blkHp" inputmode="numeric" value="2" oninput="calcBlock()">
+      </div>
+    </div>
+    <div class="result-box">
+      <div class="result-row"><span class="lbl">CB枚数</span><span class="val" id="rCb">— 枚</span></div>
+      <div class="result-row"><span class="lbl">縦筋本数</span><span class="val" id="rVbar">— 本</span></div>
+      <div class="result-row"><span class="lbl">横筋本数</span><span class="val" id="rHbar">— 本</span></div>
+    </div>
+    <div class="note">※ 構造計算ではなく材料拾いの参考値です。実施工は法令・設計図書を優先してください。</div>
+  </div>
+
+  <!-- 6. 比重表 -->
+  <div id="grav" class="screen">
+    <button class="back-btn" onclick="show('home')">← メニューに戻る</button>
+    <h2>比重早見表</h2>
+    <div class="table-list">
+      <div class="row"><div><div class="name">コンクリート</div><div class="desc">普通コン</div></div><div class="val">約 2.3 t/m³</div></div>
+      <div class="row"><div><div class="name">アスファルト</div><div class="desc">舗装用</div></div><div class="val">約 2.3 t/m³</div></div>
+      <div class="row"><div><div class="name">残土</div><div class="desc">含水あり</div></div><div class="val">約 1.7 t/m³</div></div>
+      <div class="row"><div><div class="name">砕石</div><div class="desc">RC・C-40 など</div></div><div class="val">約 1.6 t/m³</div></div>
+      <div class="row"><div><div class="name">砂</div><div class="desc">山砂・川砂</div></div><div class="val">約 1.5 t/m³</div></div>
+      <div class="row"><div><div class="name">真砂土</div><div class="desc">埋戻し用</div></div><div class="val">約 1.4 t/m³</div></div>
+    </div>
+    <div class="note">※ 含水率・締固め度合い等で変動します。トラック積載・処分量の概算用としてご利用ください。</div>
+  </div>
+
+  <!-- 7. 生コン目安 -->
+  <div id="namacon" class="screen">
+    <button class="back-btn" onclick="show('home')">← メニューに戻る</button>
+    <h2>生コン配合 目安</h2>
+    <div class="table-list">
+      <div class="row"><div><div class="name">一般土間</div><div class="desc">住宅外構など</div></div><div class="val">21-12-20<br><span style="font-size:11px;color:#4ad9c2;">(AE)</span></div></div>
+      <div class="row"><div><div class="name">駐車場土間</div><div class="desc">乗用車程度</div></div><div class="val">24-12-20<br><span style="font-size:11px;color:#4ad9c2;">(AE)</span></div></div>
+      <div class="row"><div><div class="name">軽作業土間</div><div class="desc">物置下・通路</div></div><div class="val">18-12-20<br><span style="font-size:11px;color:#4ad9c2;">(AE)</span></div></div>
+    </div>
+    <div class="note" style="font-size:12px; line-height:1.7;">
+      ※ あくまで <b style="color:#ffd266;">目安・参考値</b> です。<br>
+      ※ 強度・スランプ・骨材寸法は <b style="color:#ffd266;">現場条件・プラント確認を優先</b> してください。<br>
+      ※ 表記は「呼び強度-スランプ-粗骨材最大寸法」。
+    </div>
+  </div>
+
+</div>
+
+<!-- 自販機マップ導線（常時表示） -->
+<a href="#" class="vending-btn" onclick="goVending(); return false;">
+  🐶 ワンコイン自販機を探す
+</a>
 
 <script>
-let expr = "";
-
-function showTab(id, btn) {
-  document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
-  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
-  btn.classList.add("active");
+/* ====== 画面切替 ====== */
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
 }
 
-function updateDisplay() {
-  document.getElementById("display").textContent = expr || "0";
+function goVending() {
+  // TODO: わんわんコイン自販機マップのURLに差し替え
+  // 例: window.location.href = 'https://example.com/wanwan-map';
+  alert('🐶 わんわんコイン自販機マップへ\n（外部マップに接続予定）');
 }
 
-function press(v) {
-  expr += v;
-  updateDisplay();
-}
+/* ====== 1. 普通電卓 ====== */
+let calcCur = '0';
+let calcPrev = '';
+let calcOp = null;
+let calcReset = false;
 
-function clearCalc() {
-  expr = "";
-  updateDisplay();
+function updateDisp() {
+  document.getElementById('calcDisp').textContent = formatDispNum(calcCur);
+  document.getElementById('calcSub').textContent =
+    calcPrev !== '' ? (formatDispNum(calcPrev) + ' ' + opSym(calcOp)) : '';
 }
-
-function delChar() {
-  expr = expr.slice(0, -1);
-  updateDisplay();
-}
-
-function calcResult() {
-  try {
-    if (!expr) return;
-    const result = Function('"use strict"; return (' + expr + ')')();
-    expr = String(Math.round(result * 100000) / 100000);
-    updateDisplay();
-  } catch {
-    document.getElementById("display").textContent = "Error";
-    expr = "";
+function formatDispNum(s) {
+  if (s === '' || s === '-') return s || '0';
+  if (s.includes('.')) {
+    const [a, b] = s.split('.');
+    return Number(a).toLocaleString() + '.' + b;
   }
+  return Number(s).toLocaleString();
 }
+function opSym(op) {
+  return ({'+':'＋','-':'−','*':'×','/':'÷','%':'%'})[op] || '';
+}
+function cIn(v) {
+  if (calcReset) { calcCur = '0'; calcReset = false; }
+  if (v === '.') {
+    if (!calcCur.includes('.')) calcCur += '.';
+  } else if (v === '00') {
+    if (calcCur === '0') return;
+    calcCur += '00';
+  } else {
+    if (calcCur === '0') calcCur = v;
+    else calcCur += v;
+  }
+  updateDisp();
+}
+function cClear() {
+  calcCur = '0'; calcPrev = ''; calcOp = null; calcReset = false;
+  updateDisp();
+}
+function cBack() {
+  if (calcReset) return;
+  if (calcCur.length <= 1 || (calcCur.length === 2 && calcCur.startsWith('-'))) {
+    calcCur = '0';
+  } else {
+    calcCur = calcCur.slice(0, -1);
+  }
+  updateDisp();
+}
+function cOp(op) {
+  if (calcOp && !calcReset) cEq();
+  calcPrev = calcCur;
+  calcOp = op;
+  calcReset = true;
+  updateDisp();
+}
+function cEq() {
+  if (calcOp === null) return;
+  const a = parseFloat(calcPrev);
+  const b = parseFloat(calcCur);
+  let r = 0;
+  switch (calcOp) {
+    case '+': r = a + b; break;
+    case '-': r = a - b; break;
+    case '*': r = a * b; break;
+    case '/': r = b === 0 ? 0 : a / b; break;
+    case '%': r = a * b / 100; break;
+  }
+  r = Math.round(r * 1e10) / 1e10;
+  calcCur = String(r);
+  calcPrev = '';
+  calcOp = null;
+  calcReset = true;
+  updateDisp();
+}
+
+/* ====== 2. 勾配・斜距離 ====== */
 function calcSlope() {
-  const x = parseFloat(document.getElementById("x").value) || 0;
-  const y = parseFloat(document.getElementById("y").value) || 0;
+  const h = parseFloat(document.getElementById('slopeH').value);
+  const v = parseFloat(document.getElementById('slopeV').value);
+  if (!isFinite(h) || !isFinite(v) || h <= 0) {
+    document.getElementById('rSlope').textContent = '— mm';
+    document.getElementById('rAngle').textContent = '— °';
+    document.getElementById('rPct').textContent = '— %';
+    document.getElementById('rRatio').textContent = '1/—';
+    return;
+  }
+  const slope = Math.sqrt(h * h + v * v);
+  const angle = Math.atan2(v, h) * 180 / Math.PI;
+  const pct = (v / h) * 100;
+  const ratio = v === 0 ? '∞' : (h / v).toFixed(1);
+  document.getElementById('rSlope').textContent = slope.toFixed(1) + ' mm';
+  document.getElementById('rAngle').textContent = angle.toFixed(2) + ' °';
+  document.getElementById('rPct').textContent = pct.toFixed(2) + ' %';
+  document.getElementById('rRatio').textContent = '1/' + ratio;
+}
 
-  const d = Math.sqrt(x * x + y * y);
-  const resultVal = Math.round(d);
+/* ====== 3. 土間コン ====== */
+function calcDoma() {
+  const a = parseFloat(document.getElementById('domaA').value);
+  const b = parseFloat(document.getElementById('domaB').value);
+  const t = parseFloat(document.getElementById('domaT').value);
+  const ma = parseFloat(document.getElementById('meshA').value);
+  const mb = parseFloat(document.getElementById('meshB').value);
+  const lap = parseFloat(document.getElementById('meshLap').value);
 
-  const slopeEl = document.getElementById("slopeResult");
+  if (!isFinite(a) || !isFinite(b) || a <= 0 || b <= 0) {
+    document.getElementById('rArea').textContent = '— ㎡';
+    document.getElementById('rVol').textContent = '— m³';
+    document.getElementById('rMesh').textContent = '— 枚';
+    return;
+  }
+  const area = a * b;
+  document.getElementById('rArea').textContent = area.toFixed(2) + ' ㎡';
 
-  slopeEl.textContent = resultVal + " mm";
+  if (isFinite(t) && t > 0) {
+    const vol = area * (t / 1000);
+    document.getElementById('rVol').textContent = vol.toFixed(2) + ' m³';
+  } else {
+    document.getElementById('rVol').textContent = '— m³';
+  }
 
-  const angle = Math.atan2(y, x) * (180 / Math.PI);
-  document.getElementById("angleResult").textContent =
-    angle.toFixed(1) + "°";
-
-  // 🔥 通常演出（ドン）
-  slopeEl.style.transform = "scale(1.1)";
-  setTimeout(() => {
-    slopeEl.style.transform = "scale(1)";
-  }, 100);
-
-  // 🎰 777演出
-  if (resultVal === 777) {
-    slopeEl.textContent = "777 🎉";
-    slopeEl.style.color = "#ffd700";
-    slopeEl.style.textShadow = "0 0 10px #ffd700, 0 0 30px #ffae00";
-
-    slopeEl.animate(
-      [
-        { transform: "translateX(0px)" },
-        { transform: "translateX(-4px)" },
-        { transform: "translateX(4px)" },
-        { transform: "translateX(0px)" }
-      ],
-      { duration: 200, iterations: 2 }
-    );
+  if (isFinite(ma) && isFinite(mb) && ma > 0 && mb > 0 && isFinite(lap) && lap >= 0) {
+    const lapM = lap / 1000;
+    let nA, nB;
+    if (a <= ma) {
+      nA = 1;
+    } else {
+      const eff = ma - lapM;
+      nA = eff <= 0 ? Infinity : 1 + Math.ceil((a - ma) / eff);
+    }
+    if (b <= mb) {
+      nB = 1;
+    } else {
+      const eff = mb - lapM;
+      nB = eff <= 0 ? Infinity : 1 + Math.ceil((b - mb) / eff);
+    }
+    if (!isFinite(nA) || !isFinite(nB)) {
+      document.getElementById('rMesh').textContent = '— 枚';
+    } else {
+      document.getElementById('rMesh').textContent = (nA * nB) + ' 枚';
+    }
+  } else {
+    document.getElementById('rMesh').textContent = '— 枚';
   }
 }
- function showComingSoon(name) {
-  alert(name + " は準備中です");
-}
- function showHome() {
-  document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
-  document.getElementById("home").style.display = "grid";
+
+/* ====== 5. ブロックサポート ====== */
+function calcBlock() {
+  const L = parseFloat(document.getElementById('blkL').value);
+  const N = parseFloat(document.getElementById('blkN').value);
+  const len = parseFloat(document.getElementById('blkLen').value);
+  const vp = parseFloat(document.getElementById('blkVp').value);
+  const hp = parseFloat(document.getElementById('blkHp').value);
+
+  if (!isFinite(L) || !isFinite(N) || !isFinite(len) || L <= 0 || N <= 0 || len <= 0) {
+    document.getElementById('rCb').textContent = '— 枚';
+    document.getElementById('rVbar').textContent = '— 本';
+    document.getElementById('rHbar').textContent = '— 本';
+    return;
+  }
+
+  const perRow = Math.ceil((L * 1000) / len);
+  const cb = perRow * N;
+  document.getElementById('rCb').textContent = cb.toLocaleString() + ' 枚';
+
+  if (isFinite(vp) && vp > 0) {
+    const vbar = Math.ceil((L * 1000) / vp) + 1;
+    document.getElementById('rVbar').textContent = vbar + ' 本';
+  } else {
+    document.getElementById('rVbar').textContent = '— 本';
+  }
+
+  if (isFinite(hp) && hp > 0) {
+    const hbar = Math.ceil(N / hp);
+    document.getElementById('rHbar').textContent = hbar + ' 本';
+  } else {
+    document.getElementById('rHbar').textContent = '— 本';
+  }
 }
 
-function showTab(id, btn) {
-  document.getElementById("home").style.display = "none";
-  document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
-}
+/* 初期表示 */
+updateDisp();
 </script>
 </body>
 </html>
