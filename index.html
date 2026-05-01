@@ -169,6 +169,10 @@
         <div class="label">斜距離</div>
         <div id="slopeResult" class="value">0 mm</div>
       </div>
+      <div class="result">
+  <div class="label">角度</div>
+  <div id="angleResult" class="value">0°</div>
+</div>
     </section>
 
     <footer style="margin-top:16px; text-align:center;">
@@ -234,12 +238,17 @@ function calcResult() {
     expr = "";
   }
 }
-
 function calcSlope() {
   const x = parseFloat(document.getElementById("x").value) || 0;
   const y = parseFloat(document.getElementById("y").value) || 0;
+
   const d = Math.sqrt(x * x + y * y);
-  document.getElementById("slopeResult").textContent = Math.round(d) + " mm";
+  document.getElementById("slopeResult").textContent =
+    Math.round(d) + " mm";
+
+  const angle = Math.atan2(y, x) * (180 / Math.PI);
+  document.getElementById("angleResult").textContent =
+    angle.toFixed(1) + "°";
 }
 </script>
 </body>
