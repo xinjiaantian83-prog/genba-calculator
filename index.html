@@ -45,18 +45,20 @@
     gap: 8px;
     margin-bottom: 16px;
   }
-  button {
-    button:active {
+ button {
+  border: 0;
+  border-radius: 10px;
+  padding: 12px;
+  background: #132437;
+  color: #dfffff;
+  font-size: 16px;
+}
+
+button:active {
   transform: scale(0.96);
   box-shadow: 0 0 10px #00e5ff;
 }
-    border: 0;
-    border-radius: 10px;
-    padding: 12px;
-    background: #132437;
-    color: #dfffff;
-    font-size: 16px;
-  }
+    
   .tab.active {
   background: #00e5ff;
   color: #001014;
@@ -130,19 +132,38 @@
     color: #00e5ff;
     text-decoration: none;
   }
+ .home {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.home button {
+  width: 100%;
+  padding: 16px;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: left;
+  border: 1px solid #00e5ff44;
+}
 </style>
 </head>
 <body>
   <div class="app">
     <h1>現場電卓</h1>
-    <div class="sub">普通計算 ＋ 斜距離計算</div>
+   <div class="sub">現場で使う計算をまとめた職人向けツール</div>
 
-    <div class="tabs">
-      <button class="tab active" onclick="showTab('normal', this)">普通電卓</button>
-      <button class="tab" onclick="showTab('slope', this)">斜距離</button>
-    </div>
+<div id="home" class="home active">
+  <button onclick="showTab('normal', this)">普通電卓</button>
+  <button onclick="showTab('slope', this)">勾配・斜距離</button>
+  <button onclick="showComingSoon('土間コン')">土間コン</button>
+  <button onclick="showComingSoon('重力式擁壁')">重力式擁壁</button>
+  <button onclick="showComingSoon('ブロックサポート')">ブロックサポート</button>
+  <button onclick="showComingSoon('比重表')">比重表</button>
+</div>
 
-    <section id="normal" class="panel active">
+    <section id="normal" class="panel">
+     <button class="back" onclick="showHome()">← メニューに戻る</button>
       <div id="display" class="display">0</div>
       <div class="calc">
         <button onclick="clearCalc()">C</button>
@@ -172,6 +193,7 @@
     </section>
 
     <section id="slope" class="panel">
+     <button class="back" onclick="showHome()">← メニューに戻る</button>
       <label>横寸法 mm</label>
       <input id="x" type="number" inputmode="decimal" placeholder="例：3000" oninput="calcSlope()" />
 
@@ -288,6 +310,19 @@ function calcSlope() {
       { duration: 200, iterations: 2 }
     );
   }
+}
+ function showComingSoon(name) {
+  alert(name + " は準備中です");
+}
+ function showHome() {
+  document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+  document.getElementById("home").style.display = "grid";
+}
+
+function showTab(id, btn) {
+  document.getElementById("home").style.display = "none";
+  document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
 }
 </script>
 </body>
