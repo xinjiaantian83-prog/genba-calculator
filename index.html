@@ -5,24 +5,31 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>現場電卓</title>
 <style>
-  body {
-    margin: 0;
-    font-family: system-ui, sans-serif;
-    background: #081018;
-    color: #eaffff;
-    display: flex;
-    justify-content: center;
-    padding: 20px;
-  }
-  .app {
-    width: 100%;
-    max-width: 420px;
-    background: #0d1722;
-    border: 1px solid #00e5ff55;
-    border-radius: 18px;
-    padding: 18px;
-    box-shadow: 0 0 30px #00e5ff22;
-  }
+ body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  color: #eaffff;
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+
+  background:
+    linear-gradient(#081018, #081018),
+    repeating-linear-gradient(
+      0deg,
+      #00e5ff11 0px,
+      #00e5ff11 1px,
+      transparent 1px,
+      transparent 40px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      #00e5ff11 0px,
+      #00e5ff11 1px,
+      transparent 1px,
+      transparent 40px
+    );
+}
   h1 {
     margin: 0 0 6px;
     color: #00e5ff;
@@ -39,6 +46,10 @@
     margin-bottom: 16px;
   }
   button {
+    button:active {
+  transform: scale(0.96);
+  box-shadow: 0 0 10px #00e5ff;
+}
     border: 0;
     border-radius: 10px;
     padding: 12px;
@@ -46,11 +57,12 @@
     color: #dfffff;
     font-size: 16px;
   }
-  .tab.active, .calc button.op {
-    background: #00e5ff;
-    color: #001014;
-    font-weight: bold;
-  }
+  .tab.active {
+  background: #00e5ff;
+  color: #001014;
+  font-weight: bold;
+  box-shadow: 0 0 10px #00e5ff, 0 0 20px #00e5ff44;
+}
   .panel {
     display: none;
   }
@@ -80,11 +92,12 @@
     color: #9ab;
     font-size: 14px;
   }
-  .result .value {
-    color: #00ff9f;
-    font-size: 42px;
-    font-weight: bold;
-  }
+  .value {
+  font-size: 52px;
+  font-weight: bold;
+  color: #00ff9f;
+  text-shadow: 0 0 8px #00ff9f, 0 0 20px #00ff9f44;
+}
   .display {
     background: #050b12;
     border: 1px solid #00e5ff44;
@@ -239,6 +252,10 @@ function calcResult() {
   }
 }
 function calcSlope() {
+  document.getElementById("slopeResult").style.transform = "scale(1.1)";
+setTimeout(() => {
+  document.getElementById("slopeResult").style.transform = "scale(1)";
+}, 100);
   const x = parseFloat(document.getElementById("x").value) || 0;
   const y = parseFloat(document.getElementById("y").value) || 0;
 
