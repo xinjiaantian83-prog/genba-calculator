@@ -189,6 +189,10 @@
       <input type="number" id="iPitch" inputmode="decimal" value="200">
     </div>
     <div class="input-row">
+      <label>かぶり（mm）</label>
+      <input type="number" id="iCover" inputmode="decimal" value="40">
+    </div>
+    <div class="input-row">
       <label>定尺長（mm）</label>
       <input type="number" id="iStock" inputmode="decimal" value="5000">
     </div>
@@ -283,19 +287,28 @@ function calc() {
   const H     = parseFloat($('iH').value);
   const B     = parseFloat($('iB').value);
   const p     = parseFloat($('iPitch').value);
+  const cover = parseFloat($('iCover').value);
   const stock = parseFloat($('iStock').value);
   const d     = DIA[currentDia];
 
   if (!isFinite(L) || L <= 0 || !isFinite(H) || H <= 0
       || !isFinite(B) || B <= 0 || !isFinite(p) || p <= 0
+      || !isFinite(cover) || cover < 0
       || !isFinite(stock) || stock <= 0) {
     clearAll();
     save();
     return;
   }
 
-  const count  = Math.floor(L / p) + 1;
-  const perLen = H + B + d.bend;
+  const perLen = (H - cover) + (B - cover) + d.bend;
+  if (perLen <= 0) {
+    clearAll();
+    $('rPerLen').textContent = 'かぶり過大';
+    save();
+    return;
+  }
+
+  const count = Math.floor(L / p) + 1;
 
   $('rCount').textContent  = count.toLocaleString() + ' 本';
   $('rPerLen').textContent = Math.round(perLen).toLocaleString() + ' mm';
@@ -336,7 +349,7 @@ function calc() {
   save();
 }
 
-const KEY = 'lTate_v1';
+const KEY = 'lTate_v2';
 function save() {
   try {
     localStorage.setItem(KEY, JSON.stringify({
@@ -345,6 +358,7 @@ function save() {
       iH: $('iH').value,
       iB: $('iB').value,
       iPitch: $('iPitch').value,
+      iCover: $('iCover').value,
       iStock: $('iStock').value
     }));
   } catch (e) {}
@@ -355,7 +369,7 @@ function load() {
     if (!raw) return;
     const d = JSON.parse(raw);
     if (d.dia) currentDia = d.dia;
-    ['iL','iH','iB','iPitch','iStock'].forEach(id => {
+    ['iL','iH','iB','iPitch','iCover','iStock'].forEach(id => {
       if (d[id] !== undefined && d[id] !== null && d[id] !== '') $(id).value = d[id];
     });
     document.querySelectorAll('.dia-btn').forEach(b => {
@@ -364,7 +378,7 @@ function load() {
   } catch (e) {}
 }
 
-['iL','iH','iB','iPitch','iStock'].forEach(id => $(id).addEventListener('input', calc));
+['iL','iH','iB','iPitch','iCover','iStock'].forEach(id => $(id).addEventListener('input', calc));
 load();
 calc();
 </script>
