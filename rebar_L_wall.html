@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>L型擁壁 鉄筋拾い（縦筋＋横筋）</title>
+<style>
+  * {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #0a0e0d;
+    color: #e0fff8;
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
+    overscroll-behavior: none;
+  }
+  body {
+    min-height: 100vh;
+    padding: 16px 14px 40px;
+  }
+  .app {
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .header {
+    text-align: center;
+    padding: 4px 0 14px;
+    border-bottom: 1px solid #0c3d3a;
+    margin-bottom: 16px;
+  }
+  .header h1 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: #00ffd5;
+    text-shadow: 0 0 8px #00ffd560;
+  }
+  .header .sub {
+    margin-top: 2px;
+    font-size: 11px;
+    color: #4ad9c2;
+    letter-spacing: 1px;
+  }
+
+  .card {
+    background: linear-gradient(160deg, #0d2926, #061613);
+    border: 1px solid #00ffd540;
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 14px;
+    box-shadow: inset 0 0 12px #00ffd510, 0 2px 6px #000;
+  }
+  .card-title {
+    font-size: 11px;
+    color: #4ad9c2;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+  }
+
+  .input-row { margin-bottom: 12px; }
+  .input-row:last-child { margin-bottom: 0; }
+  .input-row label {
+    display: block;
+    font-size: 13px;
+    color: #4ad9c2;
+    margin-bottom: 4px;
+    font-weight: 600;
+  }
+  .input-row input[type="number"] {
+    width: 100%;
+    background: #061613;
+    border: 1px solid #008c7a;
+    color: #00ffd5;
+    padding: 14px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 700;
+    -webkit-appearance: none;
+  }
+  .input-row input[type="number"]:focus {
+    outline: none;
+    border-color: #00ffd5;
+    box-shadow: 0 0 0 2px #00ffd530;
+  }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .dia-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+  }
+  .dia-btn {
+    background: #061613;
+    color: #4ad9c2;
+    border: 1px solid #008c7a;
+    padding: 12px 4px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+  }
+  .dia-btn:active { background: #103631; }
+  .dia-btn.active {
+    background: #0a2622;
+    color: #00ffd5;
+    border-color: #00ffd5;
+    box-shadow: 0 0 6px #00ffd530;
+  }
+
+  .section-title {
+    font-size: 13px;
+    color: #00ffd5;
+    font-weight: 800;
+    letter-spacing: 1px;
+    margin: 18px 0 10px;
+    border-left: 4px solid #00ff88;
+    padding-left: 10px;
+    text-shadow: 0 0 6px #00ffd540;
+  }
+
+  .result-box {
+    background: #061613;
+    border: 1px solid #00ff8855;
+    border-radius: 12px;
+    padding: 4px 16px;
+    box-shadow: inset 0 0 12px #00ff8810;
+  }
+  .result-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 14px 0;
+    border-bottom: 1px dashed #0c3d3a;
+  }
+  .result-row:last-child { border-bottom: none; }
+  .result-row .lbl {
+    font-size: 13px;
+    color: #4ad9c2;
+    font-weight: 600;
+  }
+  .result-row .val {
+    font-size: 22px;
+    font-weight: 800;
+    color: #00ff88;
+    text-shadow: 0 0 8px #00ff8850;
+    font-family: "SF Mono", Menlo, monospace;
+  }
+  .result-row.main .val {
+    font-size: 28px;
+    color: #ffe9a8;
+    text-shadow: 0 0 8px #ffd26630;
+  }
+  .result-row.scrap .val {
+    color: #ffb968;
+  }
+
+  .stock-warn {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #2a1010;
+    border: 1px solid #ff9a9a55;
+    border-radius: 10px;
+    color: #ff9a9a;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  .total-box {
+    margin-top: 16px;
+    background: linear-gradient(160deg, #1a3530, #0a1f1c);
+    border: 2px solid #ffd266;
+    border-radius: 14px;
+    padding: 16px;
+    text-align: center;
+    box-shadow: 0 0 12px #ffd26630;
+  }
+  .total-box .lbl {
+    font-size: 12px;
+    color: #ffd266;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .total-box .val {
+    font-size: 34px;
+    font-weight: 900;
+    color: #ffe9a8;
+    font-family: "SF Mono", Menlo, monospace;
+    text-shadow: 0 0 10px #ffd26660;
+    letter-spacing: 1px;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="header">
+    <h1>📐 L型擁壁 鉄筋拾い</h1>
+    <div class="sub">L-WALL — V + H REBAR</div>
+  </div>
+
+  <!-- ===== 共通入力 ===== -->
+  <div class="card">
+    <div class="card-title">共通入力</div>
+    <div class="input-row">
+      <label>総延長 L（mm）</label>
+      <input type="number" id="cL" inputmode="decimal" placeholder="例: 10000">
+    </div>
+    <div class="input-row">
+      <label>立上り高さ H（mm）</label>
+      <input type="number" id="cH" inputmode="decimal" placeholder="例: 1500">
+    </div>
+    <div class="input-row">
+      <label>ベース幅 B（mm）</label>
+      <input type="number" id="cB" inputmode="decimal" placeholder="例: 600">
+    </div>
+    <div class="grid-2">
+      <div class="input-row">
+        <label>縦筋ピッチ @（mm）</label>
+        <input type="number" id="cPitchT" inputmode="decimal" value="200">
+      </div>
+      <div class="input-row">
+        <label>横筋ピッチ @（mm）</label>
+        <input type="number" id="cPitchY" inputmode="decimal" value="200">
+      </div>
+    </div>
+    <div class="input-row">
+      <label>かぶり（mm）※縦筋用</label>
+      <input type="number" id="cCover" inputmode="decimal" value="40">
+    </div>
+    <div class="input-row">
+      <label>定尺長（mm）</label>
+      <input type="number" id="cStock" inputmode="decimal" value="5000">
+    </div>
+    <div class="input-row" style="margin-bottom:0;">
+      <label>鉄筋径</label>
+      <div class="dia-row">
+        <button class="dia-btn active" data-dia="D10" onclick="setDia('D10')">D10</button>
+        <button class="dia-btn" data-dia="D13" onclick="setDia('D13')">D13</button>
+        <button class="dia-btn" data-dia="D16" onclick="setDia('D16')">D16</button>
+        <button class="dia-btn" data-dia="D19" onclick="setDia('D19')">D19</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== L型 縦筋 結果 ===== -->
+  <div class="section-title">① L型 縦筋</div>
+  <div class="result-box">
+    <div class="result-row">
+      <span class="lbl">L型縦筋本数</span>
+      <span class="val" id="tCount">—</span>
+    </div>
+    <div class="result-row">
+      <span class="lbl">1本長さ</span>
+      <span class="val" id="tPerLen">—</span>
+    </div>
+    <div class="result-row">
+      <span class="lbl">1本から取れる本数</span>
+      <span class="val" id="tPerStock">—</span>
+    </div>
+    <div class="result-row">
+      <span class="lbl">定尺必要本数</span>
+      <span class="val" id="tStockCount">—</span>
+    </div>
+    <div class="result-row">
+      <span class="lbl">総延長</span>
+      <span class="val" id="tTotal">—</span>
+    </div>
+    <div class="result-row main">
+      <span class="lbl">総重量</span>
+      <span class="val" id="tWeight">—</span>
+    </div>
+    <div class="result-row scrap" id="tRowScrapPer">
+      <span class="lbl">1本あたり余り</span>
+      <span class="val" id="tScrapPer">—</span>
+    </div>
+    <div class="result-row scrap" id="tRowScrapTotal">
+      <span class="lbl">総余り</span>
+      <span class="val" id="tScrapTotal">—</span>
+    </div>
+  </div>
+  <div class="stock-warn" id="tStockWarn" style="display:none;">
+    ※ 定尺不足（このサイズでは取れません）
+  </div>
+
+  <!-- ===== L型 横筋 結果 ===== -->
+  <div class="section-title">② L型 横筋</div>
+  <div class="result-box">
+    <div class="result-row">
+      <span class="lbl">L型横筋本数</span>
+      <span class="val" id="yCount">—</span>
+    </div>
+    <div class="result-row">
+      <span class="lbl">1段あたり必要本数</span>
+      <span class="val" id="yPerRow">—</span>
+    </div>
+    <div class="result-row">
+      <span class="lbl">総定尺本数</span>
+      <span class="val" id="yStockCount">—</span>
+    </div>
+    <div class="result-row">
+      <span class="lbl">総延長</span>
+      <span class="val" id="yTotal">—</span>
+    </div>
+    <div class="result-row main">
+      <span class="lbl">総重量</span>
+      <span class="val" id="yWeight">—</span>
+    </div>
+  </div>
+
+  <!-- ===== 合計重量 ===== -->
+  <div class="total-box">
+    <div class="lbl">合計重量（縦＋横）</div>
+    <div class="val" id="sumWeight">— kg</div>
+  </div>
+
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+
+let currentDia = 'D10';
+
+function setDia(d) {
+  currentDia = d;
+  document.querySelectorAll('.dia-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.dia === d);
+  });
+  recalcAll();
+  saveAll();
+}
+
+function readCommon() {
+  return {
+    L:      parseFloat($('cL').value),
+    H:      parseFloat($('cH').value),
+    B:      parseFloat($('cB').value),
+    pitchT: parseFloat($('cPitchT').value),
+    pitchY: parseFloat($('cPitchY').value),
+    cover:  parseFloat($('cCover').value),
+    stock:  parseFloat($('cStock').value)
+  };
+}
+
+/* ============================================================
+   ① L型 縦筋（rebar_L.html のロジックそのまま）
+   - 全変数を tate* プレフィックスで完全分離
+   - 1本長さ = (H - かぶり) + (B - かぶり) + 曲げロス
+============================================================ */
+const T_DIA = {
+  D10: { unit: 0.560, bend: 50 },
+  D13: { unit: 0.995, bend: 60 },
+  D16: { unit: 1.56,  bend: 70 },
+  D19: { unit: 2.25,  bend: 80 }
+};
+
+function clearTateAll() {
+  $('tCount').textContent = '—';
+  $('tPerLen').textContent = '—';
+  $('tPerStock').textContent = '—';
+  $('tStockCount').textContent = '—';
+  $('tTotal').textContent = '—';
+  $('tWeight').textContent = '—';
+  $('tScrapPer').textContent = '—';
+  $('tScrapTotal').textContent = '—';
+  $('tRowScrapPer').style.display = '';
+  $('tRowScrapTotal').style.display = '';
+  $('tStockWarn').style.display = 'none';
+}
+
+function calcTate() {
+  const c = readCommon();
+  const tate_L     = c.L;
+  const tate_H     = c.H;
+  const tate_B     = c.B;
+  const tate_p     = c.pitchT;
+  const tate_cover = c.cover;
+  const tate_stock = c.stock;
+  const tate_d     = T_DIA[currentDia];
+
+  if (!isFinite(tate_L) || tate_L <= 0 || !isFinite(tate_H) || tate_H <= 0
+      || !isFinite(tate_B) || tate_B <= 0 || !isFinite(tate_p) || tate_p <= 0
+      || !isFinite(tate_cover) || tate_cover < 0
+      || !isFinite(tate_stock) || tate_stock <= 0) {
+    clearTateAll();
+    return 0;
+  }
+
+  const tate_perLen = (tate_H - tate_cover) + (tate_B - tate_cover) + tate_d.bend;
+  if (tate_perLen <= 0) {
+    clearTateAll();
+    $('tPerLen').textContent = 'かぶり過大';
+    return 0;
+  }
+
+  const tate_count = Math.floor(tate_L / tate_p) + 1;
+
+  $('tCount').textContent  = tate_count.toLocaleString() + ' 本';
+  $('tPerLen').textContent = Math.round(tate_perLen).toLocaleString() + ' mm';
+
+  const tate_perStock = Math.floor(tate_stock / tate_perLen);
+  if (tate_perStock <= 0) {
+    $('tPerStock').textContent   = '定尺不足';
+    $('tStockCount').textContent = '—';
+    $('tTotal').textContent      = '—';
+    $('tWeight').textContent     = '—';
+    $('tScrapPer').textContent   = '—';
+    $('tScrapTotal').textContent = '—';
+    $('tRowScrapPer').style.display = 'none';
+    $('tRowScrapTotal').style.display = 'none';
+    $('tStockWarn').style.display = '';
+    return 0;
+  }
+
+  const tate_stockCount = Math.ceil(tate_count / tate_perStock);
+  const tate_total      = tate_stockCount * tate_stock;
+  const tate_weight     = (tate_total / 1000) * tate_d.unit;
+
+  $('tPerStock').textContent   = tate_perStock.toLocaleString() + ' 本';
+  $('tStockCount').textContent = tate_stockCount.toLocaleString() + ' 本';
+  $('tTotal').textContent      = (tate_total / 1000).toFixed(2) + ' m';
+  $('tWeight').textContent     = tate_weight.toFixed(2) + ' kg';
+
+  const tate_scrapPer   = tate_stock - tate_perLen * tate_perStock;
+  const tate_scrapTotal = tate_scrapPer * tate_stockCount;
+
+  $('tScrapPer').textContent   = Math.round(tate_scrapPer).toLocaleString() + ' mm';
+  $('tScrapTotal').textContent = (tate_scrapTotal / 1000).toFixed(2) + ' m';
+  $('tRowScrapPer').style.display = '';
+  $('tRowScrapTotal').style.display = '';
+  $('tStockWarn').style.display = 'none';
+
+  return tate_weight;
+}
+
+/* ============================================================
+   ② L型 横筋（rebar_L_yoko.html のロジックそのまま）
+   - 全変数を yoko* プレフィックスで完全分離
+   - 横筋は直線扱い（曲げなし）、継ぎ足しロジック
+============================================================ */
+const Y_DIA = {
+  D10: { unit: 0.560, anchor: 400 },
+  D13: { unit: 0.995, anchor: 520 },
+  D16: { unit: 1.56,  anchor: 640 },
+  D19: { unit: 2.25,  anchor: 760 }
+};
+
+function clearYokoAll() {
+  $('yCount').textContent = '—';
+  $('yPerRow').textContent = '—';
+  $('yStockCount').textContent = '—';
+  $('yTotal').textContent = '—';
+  $('yWeight').textContent = '—';
+}
+
+function calcYoko() {
+  const c = readCommon();
+  const yoko_L     = c.L;
+  const yoko_H     = c.H;
+  const yoko_B     = c.B;
+  const yoko_p     = c.pitchY;
+  const yoko_stock = c.stock;
+  const yoko_d     = Y_DIA[currentDia];
+
+  if (!isFinite(yoko_L) || yoko_L <= 0 || !isFinite(yoko_H) || yoko_H <= 0
+      || !isFinite(yoko_B) || yoko_B <= 0 || !isFinite(yoko_p) || yoko_p <= 0
+      || !isFinite(yoko_stock) || yoko_stock <= 0) {
+    clearYokoAll();
+    return 0;
+  }
+
+  // L型横筋本数（交点1本を内部で除去）
+  const yoko_rowsH = Math.floor(yoko_H / yoko_p) + 1;
+  const yoko_rowsB = Math.floor(yoko_B / yoko_p) + 1;
+  const yoko_count = yoko_rowsH + yoko_rowsB - 1;
+
+  // 継ぎ足しロジック
+  const yoko_eff = yoko_stock - yoko_d.anchor;
+  if (yoko_eff <= 0) {
+    clearYokoAll();
+    return 0;
+  }
+
+  const yoko_perRow     = Math.ceil(yoko_L / yoko_eff);
+  const yoko_stockTotal = yoko_count * yoko_perRow;
+  const yoko_total      = yoko_stockTotal * yoko_stock;
+  const yoko_weight     = (yoko_total / 1000) * yoko_d.unit;
+
+  $('yCount').textContent      = yoko_count.toLocaleString() + ' 本';
+  $('yPerRow').textContent     = yoko_perRow.toLocaleString() + ' 本';
+  $('yStockCount').textContent = yoko_stockTotal.toLocaleString() + ' 本';
+  $('yTotal').textContent      = (yoko_total / 1000).toFixed(2) + ' m';
+  $('yWeight').textContent     = yoko_weight.toFixed(2) + ' kg';
+
+  return yoko_weight;
+}
+
+/* ============================================================
+   両方を再計算 → 合計重量を更新
+============================================================ */
+function recalcAll() {
+  const wT = calcTate();
+  const wY = calcYoko();
+  const sum = (wT || 0) + (wY || 0);
+  $('sumWeight').textContent = sum > 0 ? sum.toFixed(2) + ' kg' : '— kg';
+  saveAll();
+}
+
+/* ============================================================
+   localStorage（統合キー）
+============================================================ */
+const KEY = 'rebarLWall_v1';
+function saveAll() {
+  try {
+    localStorage.setItem(KEY, JSON.stringify({
+      dia: currentDia,
+      cL:      $('cL').value,
+      cH:      $('cH').value,
+      cB:      $('cB').value,
+      cPitchT: $('cPitchT').value,
+      cPitchY: $('cPitchY').value,
+      cCover:  $('cCover').value,
+      cStock:  $('cStock').value
+    }));
+  } catch (e) {}
+}
+function loadAll() {
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (!raw) return;
+    const d = JSON.parse(raw);
+    if (d.dia) currentDia = d.dia;
+    ['cL','cH','cB','cPitchT','cPitchY','cCover','cStock'].forEach(id => {
+      if (d[id] !== undefined && d[id] !== null && d[id] !== '') $(id).value = d[id];
+    });
+    document.querySelectorAll('.dia-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.dia === currentDia);
+    });
+  } catch (e) {}
+}
+
+['cL','cH','cB','cPitchT','cPitchY','cCover','cStock'].forEach(id => {
+  $(id).addEventListener('input', recalcAll);
+});
+
+loadAll();
+recalcAll();
+</script>
+</body>
+</html>
