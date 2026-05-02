@@ -1,1 +1,319 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>縦筋拾い</title>
+<style>
+  * {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #0a0e0d;
+    color: #e0fff8;
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
+    overscroll-behavior: none;
+  }
+  body {
+    min-height: 100vh;
+    padding: 16px 14px 40px;
+  }
+  .app {
+    max-width: 480px;
+    margin: 0 auto;
+  }
 
+  .header {
+    text-align: center;
+    padding: 4px 0 14px;
+    border-bottom: 1px solid #0c3d3a;
+    margin-bottom: 16px;
+  }
+  .header h1 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: #00ffd5;
+    text-shadow: 0 0 8px #00ffd560;
+  }
+  .header .sub {
+    margin-top: 2px;
+    font-size: 11px;
+    color: #4ad9c2;
+    letter-spacing: 1px;
+  }
+
+  .card {
+    background: linear-gradient(160deg, #0d2926, #061613);
+    border: 1px solid #00ffd540;
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 14px;
+    box-shadow: inset 0 0 12px #00ffd510, 0 2px 6px #000;
+  }
+  .card-title {
+    font-size: 11px;
+    color: #4ad9c2;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+  }
+
+  .input-row { margin-bottom: 12px; }
+  .input-row:last-child { margin-bottom: 0; }
+  .input-row label {
+    display: block;
+    font-size: 13px;
+    color: #4ad9c2;
+    margin-bottom: 4px;
+    font-weight: 600;
+  }
+  .input-row input[type="number"] {
+    width: 100%;
+    background: #061613;
+    border: 1px solid #008c7a;
+    color: #00ffd5;
+    padding: 14px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 700;
+    -webkit-appearance: none;
+  }
+  .input-row input[type="number"]:focus {
+    outline: none;
+    border-color: #00ffd5;
+    box-shadow: 0 0 0 2px #00ffd530;
+  }
+
+  .dia-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+  }
+  .dia-btn {
+    background: #061613;
+    color: #4ad9c2;
+    border: 1px solid #008c7a;
+    padding: 12px 4px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+  }
+  .dia-btn:active { background: #103631; }
+  .dia-btn.active {
+    background: #0a2622;
+    color: #00ffd5;
+    border-color: #00ffd5;
+    box-shadow: 0 0 6px #00ffd530;
+  }
+
+  .result-box {
+    background: #061613;
+    border: 1px solid #00ff8855;
+    border-radius: 12px;
+    padding: 4px 16px;
+    box-shadow: inset 0 0 12px #00ff8810;
+  }
+  .result-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 14px 0;
+    border-bottom: 1px dashed #0c3d3a;
+  }
+  .result-row:last-child { border-bottom: none; }
+  .result-row .lbl {
+    font-size: 13px;
+    color: #4ad9c2;
+    font-weight: 600;
+  }
+  .result-row .val {
+    font-size: 22px;
+    font-weight: 800;
+    color: #00ff88;
+    text-shadow: 0 0 8px #00ff8850;
+    font-family: "SF Mono", Menlo, monospace;
+  }
+  .result-row.main .val {
+    font-size: 28px;
+    color: #ffe9a8;
+    text-shadow: 0 0 8px #ffd26630;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="header">
+    <h1>📏 縦筋拾い</h1>
+    <div class="sub">VERTICAL REBAR</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">入力</div>
+    <div class="input-row">
+      <label>総延長 L（mm）</label>
+      <input type="number" id="iL" inputmode="decimal" placeholder="例: 10000">
+    </div>
+    <div class="input-row">
+      <label>高さ H（mm）</label>
+      <input type="number" id="iH" inputmode="decimal" placeholder="例: 1500">
+    </div>
+    <div class="input-row">
+      <label>縦筋ピッチ @（mm）</label>
+      <input type="number" id="iPitch" inputmode="decimal" value="200">
+    </div>
+    <div class="input-row">
+      <label>定尺長（mm）</label>
+      <input type="number" id="iStock" inputmode="decimal" value="5000">
+    </div>
+    <div class="input-row" style="margin-bottom:0;">
+      <label>鉄筋径</label>
+      <div class="dia-row">
+        <button class="dia-btn active" data-dia="D10" onclick="setDia('D10')">D10</button>
+        <button class="dia-btn" data-dia="D13" onclick="setDia('D13')">D13</button>
+        <button class="dia-btn" data-dia="D16" onclick="setDia('D16')">D16</button>
+        <button class="dia-btn" data-dia="D19" onclick="setDia('D19')">D19</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="result-box">
+    <div class="result-row">
+      <span class="lbl">縦筋本数</span>
+      <span class="val" id="rCount">—</span>
+    </div>
+    <div class="result-row">
+      <span class="lbl">1本長さ</span>
+      <span class="val" id="rPerLen">—</span>
+    </div>
+    <div class="result-row">
+      <span class="lbl">1本から取れる本数</span>
+      <span class="val" id="rPerStock">—</span>
+    </div>
+    <div class="result-row">
+      <span class="lbl">定尺必要本数</span>
+      <span class="val" id="rStockCount">—</span>
+    </div>
+    <div class="result-row">
+      <span class="lbl">総延長</span>
+      <span class="val" id="rTotal">—</span>
+    </div>
+    <div class="result-row main">
+      <span class="lbl">総重量</span>
+      <span class="val" id="rWeight">—</span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const DIA = {
+  D10: { anchor: 400, unit: 0.560 },
+  D13: { anchor: 520, unit: 0.995 },
+  D16: { anchor: 640, unit: 1.56  },
+  D19: { anchor: 760, unit: 2.25  }
+};
+
+let currentDia = 'D10';
+const $ = (id) => document.getElementById(id);
+
+function setDia(d) {
+  currentDia = d;
+  document.querySelectorAll('.dia-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.dia === d);
+  });
+  calc();
+  save();
+}
+
+function clearAll() {
+  $('rCount').textContent = '—';
+  $('rPerLen').textContent = '—';
+  $('rPerStock').textContent = '—';
+  $('rStockCount').textContent = '—';
+  $('rTotal').textContent = '—';
+  $('rWeight').textContent = '—';
+}
+
+function calc() {
+  const L     = parseFloat($('iL').value);
+  const H     = parseFloat($('iH').value);
+  const p     = parseFloat($('iPitch').value);
+  const stock = parseFloat($('iStock').value);
+  const d     = DIA[currentDia];
+
+  if (!isFinite(L) || L <= 0 || !isFinite(H) || H <= 0
+      || !isFinite(p) || p <= 0 || !isFinite(stock) || stock <= 0) {
+    clearAll();
+    save();
+    return;
+  }
+
+  const count  = Math.floor(L / p) + 1;
+  const perLen = H + d.anchor * 2;
+
+  $('rCount').textContent  = count.toLocaleString() + ' 本';
+  $('rPerLen').textContent = Math.round(perLen).toLocaleString() + ' mm';
+
+  const perStock = Math.floor(stock / perLen);
+  if (perStock <= 0) {
+    $('rPerStock').textContent = '定尺不足';
+    $('rStockCount').textContent = '—';
+    $('rTotal').textContent = '—';
+    $('rWeight').textContent = '—';
+    save();
+    return;
+  }
+
+  const stockCount = Math.ceil(count / perStock);
+  const total      = stockCount * stock;
+  const weight     = (total / 1000) * d.unit;
+
+  $('rPerStock').textContent   = perStock.toLocaleString() + ' 本';
+  $('rStockCount').textContent = stockCount.toLocaleString() + ' 本';
+  $('rTotal').textContent      = (total / 1000).toFixed(2) + ' m';
+  $('rWeight').textContent     = weight.toFixed(2) + ' kg';
+
+  save();
+}
+
+const KEY = 'tatesuji_v1';
+function save() {
+  try {
+    localStorage.setItem(KEY, JSON.stringify({
+      dia: currentDia,
+      iL: $('iL').value,
+      iH: $('iH').value,
+      iPitch: $('iPitch').value,
+      iStock: $('iStock').value
+    }));
+  } catch (e) {}
+}
+function load() {
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (!raw) return;
+    const d = JSON.parse(raw);
+    if (d.dia) currentDia = d.dia;
+    ['iL','iH','iPitch','iStock'].forEach(id => {
+      if (d[id] !== undefined && d[id] !== null && d[id] !== '') $(id).value = d[id];
+    });
+    document.querySelectorAll('.dia-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.dia === currentDia);
+    });
+  } catch (e) {}
+}
+
+['iL','iH','iPitch','iStock'].forEach(id => $(id).addEventListener('input', calc));
+load();
+calc();
+</script>
+</body>
+</html>
