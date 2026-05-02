@@ -247,11 +247,22 @@ function calc() {
     return;
   }
 
-  const rows    = Math.floor(H / p) + 1;
-  const perRow  = Math.ceil(L / stock);
-  const perLen  = L + d.anchor * perRow;
-  const total   = perLen * rows;
-  const weight  = (total / 1000) * d.unit;
+  const eff = stock - d.anchor;
+  if (eff <= 0) {
+    $('rRows').textContent = '—';
+    $('rPerRow').textContent = '定尺不足';
+    $('rPerLen').textContent = '—';
+    $('rTotal').textContent = '—';
+    $('rWeight').textContent = '—';
+    save();
+    return;
+  }
+
+  const rows   = Math.floor(H / p) + 1;
+  const perRow = Math.ceil(L / eff);
+  const perLen = perRow * stock;
+  const total  = perLen * rows;
+  const weight = (total / 1000) * d.unit;
 
   $('rRows').textContent   = rows.toLocaleString() + ' 段';
   $('rPerRow').textContent = perRow.toLocaleString() + ' 本';
