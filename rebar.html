@@ -74,7 +74,6 @@
     box-shadow: inset 0 0 12px #00ffd520;
     text-shadow: 0 0 6px #00ffd560;
   }
-  /* L型タブのアクティブだけは青系で示す */
   .mode-tab#tabL.active {
     background: linear-gradient(160deg, #0d2245, #061130);
     color: #6bb8ff;
@@ -85,7 +84,6 @@
 
   /* =========================================================
      ========== 直壁モード（シアン系：既存スタイル） ==========
-     既存の .card / .result-box / .dia-btn などの定義
   ========================================================== */
   .card {
     background: linear-gradient(160deg, #0d2926, #061613);
@@ -136,6 +134,46 @@
     outline: none;
     border-color: #00ffd5;
     box-shadow: 0 0 0 2px #00ffd530;
+  }
+
+  /* クリアボタン付き入力欄 */
+  .input-with-clear {
+    position: relative;
+  }
+  .input-with-clear input[type="number"] {
+    padding-right: 44px; /* ×ボタン用の領域 */
+  }
+  .input-clear-btn {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    background: transparent;
+    border: none;
+    color: #4ad9c2;
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    -webkit-appearance: none;
+    border-radius: 8px;
+  }
+  .input-clear-btn:active {
+    background: #0e3531;
+  }
+  /* L型モードでは青系に */
+  #modeL .input-clear-btn {
+    color: #9bd0ff;
+  }
+  #modeL .input-clear-btn:active {
+    background: #0f2350;
   }
 
   .grid-2 {
@@ -287,25 +325,60 @@
   .mode-section { display: none; }
   .mode-section.active { display: block; }
 
+  /* 全リセット */
+  .reset-wrap {
+    margin-top: 16px;
+    text-align: center;
+  }
+  .reset-btn {
+    width: 100%;
+    max-width: 360px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    cursor: pointer;
+    text-align: center;
+    -webkit-appearance: none;
+  }
+  /* 直壁: シアン系 */
+  body.mode-wall .reset-btn {
+    background: #0c1f1d;
+    color: #4ad9c2;
+    border: 1px solid #008c7a;
+  }
+  body.mode-wall .reset-btn:active {
+    background: #103631;
+    color: #00ffd5;
+    border-color: #00ffd5;
+    box-shadow: 0 0 6px #00ffd530;
+  }
+  /* L型: 青系 */
+  body.mode-L .reset-btn {
+    background: #0a1a3a;
+    color: #9bd0ff;
+    border: 1px solid #2f6dc4;
+  }
+  body.mode-L .reset-btn:active {
+    background: #0f2350;
+    color: #6bb8ff;
+    border-color: #6bb8ff;
+    box-shadow: 0 0 6px #6bb8ff30;
+  }
+
 
   /* =========================================================
      ========== L型擁壁モード（青系：上書きスタイル） ==========
-     #modeL 配下に限定して既存スタイルを完全に置換
   ========================================================== */
-  /* 背景の枠 */
   #modeL .card {
     background: linear-gradient(160deg, #0d2245, #06112a);
     border: 1px solid #6bb8ff40;
     box-shadow: inset 0 0 12px #6bb8ff10, 0 2px 6px #000;
   }
-  #modeL .card-title {
-    color: #9bd0ff;
-  }
+  #modeL .card-title { color: #9bd0ff; }
 
-  /* 入力ラベル・入力ボックス */
-  #modeL .input-row label {
-    color: #9bd0ff;
-  }
+  #modeL .input-row label { color: #9bd0ff; }
   #modeL .input-row input[type="number"] {
     background: #050d1f;
     border: 1px solid #2f6dc4;
@@ -316,7 +389,6 @@
     box-shadow: 0 0 0 2px #6bb8ff30;
   }
 
-  /* 鉄筋径ボタン */
   #modeL .dia-btn {
     background: #050d1f;
     color: #9bd0ff;
@@ -330,26 +402,20 @@
     box-shadow: 0 0 6px #6bb8ff30;
   }
 
-  /* セクションタイトル */
   #modeL .section-title {
     color: #6bb8ff;
     border-left: 4px solid #4aa3ff;
     text-shadow: 0 0 6px #6bb8ff40;
   }
 
-  /* 結果ボックス・行・点線 */
   #modeL .result-box {
     background: #050d1f;
     border: 1px solid #4aa3ff55;
     box-shadow: inset 0 0 12px #4aa3ff10;
   }
-  #modeL .result-row {
-    border-bottom: 1px dashed #133166;
-  }
+  #modeL .result-row { border-bottom: 1px dashed #133166; }
   #modeL .result-row:last-child { border-bottom: none; }
-  #modeL .result-row .lbl {
-    color: #9bd0ff;
-  }
+  #modeL .result-row .lbl { color: #9bd0ff; }
   #modeL .result-row .val {
     color: #4aa3ff;
     text-shadow: 0 0 6px #4aa3ff50;
@@ -358,21 +424,16 @@
     color: #ffe9a8;
     text-shadow: 0 0 8px #ffd26630;
   }
-  #modeL .result-row.scrap .val {
-    color: #ffb968;
-  }
+  #modeL .result-row.scrap .val { color: #ffb968; }
 
-  /* 加工目安図カード（L型のみ） */
   #modeL .rebar-fig {
     background: #08152e;
     border: 1px solid #6bb8ff40;
     box-shadow: inset 0 0 12px #6bb8ff10;
   }
-
-  /* L型の合計重量カードは共通ゴールドのまま（数値の主役性を維持） */
 </style>
 </head>
-<body>
+<body class="mode-wall">
 <div class="app">
 
   <div class="header">
@@ -391,21 +452,26 @@
   ============================================================ -->
   <section id="modeWall" class="mode-section active">
 
-    <!-- ===== 直壁寸法 ===== -->
     <div class="card">
       <div class="card-title">直壁寸法</div>
       <div class="input-grid">
-        <!-- 総延長L / 高さH -->
+        <!-- 総延長L (×ボタン付き) -->
         <div class="input-row">
           <label>総延長 L(mm)</label>
-          <input type="number" id="cL" inputmode="decimal" placeholder="例: 10000">
+          <div class="input-with-clear">
+            <input type="number" id="cL" inputmode="decimal" placeholder="例: 10000">
+            <button type="button" class="input-clear-btn" aria-label="クリア" onclick="clearField('cL')">×</button>
+          </div>
         </div>
+        <!-- 高さH (×ボタン付き) -->
         <div class="input-row">
           <label>高さ H(mm)</label>
-          <input type="number" id="cH" inputmode="decimal" placeholder="例: 1500">
+          <div class="input-with-clear">
+            <input type="number" id="cH" inputmode="decimal" placeholder="例: 1500">
+            <button type="button" class="input-clear-btn" aria-label="クリア" onclick="clearField('cH')">×</button>
+          </div>
         </div>
 
-        <!-- 横筋ピッチ / 縦筋ピッチ -->
         <div class="input-row">
           <label>横筋ピッチ @(mm)</label>
           <input type="number" id="cPitchY" inputmode="decimal" value="200">
@@ -415,7 +481,6 @@
           <input type="number" id="cPitchT" inputmode="decimal" value="200">
         </div>
 
-        <!-- かぶり / 定尺長 -->
         <div class="input-row">
           <label>かぶり(mm) ※縦筋用</label>
           <input type="number" id="cCover" inputmode="decimal" value="40">
@@ -425,7 +490,6 @@
           <input type="number" id="cStock" inputmode="decimal" value="5000">
         </div>
 
-        <!-- 鉄筋径 -->
         <div class="input-row" style="grid-column: 1 / -1; margin-bottom:0;">
           <label>鉄筋径</label>
           <div class="dia-row" id="wallDiaRow">
@@ -438,79 +502,36 @@
       </div>
     </div>
 
-    <!-- ===== 横筋 + 縦筋（2カラム） ===== -->
     <div class="result-grid">
 
-      <!-- 左：横筋 -->
       <div>
         <div class="section-title">① 横筋</div>
         <div class="result-box">
-          <div class="result-row">
-            <span class="lbl">横筋段数</span>
-            <span class="val" id="yRows">—</span>
-          </div>
-          <div class="result-row">
-            <span class="lbl">1段あたり鉄筋本数</span>
-            <span class="val" id="yPerRow">—</span>
-          </div>
-          <div class="result-row">
-            <span class="lbl">1段あたり必要長さ</span>
-            <span class="val" id="yPerLen">—</span>
-          </div>
-          <div class="result-row">
-            <span class="lbl">総延長</span>
-            <span class="val" id="yTotal">—</span>
-          </div>
-          <div class="result-row main">
-            <span class="lbl">総重量</span>
-            <span class="val" id="yWeight">—</span>
-          </div>
+          <div class="result-row"><span class="lbl">横筋段数</span><span class="val" id="yRows">—</span></div>
+          <div class="result-row"><span class="lbl">1段あたり鉄筋本数</span><span class="val" id="yPerRow">—</span></div>
+          <div class="result-row"><span class="lbl">1段あたり必要長さ</span><span class="val" id="yPerLen">—</span></div>
+          <div class="result-row"><span class="lbl">総延長</span><span class="val" id="yTotal">—</span></div>
+          <div class="result-row main"><span class="lbl">総重量</span><span class="val" id="yWeight">—</span></div>
         </div>
       </div>
 
-      <!-- 右：縦筋 -->
       <div>
         <div class="section-title">② 縦筋</div>
         <div class="result-box">
-          <div class="result-row">
-            <span class="lbl">縦筋本数</span>
-            <span class="val" id="tCount">—</span>
-          </div>
-          <div class="result-row">
-            <span class="lbl">1本長さ</span>
-            <span class="val" id="tPerLen">—</span>
-          </div>
-          <div class="result-row">
-            <span class="lbl">1本から取れる本数</span>
-            <span class="val" id="tPerStock">—</span>
-          </div>
-          <div class="result-row">
-            <span class="lbl">定尺必要本数</span>
-            <span class="val" id="tStockCount">—</span>
-          </div>
-          <div class="result-row">
-            <span class="lbl">総延長</span>
-            <span class="val" id="tTotal">—</span>
-          </div>
-          <div class="result-row main">
-            <span class="lbl">総重量</span>
-            <span class="val" id="tWeight">—</span>
-          </div>
-          <div class="result-row scrap" id="tRowScrapPer">
-            <span class="lbl">1本あたり余り</span>
-            <span class="val" id="tScrapPer">—</span>
-          </div>
-          <div class="result-row scrap" id="tRowScrapTotal">
-            <span class="lbl">総余り</span>
-            <span class="val" id="tScrapTotal">—</span>
-          </div>
+          <div class="result-row"><span class="lbl">縦筋本数</span><span class="val" id="tCount">—</span></div>
+          <div class="result-row"><span class="lbl">1本長さ</span><span class="val" id="tPerLen">—</span></div>
+          <div class="result-row"><span class="lbl">1本から取れる本数</span><span class="val" id="tPerStock">—</span></div>
+          <div class="result-row"><span class="lbl">定尺必要本数</span><span class="val" id="tStockCount">—</span></div>
+          <div class="result-row"><span class="lbl">総延長</span><span class="val" id="tTotal">—</span></div>
+          <div class="result-row main"><span class="lbl">総重量</span><span class="val" id="tWeight">—</span></div>
+          <div class="result-row scrap" id="tRowScrapPer"><span class="lbl">1本あたり余り</span><span class="val" id="tScrapPer">—</span></div>
+          <div class="result-row scrap" id="tRowScrapTotal"><span class="lbl">総余り</span><span class="val" id="tScrapTotal">—</span></div>
         </div>
         <div class="stock-warn" id="tStockWarn" style="display:none;">
           ※ 定尺不足(このサイズでは取れません)
         </div>
       </div>
 
-      <!-- 合計重量（フル幅） -->
       <div class="total-result">
         <div class="total-box">
           <div class="lbl">合計重量(横+縦)</div>
@@ -527,31 +548,39 @@
   ============================================================ -->
   <section id="modeL" class="mode-section">
 
-    <!-- ===== L型擁壁寸法 ===== -->
     <div class="card">
       <div class="card-title">L型擁壁寸法</div>
       <div class="input-grid">
-        <!-- 総延長L / 立上り高さH -->
+        <!-- 総延長L (×ボタン付き) -->
         <div class="input-row">
           <label>総延長 L(mm)</label>
-          <input type="number" id="LcL" inputmode="decimal" placeholder="例: 10000">
+          <div class="input-with-clear">
+            <input type="number" id="LcL" inputmode="decimal" placeholder="例: 10000">
+            <button type="button" class="input-clear-btn" aria-label="クリア" onclick="clearField('LcL')">×</button>
+          </div>
         </div>
+        <!-- 立上り高さH (×ボタン付き) -->
         <div class="input-row">
           <label>立上り高さ H(mm)</label>
-          <input type="number" id="LcH" inputmode="decimal" placeholder="例: 1500">
+          <div class="input-with-clear">
+            <input type="number" id="LcH" inputmode="decimal" placeholder="例: 1500">
+            <button type="button" class="input-clear-btn" aria-label="クリア" onclick="clearField('LcH')">×</button>
+          </div>
         </div>
 
-        <!-- ベース幅B / かぶり -->
+        <!-- ベース幅B (×ボタン付き) -->
         <div class="input-row">
           <label>ベース幅 B(mm)</label>
-          <input type="number" id="LcB" inputmode="decimal" placeholder="例: 600">
+          <div class="input-with-clear">
+            <input type="number" id="LcB" inputmode="decimal" placeholder="例: 600">
+            <button type="button" class="input-clear-btn" aria-label="クリア" onclick="clearField('LcB')">×</button>
+          </div>
         </div>
         <div class="input-row">
           <label>かぶり(mm) ※縦筋用</label>
           <input type="number" id="LcCover" inputmode="decimal" value="40">
         </div>
 
-        <!-- 縦筋ピッチ / 横筋ピッチ -->
         <div class="input-row">
           <label>縦筋ピッチ @(mm)</label>
           <input type="number" id="LcPitchT" inputmode="decimal" value="200">
@@ -561,7 +590,6 @@
           <input type="number" id="LcPitchY" inputmode="decimal" value="200">
         </div>
 
-        <!-- 定尺長 / 鉄筋径 -->
         <div class="input-row">
           <label>定尺長(mm)</label>
           <input type="number" id="LcStock" inputmode="decimal" value="5000">
@@ -578,89 +606,42 @@
       </div>
     </div>
 
-    <!-- ===== L型 縦筋 + 横筋（2カラム） ===== -->
     <div class="result-grid">
 
-      <!-- 左：L型 縦筋 -->
       <div>
         <div class="section-title">① L型 縦筋</div>
 
-        <!-- 加工目安図 -->
         <div class="rebar-fig">
           <svg id="LtFig" viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet"></svg>
         </div>
 
         <div class="result-box">
-          <div class="result-row">
-            <span class="lbl">L型縦筋本数</span>
-            <span class="val" id="LtCount">—</span>
-          </div>
-          <div class="result-row">
-            <span class="lbl">1本長さ</span>
-            <span class="val" id="LtPerLen">—</span>
-          </div>
-          <div class="result-row">
-            <span class="lbl">1本から取れる本数</span>
-            <span class="val" id="LtPerStock">—</span>
-          </div>
-          <div class="result-row">
-            <span class="lbl">定尺必要本数</span>
-            <span class="val" id="LtStockCount">—</span>
-          </div>
-          <div class="result-row">
-            <span class="lbl">総延長</span>
-            <span class="val" id="LtTotal">—</span>
-          </div>
-          <div class="result-row main">
-            <span class="lbl">総重量</span>
-            <span class="val" id="LtWeight">—</span>
-          </div>
-          <div class="result-row scrap" id="LtRowScrapPer">
-            <span class="lbl">1本あたり余り</span>
-            <span class="val" id="LtScrapPer">—</span>
-          </div>
-          <div class="result-row scrap" id="LtRowScrapTotal">
-            <span class="lbl">総余り</span>
-            <span class="val" id="LtScrapTotal">—</span>
-          </div>
+          <div class="result-row"><span class="lbl">L型縦筋本数</span><span class="val" id="LtCount">—</span></div>
+          <div class="result-row"><span class="lbl">1本長さ</span><span class="val" id="LtPerLen">—</span></div>
+          <div class="result-row"><span class="lbl">1本から取れる本数</span><span class="val" id="LtPerStock">—</span></div>
+          <div class="result-row"><span class="lbl">定尺必要本数</span><span class="val" id="LtStockCount">—</span></div>
+          <div class="result-row"><span class="lbl">総延長</span><span class="val" id="LtTotal">—</span></div>
+          <div class="result-row main"><span class="lbl">総重量</span><span class="val" id="LtWeight">—</span></div>
+          <div class="result-row scrap" id="LtRowScrapPer"><span class="lbl">1本あたり余り</span><span class="val" id="LtScrapPer">—</span></div>
+          <div class="result-row scrap" id="LtRowScrapTotal"><span class="lbl">総余り</span><span class="val" id="LtScrapTotal">—</span></div>
         </div>
         <div class="stock-warn" id="LtStockWarn" style="display:none;">
           ※ 定尺不足(このサイズでは取れません)
         </div>
       </div>
 
-      <!-- 右：L型 横筋 -->
       <div>
         <div class="section-title">② L型 横筋</div>
         <div class="result-box">
-          <div class="result-row">
-            <span class="lbl">L型横筋本数</span>
-            <span class="val" id="LyCount">—</span>
-          </div>
-          <div class="result-row">
-            <span class="lbl">1段あたり必要本数</span>
-            <span class="val" id="LyPerRow">—</span>
-          </div>
-          <div class="result-row">
-            <span class="lbl">総定尺本数</span>
-            <span class="val" id="LyStockCount">—</span>
-          </div>
-          <div class="result-row">
-            <span class="lbl">実施工延長</span>
-            <span class="val" id="LyRealTotal">—</span>
-          </div>
-          <div class="result-row">
-            <span class="lbl">定尺総延長</span>
-            <span class="val" id="LyTotal">—</span>
-          </div>
-          <div class="result-row main">
-            <span class="lbl">総重量</span>
-            <span class="val" id="LyWeight">—</span>
-          </div>
+          <div class="result-row"><span class="lbl">L型横筋本数</span><span class="val" id="LyCount">—</span></div>
+          <div class="result-row"><span class="lbl">1段あたり必要本数</span><span class="val" id="LyPerRow">—</span></div>
+          <div class="result-row"><span class="lbl">総定尺本数</span><span class="val" id="LyStockCount">—</span></div>
+          <div class="result-row"><span class="lbl">実施工延長</span><span class="val" id="LyRealTotal">—</span></div>
+          <div class="result-row"><span class="lbl">定尺総延長</span><span class="val" id="LyTotal">—</span></div>
+          <div class="result-row main"><span class="lbl">総重量</span><span class="val" id="LyWeight">—</span></div>
         </div>
       </div>
 
-      <!-- 合計重量(L型, フル幅) -->
       <div class="total-result">
         <div class="total-box">
           <div class="lbl">合計重量(縦+横)</div>
@@ -671,6 +652,11 @@
     </div>
 
   </section>
+
+  <!-- 全リセット -->
+  <div class="reset-wrap">
+    <button type="button" class="reset-btn" onclick="resetAllInputs()">⟲ 全リセット</button>
+  </div>
 
 </div>
 
@@ -686,11 +672,66 @@ function switchMode(mode) {
   $('modeL').classList.toggle('active', !isWall);
   $('tabWall').classList.toggle('active', isWall);
   $('tabL').classList.toggle('active', !isWall);
+  document.body.classList.toggle('mode-wall', isWall);
+  document.body.classList.toggle('mode-L', !isWall);
   try { localStorage.setItem('rebarMode_v1', mode); } catch (e) {}
 }
 
+/* ============================================================
+   個別フィールドのクリア
+   - 入力欄を空にして、属するモードの再計算をトリガー
+============================================================ */
+function clearField(id) {
+  const el = $(id);
+  if (!el) return;
+  el.value = '';
+  // L型のID（先頭が L）か直壁かで再計算先を分岐
+  if (/^L/.test(id)) {
+    LrecalcAll();
+  } else {
+    recalcAll();
+  }
+}
+
+/* ============================================================
+   全リセット
+   - 全入力値を初期状態に戻す
+   - 鉄筋径もD10に戻す
+   - 結果表示も初期化（recalcAll/LrecalcAllが空入力で—に戻す）
+   - 現在のモードは維持
+============================================================ */
+function resetAllInputs() {
+  // 直壁
+  $('cL').value      = '';
+  $('cH').value      = '';
+  $('cPitchY').value = '200';
+  $('cPitchT').value = '200';
+  $('cCover').value  = '40';
+  $('cStock').value  = '5000';
+  currentDia = 'D10';
+  document.querySelectorAll('#wallDiaRow .dia-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.dia === 'D10');
+  });
+
+  // L型
+  $('LcL').value      = '';
+  $('LcH').value      = '';
+  $('LcB').value      = '';
+  $('LcPitchT').value = '200';
+  $('LcPitchY').value = '200';
+  $('LcCover').value  = '40';
+  $('LcStock').value  = '5000';
+  LcurrentDia = 'D10';
+  document.querySelectorAll('#lDiaRow .dia-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.dia === 'D10');
+  });
+
+  recalcAll();
+  LrecalcAll();
+}
+
 /* ==========================================================================================
-   ========== 直壁モード(rebar_wall.html のロジック・変数をそのまま) ==========
+   ========== 直壁モード ==========
 ========================================================================================== */
 let currentDia = 'D10';
 
@@ -714,7 +755,6 @@ function readCommon() {
   };
 }
 
-/* ① 横筋 */
 const Y_DIA = {
   D10: { anchor: 400, unit: 0.560 },
   D13: { anchor: 520, unit: 0.995 },
@@ -765,7 +805,6 @@ function calcYoko() {
   return yoko_weight;
 }
 
-/* ② 縦筋 */
 const T_DIA = {
   D10: { unit: 0.560 },
   D13: { unit: 0.995 },
@@ -815,7 +854,6 @@ function calcTate() {
   $('tCount').textContent  = tate_count.toLocaleString() + ' 本';
   $('tPerLen').textContent = Math.round(tate_perLen).toLocaleString() + ' mm';
 
-  // 縦筋総延長 = 本数 × 1本長さ
   const tate_total  = tate_count * tate_perLen;
   const tate_weight = (tate_total / 1000) * tate_d.unit;
 
@@ -895,8 +933,7 @@ function loadAll() {
 
 
 /* ==========================================================================================
-   ========== L型擁壁モード(rebar_L_wall.html のロジック・変数をそのまま) ==========
-   ※ ID/関数名すべて L プレフィックスで完全分離
+   ========== L型擁壁モード ==========
 ========================================================================================== */
 let LcurrentDia = 'D10';
 
@@ -921,7 +958,6 @@ function LreadCommon() {
   };
 }
 
-/* L型縦筋 加工目安図 */
 function drawLTateFig(H_eff, B_eff, bend, total) {
   const svg = document.getElementById('LtFig');
   if (!svg) return;
@@ -972,7 +1008,6 @@ function drawLTateFig(H_eff, B_eff, bend, total) {
   svg.innerHTML = html;
 }
 
-/* ① L型 縦筋 */
 const LT_DIA = {
   D10: { unit: 0.560, bend: 50 },
   D13: { unit: 0.995, bend: 60 },
@@ -1063,7 +1098,6 @@ function calcLTate() {
   return tate_weight;
 }
 
-/* ② L型 横筋 */
 const LY_DIA = {
   D10: { unit: 0.560, anchor: 400 },
   D13: { unit: 0.995, anchor: 520 },
@@ -1174,7 +1208,6 @@ recalcAll();
 LloadAll();
 LrecalcAll();
 
-// モード復元(直壁が初期)
 try {
   const m = localStorage.getItem('rebarMode_v1');
   if (m === 'L') switchMode('L');
