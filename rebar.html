@@ -19,22 +19,22 @@
   }
   body {
     min-height: 100vh;
-    padding: 16px 14px 40px;
+    padding: 12px 12px 32px;
   }
   .app {
-    max-width: 480px;
+    max-width: 720px;
     margin: 0 auto;
   }
 
   .header {
     text-align: center;
-    padding: 4px 0 14px;
+    padding: 2px 0 10px;
     border-bottom: 1px solid #0c3d3a;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
   }
   .header h1 {
     margin: 0;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 800;
     letter-spacing: 2px;
     color: #00ffd5;
@@ -42,7 +42,7 @@
   }
   .header .sub {
     margin-top: 2px;
-    font-size: 11px;
+    font-size: 10px;
     color: #4ad9c2;
     letter-spacing: 1px;
   }
@@ -52,15 +52,15 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 8px;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
   }
   .mode-tab {
     background: #0c1f1d;
     color: #4ad9c2;
     border: 1px solid #008c7a;
-    padding: 14px;
+    padding: 10px;
     border-radius: 10px;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 800;
     letter-spacing: 1px;
     cursor: pointer;
@@ -78,9 +78,9 @@
   .card {
     background: linear-gradient(160deg, #0d2926, #061613);
     border: 1px solid #00ffd540;
-    border-radius: 14px;
-    padding: 14px;
-    margin-bottom: 14px;
+    border-radius: 12px;
+    padding: 8px;
+    margin-bottom: 10px;
     box-shadow: inset 0 0 12px #00ffd510, 0 2px 6px #000;
   }
   .card-title {
@@ -88,16 +88,26 @@
     color: #4ad9c2;
     font-weight: 700;
     letter-spacing: 1px;
-    margin-bottom: 10px;
+    margin-bottom: 6px;
   }
 
-  .input-row { margin-bottom: 12px; }
+  /* 入力2カラム */
+  .input-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  @media (max-width: 480px) {
+    .input-grid { grid-template-columns: 1fr; }
+  }
+
+  .input-row { margin-bottom: 6px; }
   .input-row:last-child { margin-bottom: 0; }
   .input-row label {
     display: block;
-    font-size: 13px;
+    font-size: 12px;
     color: #4ad9c2;
-    margin-bottom: 4px;
+    margin-bottom: 3px;
     font-weight: 600;
   }
   .input-row input[type="number"] {
@@ -105,9 +115,9 @@
     background: #061613;
     border: 1px solid #008c7a;
     color: #00ffd5;
-    padding: 14px;
+    padding: 9px 10px;
     border-radius: 8px;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 700;
     -webkit-appearance: none;
   }
@@ -117,10 +127,14 @@
     box-shadow: 0 0 0 2px #00ffd530;
   }
 
+  /* 既存の grid-2 は input-grid と同じ振る舞い */
   .grid-2 {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    gap: 8px;
+  }
+  @media (max-width: 480px) {
+    .grid-2 { grid-template-columns: 1fr; }
   }
 
   .dia-row {
@@ -132,9 +146,9 @@
     background: #061613;
     color: #4ad9c2;
     border: 1px solid #008c7a;
-    padding: 12px 4px;
+    padding: 8px 4px;
     border-radius: 8px;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
     cursor: pointer;
     text-align: center;
@@ -148,45 +162,46 @@
   }
 
   .section-title {
-    font-size: 13px;
+    font-size: 12px;
     color: #00ffd5;
     font-weight: 800;
     letter-spacing: 1px;
-    margin: 18px 0 10px;
+    margin: 8px 0 6px;
     border-left: 4px solid #00ff88;
-    padding-left: 10px;
+    padding-left: 8px;
     text-shadow: 0 0 6px #00ffd540;
   }
 
   .result-box {
     background: #061613;
     border: 1px solid #00ff8855;
-    border-radius: 12px;
-    padding: 4px 16px;
+    border-radius: 10px;
+    padding: 2px 10px;
     box-shadow: inset 0 0 12px #00ff8810;
   }
   .result-row {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    padding: 14px 0;
+    padding: 6px 0;
+    font-size: 13px;
     border-bottom: 1px dashed #0c3d3a;
   }
   .result-row:last-child { border-bottom: none; }
   .result-row .lbl {
-    font-size: 13px;
+    font-size: 12px;
     color: #4ad9c2;
     font-weight: 600;
   }
   .result-row .val {
-    font-size: 22px;
+    font-size: 16px;
     font-weight: 800;
     color: #00ff88;
-    text-shadow: 0 0 8px #00ff8850;
+    text-shadow: 0 0 6px #00ff8850;
     font-family: "SF Mono", Menlo, monospace;
   }
   .result-row.main .val {
-    font-size: 28px;
+    font-size: 19px;
     color: #ffe9a8;
     text-shadow: 0 0 8px #ffd26630;
   }
@@ -195,35 +210,48 @@
   }
 
   .stock-warn {
-    margin-top: 10px;
-    padding: 10px 14px;
+    margin-top: 8px;
+    padding: 8px 12px;
     background: #2a1010;
     border: 1px solid #ff9a9a55;
     border-radius: 10px;
     color: #ff9a9a;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 700;
     text-align: center;
   }
 
+  /* 結果2カラム + 合計フル幅 */
+  .result-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  @media (max-width: 480px) {
+    .result-grid { grid-template-columns: 1fr; }
+  }
+  .total-result {
+    grid-column: 1 / -1;
+  }
+
   .total-box {
-    margin-top: 16px;
+    margin-top: 10px;
     background: linear-gradient(160deg, #1a3530, #0a1f1c);
     border: 2px solid #ffd266;
-    border-radius: 14px;
-    padding: 16px;
+    border-radius: 12px;
+    padding: 10px;
     text-align: center;
     box-shadow: 0 0 12px #ffd26630;
   }
   .total-box .lbl {
-    font-size: 12px;
+    font-size: 11px;
     color: #ffd266;
     font-weight: 700;
     letter-spacing: 1px;
-    margin-bottom: 6px;
+    margin-bottom: 3px;
   }
   .total-box .val {
-    font-size: 34px;
+    font-size: 26px;
     font-weight: 900;
     color: #ffe9a8;
     font-family: "SF Mono", Menlo, monospace;
@@ -234,42 +262,21 @@
   .rebar-fig {
     background: #0a1f1c;
     border: 1px solid #00ffd540;
-    border-radius: 12px;
-    padding: 12px;
-    margin-bottom: 14px;
+    border-radius: 10px;
+    padding: 8px;
+    margin-bottom: 8px;
     text-align: center;
     box-shadow: inset 0 0 12px #00ffd510;
   }
   .rebar-fig svg {
     width: 100%;
     height: auto;
-    max-height: 240px;
+    max-height: 150px;
     display: block;
   }
 
   .mode-section { display: none; }
   .mode-section.active { display: block; }
-
-  /* === レイアウト改善：結果2カラム === */
-  .result-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-  }
-  @media (max-width: 480px) {
-    .result-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  /* === 余白最適化（既存スタイルを上書き） === */
-  .card { padding: 10px; }
-  .result-box { padding: 4px 12px; }
-  .result-row { padding: 9px 0; }
-  .section-title { margin: 10px 0 6px; }
-
-  /* === SVG高さを少し縮める === */
-  .rebar-fig svg { max-height: 180px; }
 </style>
 </head>
 <body>
@@ -294,15 +301,15 @@
     <!-- ===== 共通入力（直壁） ===== -->
     <div class="card">
       <div class="card-title">共通入力</div>
-      <div class="input-row">
-        <label>総延長 L(mm)</label>
-        <input type="number" id="cL" inputmode="decimal" placeholder="例: 10000">
-      </div>
-      <div class="input-row">
-        <label>高さ H(mm)</label>
-        <input type="number" id="cH" inputmode="decimal" placeholder="例: 1500">
-      </div>
-      <div class="grid-2">
+      <div class="input-grid">
+        <div class="input-row">
+          <label>総延長 L(mm)</label>
+          <input type="number" id="cL" inputmode="decimal" placeholder="例: 10000">
+        </div>
+        <div class="input-row">
+          <label>高さ H(mm)</label>
+          <input type="number" id="cH" inputmode="decimal" placeholder="例: 1500">
+        </div>
         <div class="input-row">
           <label>横筋ピッチ @(mm)</label>
           <input type="number" id="cPitchY" inputmode="decimal" value="200">
@@ -311,16 +318,16 @@
           <label>縦筋ピッチ @(mm)</label>
           <input type="number" id="cPitchT" inputmode="decimal" value="200">
         </div>
+        <div class="input-row">
+          <label>かぶり(mm) ※縦筋用</label>
+          <input type="number" id="cCover" inputmode="decimal" value="40">
+        </div>
+        <div class="input-row">
+          <label>定尺長(mm)</label>
+          <input type="number" id="cStock" inputmode="decimal" value="5000">
+        </div>
       </div>
-      <div class="input-row">
-        <label>かぶり(mm) ※縦筋用</label>
-        <input type="number" id="cCover" inputmode="decimal" value="40">
-      </div>
-      <div class="input-row">
-        <label>定尺長(mm)</label>
-        <input type="number" id="cStock" inputmode="decimal" value="5000">
-      </div>
-      <div class="input-row" style="margin-bottom:0;">
+      <div class="input-row" style="margin-top:8px;margin-bottom:0;">
         <label>鉄筋径</label>
         <div class="dia-row" id="wallDiaRow">
           <button class="dia-btn active" data-dia="D10" onclick="setDiaWall('D10')">D10</button>
@@ -331,75 +338,86 @@
       </div>
     </div>
 
-    <!-- ===== 横筋 結果 ===== -->
-    <div class="section-title">① 横筋</div>
-    <div class="result-box">
-      <div class="result-row">
-        <span class="lbl">横筋段数</span>
-        <span class="val" id="yRows">—</span>
-      </div>
-      <div class="result-row">
-        <span class="lbl">1段あたり鉄筋本数</span>
-        <span class="val" id="yPerRow">—</span>
-      </div>
-      <div class="result-row">
-        <span class="lbl">1段あたり必要長さ</span>
-        <span class="val" id="yPerLen">—</span>
-      </div>
-      <div class="result-row">
-        <span class="lbl">総延長</span>
-        <span class="val" id="yTotal">—</span>
-      </div>
-      <div class="result-row main">
-        <span class="lbl">総重量</span>
-        <span class="val" id="yWeight">—</span>
-      </div>
-    </div>
+    <!-- ===== 横筋 + 縦筋（2カラム） ===== -->
+    <div class="result-grid">
 
-    <!-- ===== 縦筋 結果 ===== -->
-    <div class="section-title">② 縦筋</div>
-    <div class="result-box">
-      <div class="result-row">
-        <span class="lbl">縦筋本数</span>
-        <span class="val" id="tCount">—</span>
+      <!-- 左：横筋 -->
+      <div>
+        <div class="section-title">① 横筋</div>
+        <div class="result-box">
+          <div class="result-row">
+            <span class="lbl">横筋段数</span>
+            <span class="val" id="yRows">—</span>
+          </div>
+          <div class="result-row">
+            <span class="lbl">1段あたり鉄筋本数</span>
+            <span class="val" id="yPerRow">—</span>
+          </div>
+          <div class="result-row">
+            <span class="lbl">1段あたり必要長さ</span>
+            <span class="val" id="yPerLen">—</span>
+          </div>
+          <div class="result-row">
+            <span class="lbl">総延長</span>
+            <span class="val" id="yTotal">—</span>
+          </div>
+          <div class="result-row main">
+            <span class="lbl">総重量</span>
+            <span class="val" id="yWeight">—</span>
+          </div>
+        </div>
       </div>
-      <div class="result-row">
-        <span class="lbl">1本長さ</span>
-        <span class="val" id="tPerLen">—</span>
-      </div>
-      <div class="result-row">
-        <span class="lbl">1本から取れる本数</span>
-        <span class="val" id="tPerStock">—</span>
-      </div>
-      <div class="result-row">
-        <span class="lbl">定尺必要本数</span>
-        <span class="val" id="tStockCount">—</span>
-      </div>
-      <div class="result-row">
-        <span class="lbl">総延長</span>
-        <span class="val" id="tTotal">—</span>
-      </div>
-      <div class="result-row main">
-        <span class="lbl">総重量</span>
-        <span class="val" id="tWeight">—</span>
-      </div>
-      <div class="result-row scrap" id="tRowScrapPer">
-        <span class="lbl">1本あたり余り</span>
-        <span class="val" id="tScrapPer">—</span>
-      </div>
-      <div class="result-row scrap" id="tRowScrapTotal">
-        <span class="lbl">総余り</span>
-        <span class="val" id="tScrapTotal">—</span>
-      </div>
-    </div>
-    <div class="stock-warn" id="tStockWarn" style="display:none;">
-      ※ 定尺不足(このサイズでは取れません)
-    </div>
 
-    <!-- ===== 合計重量 ===== -->
-    <div class="total-box">
-      <div class="lbl">合計重量(横+縦)</div>
-      <div class="val" id="sumWeight">— kg</div>
+      <!-- 右：縦筋 -->
+      <div>
+        <div class="section-title">② 縦筋</div>
+        <div class="result-box">
+          <div class="result-row">
+            <span class="lbl">縦筋本数</span>
+            <span class="val" id="tCount">—</span>
+          </div>
+          <div class="result-row">
+            <span class="lbl">1本長さ</span>
+            <span class="val" id="tPerLen">—</span>
+          </div>
+          <div class="result-row">
+            <span class="lbl">1本から取れる本数</span>
+            <span class="val" id="tPerStock">—</span>
+          </div>
+          <div class="result-row">
+            <span class="lbl">定尺必要本数</span>
+            <span class="val" id="tStockCount">—</span>
+          </div>
+          <div class="result-row">
+            <span class="lbl">総延長</span>
+            <span class="val" id="tTotal">—</span>
+          </div>
+          <div class="result-row main">
+            <span class="lbl">総重量</span>
+            <span class="val" id="tWeight">—</span>
+          </div>
+          <div class="result-row scrap" id="tRowScrapPer">
+            <span class="lbl">1本あたり余り</span>
+            <span class="val" id="tScrapPer">—</span>
+          </div>
+          <div class="result-row scrap" id="tRowScrapTotal">
+            <span class="lbl">総余り</span>
+            <span class="val" id="tScrapTotal">—</span>
+          </div>
+        </div>
+        <div class="stock-warn" id="tStockWarn" style="display:none;">
+          ※ 定尺不足(このサイズでは取れません)
+        </div>
+      </div>
+
+      <!-- 合計重量（フル幅） -->
+      <div class="total-result">
+        <div class="total-box">
+          <div class="lbl">合計重量(横+縦)</div>
+          <div class="val" id="sumWeight">— kg</div>
+        </div>
+      </div>
+
     </div>
 
   </section>
@@ -412,19 +430,23 @@
     <!-- ===== 共通入力(L型) ===== -->
     <div class="card">
       <div class="card-title">共通入力</div>
-      <div class="input-row">
-        <label>総延長 L(mm)</label>
-        <input type="number" id="LcL" inputmode="decimal" placeholder="例: 10000">
-      </div>
-      <div class="input-row">
-        <label>立上り高さ H(mm)</label>
-        <input type="number" id="LcH" inputmode="decimal" placeholder="例: 1500">
-      </div>
-      <div class="input-row">
-        <label>ベース幅 B(mm)</label>
-        <input type="number" id="LcB" inputmode="decimal" placeholder="例: 600">
-      </div>
-      <div class="grid-2">
+      <div class="input-grid">
+        <div class="input-row">
+          <label>総延長 L(mm)</label>
+          <input type="number" id="LcL" inputmode="decimal" placeholder="例: 10000">
+        </div>
+        <div class="input-row">
+          <label>立上り高さ H(mm)</label>
+          <input type="number" id="LcH" inputmode="decimal" placeholder="例: 1500">
+        </div>
+        <div class="input-row">
+          <label>ベース幅 B(mm)</label>
+          <input type="number" id="LcB" inputmode="decimal" placeholder="例: 600">
+        </div>
+        <div class="input-row">
+          <label>かぶり(mm) ※縦筋用</label>
+          <input type="number" id="LcCover" inputmode="decimal" value="40">
+        </div>
         <div class="input-row">
           <label>縦筋ピッチ @(mm)</label>
           <input type="number" id="LcPitchT" inputmode="decimal" value="200">
@@ -433,16 +455,12 @@
           <label>横筋ピッチ @(mm)</label>
           <input type="number" id="LcPitchY" inputmode="decimal" value="200">
         </div>
+        <div class="input-row">
+          <label>定尺長(mm)</label>
+          <input type="number" id="LcStock" inputmode="decimal" value="5000">
+        </div>
       </div>
-      <div class="input-row">
-        <label>かぶり(mm) ※縦筋用</label>
-        <input type="number" id="LcCover" inputmode="decimal" value="40">
-      </div>
-      <div class="input-row">
-        <label>定尺長(mm)</label>
-        <input type="number" id="LcStock" inputmode="decimal" value="5000">
-      </div>
-      <div class="input-row" style="margin-bottom:0;">
+      <div class="input-row" style="margin-top:8px;margin-bottom:0;">
         <label>鉄筋径</label>
         <div class="dia-row" id="lDiaRow">
           <button class="dia-btn active" data-dia="D10" onclick="setDiaL('D10')">D10</button>
@@ -535,12 +553,14 @@
         </div>
       </div>
 
-    </div>
+      <!-- 合計重量(L型, フル幅) -->
+      <div class="total-result">
+        <div class="total-box">
+          <div class="lbl">合計重量(縦+横)</div>
+          <div class="val" id="LsumWeight">— kg</div>
+        </div>
+      </div>
 
-    <!-- ===== 合計重量(L型) ===== -->
-    <div class="total-box">
-      <div class="lbl">合計重量(縦+横)</div>
-      <div class="val" id="LsumWeight">— kg</div>
     </div>
 
   </section>
