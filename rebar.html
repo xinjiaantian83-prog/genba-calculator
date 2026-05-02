@@ -91,13 +91,13 @@
     margin-bottom: 6px;
   }
 
-  /* 入力2カラム */
+  /* 入力2カラム（スマホでも2列維持、極小画面のみ1列） */
   .input-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 8px;
   }
-  @media (max-width: 480px) {
+  @media (max-width: 340px) {
     .input-grid { grid-template-columns: 1fr; }
   }
 
@@ -133,22 +133,22 @@
     grid-template-columns: 1fr 1fr;
     gap: 8px;
   }
-  @media (max-width: 480px) {
+  @media (max-width: 340px) {
     .grid-2 { grid-template-columns: 1fr; }
   }
 
   .dia-row {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 6px;
+    gap: 4px;
   }
   .dia-btn {
     background: #061613;
     color: #4ad9c2;
     border: 1px solid #008c7a;
-    padding: 8px 4px;
+    padding: 8px 2px;
     border-radius: 8px;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 700;
     cursor: pointer;
     text-align: center;
@@ -302,6 +302,7 @@
     <div class="card">
       <div class="card-title">共通入力</div>
       <div class="input-grid">
+        <!-- 総延長L / 高さH -->
         <div class="input-row">
           <label>総延長 L(mm)</label>
           <input type="number" id="cL" inputmode="decimal" placeholder="例: 10000">
@@ -310,6 +311,8 @@
           <label>高さ H(mm)</label>
           <input type="number" id="cH" inputmode="decimal" placeholder="例: 1500">
         </div>
+
+        <!-- 横筋ピッチ / 縦筋ピッチ -->
         <div class="input-row">
           <label>横筋ピッチ @(mm)</label>
           <input type="number" id="cPitchY" inputmode="decimal" value="200">
@@ -318,6 +321,8 @@
           <label>縦筋ピッチ @(mm)</label>
           <input type="number" id="cPitchT" inputmode="decimal" value="200">
         </div>
+
+        <!-- かぶり / 定尺長 -->
         <div class="input-row">
           <label>かぶり(mm) ※縦筋用</label>
           <input type="number" id="cCover" inputmode="decimal" value="40">
@@ -326,14 +331,16 @@
           <label>定尺長(mm)</label>
           <input type="number" id="cStock" inputmode="decimal" value="5000">
         </div>
-      </div>
-      <div class="input-row" style="margin-top:8px;margin-bottom:0;">
-        <label>鉄筋径</label>
-        <div class="dia-row" id="wallDiaRow">
-          <button class="dia-btn active" data-dia="D10" onclick="setDiaWall('D10')">D10</button>
-          <button class="dia-btn" data-dia="D13" onclick="setDiaWall('D13')">D13</button>
-          <button class="dia-btn" data-dia="D16" onclick="setDiaWall('D16')">D16</button>
-          <button class="dia-btn" data-dia="D19" onclick="setDiaWall('D19')">D19</button>
+
+        <!-- 鉄筋径(右セル相当・2カラム1セルに収める) -->
+        <div class="input-row" style="grid-column: 1 / -1; margin-bottom:0;">
+          <label>鉄筋径</label>
+          <div class="dia-row" id="wallDiaRow">
+            <button class="dia-btn active" data-dia="D10" onclick="setDiaWall('D10')">D10</button>
+            <button class="dia-btn" data-dia="D13" onclick="setDiaWall('D13')">D13</button>
+            <button class="dia-btn" data-dia="D16" onclick="setDiaWall('D16')">D16</button>
+            <button class="dia-btn" data-dia="D19" onclick="setDiaWall('D19')">D19</button>
+          </div>
         </div>
       </div>
     </div>
@@ -431,6 +438,7 @@
     <div class="card">
       <div class="card-title">共通入力</div>
       <div class="input-grid">
+        <!-- 総延長L / 立上り高さH -->
         <div class="input-row">
           <label>総延長 L(mm)</label>
           <input type="number" id="LcL" inputmode="decimal" placeholder="例: 10000">
@@ -439,6 +447,8 @@
           <label>立上り高さ H(mm)</label>
           <input type="number" id="LcH" inputmode="decimal" placeholder="例: 1500">
         </div>
+
+        <!-- ベース幅B / かぶり -->
         <div class="input-row">
           <label>ベース幅 B(mm)</label>
           <input type="number" id="LcB" inputmode="decimal" placeholder="例: 600">
@@ -447,6 +457,8 @@
           <label>かぶり(mm) ※縦筋用</label>
           <input type="number" id="LcCover" inputmode="decimal" value="40">
         </div>
+
+        <!-- 縦筋ピッチ / 横筋ピッチ -->
         <div class="input-row">
           <label>縦筋ピッチ @(mm)</label>
           <input type="number" id="LcPitchT" inputmode="decimal" value="200">
@@ -455,18 +467,20 @@
           <label>横筋ピッチ @(mm)</label>
           <input type="number" id="LcPitchY" inputmode="decimal" value="200">
         </div>
+
+        <!-- 定尺長 / 鉄筋径 -->
         <div class="input-row">
           <label>定尺長(mm)</label>
           <input type="number" id="LcStock" inputmode="decimal" value="5000">
         </div>
-      </div>
-      <div class="input-row" style="margin-top:8px;margin-bottom:0;">
-        <label>鉄筋径</label>
-        <div class="dia-row" id="lDiaRow">
-          <button class="dia-btn active" data-dia="D10" onclick="setDiaL('D10')">D10</button>
-          <button class="dia-btn" data-dia="D13" onclick="setDiaL('D13')">D13</button>
-          <button class="dia-btn" data-dia="D16" onclick="setDiaL('D16')">D16</button>
-          <button class="dia-btn" data-dia="D19" onclick="setDiaL('D19')">D19</button>
+        <div class="input-row" style="margin-bottom:0;">
+          <label>鉄筋径</label>
+          <div class="dia-row" id="lDiaRow">
+            <button class="dia-btn active" data-dia="D10" onclick="setDiaL('D10')">D10</button>
+            <button class="dia-btn" data-dia="D13" onclick="setDiaL('D13')">D13</button>
+            <button class="dia-btn" data-dia="D16" onclick="setDiaL('D16')">D16</button>
+            <button class="dia-btn" data-dia="D19" onclick="setDiaL('D19')">D19</button>
+          </div>
         </div>
       </div>
     </div>
