@@ -326,9 +326,6 @@
 </div>
 
 <script>
-/* ============================================================
-   共通：鉄筋径・共通入力アクセサ
-============================================================ */
 const $ = (id) => document.getElementById(id);
 
 let currentDia = 'D10';
@@ -342,7 +339,6 @@ function setDia(d) {
   saveAll();
 }
 
-/* 横筋・縦筋それぞれが必要とする「現在値」を返すアクセサ */
 function readCommon() {
   return {
     L:      parseFloat($('cL').value),
@@ -356,8 +352,7 @@ function readCommon() {
 
 /* ============================================================
    ① 横筋（rebar_yoko.html のロジックそのまま）
-   - 元コードで参照していた id を、共通入力 + y* の結果欄に対応付け
-   - DIA は anchor + unit（横筋仕様）
+   - 全変数を yoko* プレフィックスで完全分離
 ============================================================ */
 const Y_DIA = {
   D10: { anchor: 400, unit: 0.560 },
@@ -368,14 +363,14 @@ const Y_DIA = {
 
 function calcYoko() {
   const c = readCommon();
-  const L     = c.L;
-  const H     = c.H;
-  const p     = c.pitchY;
-  const stock = c.stock;
-  const d     = Y_DIA[currentDia];
+  const yoko_L     = c.L;
+  const yoko_H     = c.H;
+  const yoko_p     = c.pitchY;
+  const yoko_stock = c.stock;
+  const yoko_d     = Y_DIA[currentDia];
 
-  if (!isFinite(L) || L <= 0 || !isFinite(H) || H <= 0
-      || !isFinite(p) || p <= 0 || !isFinite(stock) || stock <= 0) {
+  if (!isFinite(yoko_L) || yoko_L <= 0 || !isFinite(yoko_H) || yoko_H <= 0
+      || !isFinite(yoko_p) || yoko_p <= 0 || !isFinite(yoko_stock) || yoko_stock <= 0) {
     $('yRows').textContent = '—';
     $('yPerRow').textContent = '—';
     $('yPerLen').textContent = '—';
@@ -384,8 +379,8 @@ function calcYoko() {
     return 0;
   }
 
-  const eff = stock - d.anchor;
-  if (eff <= 0) {
+  const yoko_eff = yoko_stock - yoko_d.anchor;
+  if (yoko_eff <= 0) {
     $('yRows').textContent = '—';
     $('yPerRow').textContent = '定尺不足';
     $('yPerLen').textContent = '—';
@@ -394,25 +389,25 @@ function calcYoko() {
     return 0;
   }
 
-  const rows   = Math.floor(H / p) + 1;
-  const perRow = Math.ceil(L / eff);
-  const perLen = perRow * stock;
-  const total  = perLen * rows;
-  const weight = (total / 1000) * d.unit;
+  const yoko_rows   = Math.floor(yoko_H / yoko_p) + 1;
+  const yoko_perRow = Math.ceil(yoko_L / yoko_eff);
+  const yoko_perLen = yoko_perRow * yoko_stock;
+  const yoko_total  = yoko_perLen * yoko_rows;
+  const yoko_weight = (yoko_total / 1000) * yoko_d.unit;
 
-  $('yRows').textContent   = rows.toLocaleString() + ' 段';
-  $('yPerRow').textContent = perRow.toLocaleString() + ' 本';
-  $('yPerLen').textContent = Math.round(perLen).toLocaleString() + ' mm';
-  $('yTotal').textContent  = (total / 1000).toFixed(2) + ' m';
-  $('yWeight').textContent = weight.toFixed(2) + ' kg';
+  $('yRows').textContent   = yoko_rows.toLocaleString() + ' 段';
+  $('yPerRow').textContent = yoko_perRow.toLocaleString() + ' 本';
+  $('yPerLen').textContent = Math.round(yoko_perLen).toLocaleString() + ' mm';
+  $('yTotal').textContent  = (yoko_total / 1000).toFixed(2) + ' m';
+  $('yWeight').textContent = yoko_weight.toFixed(2) + ' kg';
 
-  return weight;
+  return yoko_weight;
 }
 
 /* ============================================================
    ② 縦筋（rebar_tate.html のロジックそのまま）
-   - 元コードで参照していた id を、共通入力 + t* の結果欄に対応付け
-   - DIA は unit のみ（縦筋仕様）
+   - 全変数を tate* プレフィックスで完全分離
+   - 総延長 = 本数 × 1本長さ（縦筋単独で算出）
 ============================================================ */
 const T_DIA = {
   D10: { unit: 0.560 },
@@ -437,66 +432,68 @@ function clearTateAll() {
 
 function calcTate() {
   const c = readCommon();
-  const L     = c.L;
-  const H     = c.H;
-  const p     = c.pitchT;
-  const cover = c.cover;
-  const stock = c.stock;
-  const d     = T_DIA[currentDia];
+  const tate_L     = c.L;
+  const tate_H     = c.H;
+  const tate_p     = c.pitchT;
+  const tate_cover = c.cover;
+  const tate_stock = c.stock;
+  const tate_d     = T_DIA[currentDia];
 
-  if (!isFinite(L) || L <= 0 || !isFinite(H) || H <= 0
-      || !isFinite(p) || p <= 0 || !isFinite(cover) || cover < 0
-      || !isFinite(stock) || stock <= 0) {
+  if (!isFinite(tate_L) || tate_L <= 0 || !isFinite(tate_H) || tate_H <= 0
+      || !isFinite(tate_p) || tate_p <= 0 || !isFinite(tate_cover) || tate_cover < 0
+      || !isFinite(tate_stock) || tate_stock <= 0) {
     clearTateAll();
     return 0;
   }
 
-  const perLen = H - cover * 2;
-  if (perLen <= 0) {
+  const tate_perLen = tate_H - tate_cover * 2;
+  if (tate_perLen <= 0) {
     clearTateAll();
     $('tPerLen').textContent = 'かぶり過大';
     return 0;
   }
 
-  const count = Math.floor(L / p) + 1;
+  const tate_count = Math.floor(tate_L / tate_p) + 1;
 
-  $('tCount').textContent  = count.toLocaleString() + ' 本';
-  $('tPerLen').textContent = Math.round(perLen).toLocaleString() + ' mm';
+  $('tCount').textContent  = tate_count.toLocaleString() + ' 本';
+  $('tPerLen').textContent = Math.round(tate_perLen).toLocaleString() + ' mm';
 
-  const perStock = Math.floor(stock / perLen);
-  if (perStock <= 0) {
+  // 縦筋総延長 = 本数 × 1本長さ（縦筋専用ロジック）
+  const tate_total  = tate_count * tate_perLen;
+  const tate_weight = (tate_total / 1000) * tate_d.unit;
+
+  const tate_perStock = Math.floor(tate_stock / tate_perLen);
+  if (tate_perStock <= 0) {
     $('tPerStock').textContent = '定尺不足';
     $('tStockCount').textContent = '—';
-    $('tTotal').textContent = '—';
-    $('tWeight').textContent = '—';
+    $('tTotal').textContent      = (tate_total / 1000).toFixed(2) + ' m';
+    $('tWeight').textContent     = tate_weight.toFixed(2) + ' kg';
     $('tScrapPer').textContent = '—';
     $('tScrapTotal').textContent = '—';
     $('tRowScrapPer').style.display = 'none';
     $('tRowScrapTotal').style.display = 'none';
     $('tStockWarn').style.display = '';
-    return 0;
+    return tate_weight;
   }
 
-  const stockCount = Math.ceil(count / perStock);
-  const total      = stockCount * stock;
-  const weight     = (total / 1000) * d.unit;
+  const tate_stockCount = Math.ceil(tate_count / tate_perStock);
 
-  $('tPerStock').textContent   = perStock.toLocaleString() + ' 本';
-  $('tStockCount').textContent = stockCount.toLocaleString() + ' 本';
-  $('tTotal').textContent      = (total / 1000).toFixed(2) + ' m';
-  $('tWeight').textContent     = weight.toFixed(2) + ' kg';
+  $('tPerStock').textContent   = tate_perStock.toLocaleString() + ' 本';
+  $('tStockCount').textContent = tate_stockCount.toLocaleString() + ' 本';
+  $('tTotal').textContent      = (tate_total / 1000).toFixed(2) + ' m';
+  $('tWeight').textContent     = tate_weight.toFixed(2) + ' kg';
 
   // 余り
-  const scrapPer   = stock - perLen * perStock;
-  const scrapTotal = scrapPer * stockCount;
+  const tate_scrapPer   = tate_stock - tate_perLen * tate_perStock;
+  const tate_scrapTotal = tate_scrapPer * tate_stockCount;
 
-  $('tScrapPer').textContent   = Math.round(scrapPer).toLocaleString() + ' mm';
-  $('tScrapTotal').textContent = (scrapTotal / 1000).toFixed(2) + ' m';
+  $('tScrapPer').textContent   = Math.round(tate_scrapPer).toLocaleString() + ' mm';
+  $('tScrapTotal').textContent = (tate_scrapTotal / 1000).toFixed(2) + ' m';
   $('tRowScrapPer').style.display = '';
   $('tRowScrapTotal').style.display = '';
   $('tStockWarn').style.display = 'none';
 
-  return weight;
+  return tate_weight;
 }
 
 /* ============================================================
@@ -542,9 +539,6 @@ function loadAll() {
   } catch (e) {}
 }
 
-/* ============================================================
-   イベント：共通入力が変わったら両方再計算
-============================================================ */
 ['cL','cH','cPitchY','cPitchT','cCover','cStock'].forEach(id => {
   $(id).addEventListener('input', recalcAll);
 });
