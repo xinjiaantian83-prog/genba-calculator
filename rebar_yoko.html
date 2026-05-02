@@ -89,7 +89,6 @@
     box-shadow: 0 0 0 2px #00ffd530;
   }
 
-  /* 鉄筋径 */
   .dia-row {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -114,7 +113,6 @@
     box-shadow: 0 0 6px #00ffd530;
   }
 
-  /* 結果 */
   .result-box {
     background: #061613;
     border: 1px solid #00ff8855;
@@ -136,7 +134,7 @@
     font-weight: 600;
   }
   .result-row .val {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 800;
     color: #00ff88;
     text-shadow: 0 0 8px #00ff8850;
@@ -171,6 +169,10 @@
       <label>横筋ピッチ @（mm）</label>
       <input type="number" id="iPitch" inputmode="decimal" value="200">
     </div>
+    <div class="input-row">
+      <label>使用鉄筋長さ / 定尺長（mm）</label>
+      <input type="number" id="iStock" inputmode="decimal" value="5000">
+    </div>
     <div class="input-row" style="margin-bottom:0;">
       <label>鉄筋径</label>
       <div class="dia-row">
@@ -188,7 +190,11 @@
       <span class="val" id="rRows">—</span>
     </div>
     <div class="result-row">
-      <span class="lbl">1本長さ</span>
+      <span class="lbl">1段あたり鉄筋本数</span>
+      <span class="val" id="rPerRow">—</span>
+    </div>
+    <div class="result-row">
+      <span class="lbl">1段あたり必要長さ</span>
       <span class="val" id="rPerLen">—</span>
     </div>
     <div class="result-row">
@@ -224,13 +230,16 @@ function setDia(d) {
 }
 
 function calc() {
-  const L = parseFloat($('iL').value);
-  const H = parseFloat($('iH').value);
-  const p = parseFloat($('iPitch').value);
-  const d = DIA[currentDia];
+  const L     = parseFloat($('iL').value);
+  const H     = parseFloat($('iH').value);
+  const p     = parseFloat($('iPitch').value);
+  const stock = parseFloat($('iStock').value);
+  const d     = DIA[currentDia];
 
-  if (!isFinite(L) || L <= 0 || !isFinite(H) || H <= 0 || !isFinite(p) || p <= 0) {
+  if (!isFinite(L) || L <= 0 || !isFinite(H) || H <= 0
+      || !isFinite(p) || p <= 0 || !isFinite(stock) || stock <= 0) {
     $('rRows').textContent = '—';
+    $('rPerRow').textContent = '—';
     $('rPerLen').textContent = '—';
     $('rTotal').textContent = '—';
     $('rWeight').textContent = '—';
@@ -238,12 +247,14 @@ function calc() {
     return;
   }
 
-  const rows   = Math.floor(H / p) + 1;
-  const perLen = L + d.anchor * 2;
-  const total  = perLen * rows;
-  const weight = (total / 1000) * d.unit;
+  const rows    = Math.floor(H / p) + 1;
+  const perRow  = Math.ceil(L / stock);
+  const perLen  = L + d.anchor * perRow;
+  const total   = perLen * rows;
+  const weight  = (total / 1000) * d.unit;
 
   $('rRows').textContent   = rows.toLocaleString() + ' 段';
+  $('rPerRow').textContent = perRow.toLocaleString() + ' 本';
   $('rPerLen').textContent = Math.round(perLen).toLocaleString() + ' mm';
   $('rTotal').textContent  = (total / 1000).toFixed(2) + ' m';
   $('rWeight').textContent = weight.toFixed(2) + ' kg';
@@ -251,14 +262,15 @@ function calc() {
   save();
 }
 
-const KEY = 'yokosuji_v1';
+const KEY = 'yokosuji_v2';
 function save() {
   try {
     localStorage.setItem(KEY, JSON.stringify({
       dia: currentDia,
       iL: $('iL').value,
       iH: $('iH').value,
-      iPitch: $('iPitch').value
+      iPitch: $('iPitch').value,
+      iStock: $('iStock').value
     }));
   } catch (e) {}
 }
@@ -268,7 +280,7 @@ function load() {
     if (!raw) return;
     const d = JSON.parse(raw);
     if (d.dia) currentDia = d.dia;
-    ['iL','iH','iPitch'].forEach(id => {
+    ['iL','iH','iPitch','iStock'].forEach(id => {
       if (d[id] !== undefined && d[id] !== null && d[id] !== '') $(id).value = d[id];
     });
     document.querySelectorAll('.dia-btn').forEach(b => {
@@ -277,7 +289,7 @@ function load() {
   } catch (e) {}
 }
 
-['iL','iH','iPitch'].forEach(id => $(id).addEventListener('input', calc));
+['iL','iH','iPitch','iStock'].forEach(id => $(id).addEventListener('input', calc));
 load();
 calc();
 </script>
