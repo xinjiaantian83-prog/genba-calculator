@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>L型擁壁 鉄筋拾い（縦筋＋横筋）</title>
+<title>L型擁壁 鉄筋拾い(縦筋+横筋)</title>
 <style>
   * {
     box-sizing: border-box;
@@ -216,33 +216,33 @@
   <div class="card">
     <div class="card-title">共通入力</div>
     <div class="input-row">
-      <label>総延長 L（mm）</label>
+      <label>総延長 L(mm)</label>
       <input type="number" id="cL" inputmode="decimal" placeholder="例: 10000">
     </div>
     <div class="input-row">
-      <label>立上り高さ H（mm）</label>
+      <label>立上り高さ H(mm)</label>
       <input type="number" id="cH" inputmode="decimal" placeholder="例: 1500">
     </div>
     <div class="input-row">
-      <label>ベース幅 B（mm）</label>
+      <label>ベース幅 B(mm)</label>
       <input type="number" id="cB" inputmode="decimal" placeholder="例: 600">
     </div>
     <div class="grid-2">
       <div class="input-row">
-        <label>縦筋ピッチ @（mm）</label>
+        <label>縦筋ピッチ @(mm)</label>
         <input type="number" id="cPitchT" inputmode="decimal" value="200">
       </div>
       <div class="input-row">
-        <label>横筋ピッチ @（mm）</label>
+        <label>横筋ピッチ @(mm)</label>
         <input type="number" id="cPitchY" inputmode="decimal" value="200">
       </div>
     </div>
     <div class="input-row">
-      <label>かぶり（mm）※縦筋用</label>
+      <label>かぶり(mm) ※縦筋用</label>
       <input type="number" id="cCover" inputmode="decimal" value="40">
     </div>
     <div class="input-row">
-      <label>定尺長（mm）</label>
+      <label>定尺長(mm)</label>
       <input type="number" id="cStock" inputmode="decimal" value="5000">
     </div>
     <div class="input-row" style="margin-bottom:0;">
@@ -293,7 +293,7 @@
     </div>
   </div>
   <div class="stock-warn" id="tStockWarn" style="display:none;">
-    ※ 定尺不足（このサイズでは取れません）
+    ※ 定尺不足(このサイズでは取れません)
   </div>
 
   <!-- ===== L型 横筋 結果 ===== -->
@@ -312,7 +312,11 @@
       <span class="val" id="yStockCount">—</span>
     </div>
     <div class="result-row">
-      <span class="lbl">総延長</span>
+      <span class="lbl">実施工延長</span>
+      <span class="val" id="yRealTotal">—</span>
+    </div>
+    <div class="result-row">
+      <span class="lbl">定尺総延長</span>
       <span class="val" id="yTotal">—</span>
     </div>
     <div class="result-row main">
@@ -323,7 +327,7 @@
 
   <!-- ===== 合計重量 ===== -->
   <div class="total-box">
-    <div class="lbl">合計重量（縦＋横）</div>
+    <div class="lbl">合計重量(縦+横)</div>
     <div class="val" id="sumWeight">— kg</div>
   </div>
 
@@ -356,7 +360,7 @@ function readCommon() {
 }
 
 /* ============================================================
-   ① L型 縦筋（rebar_L.html のロジックそのまま）
+   ① L型 縦筋
    - 全変数を tate* プレフィックスで完全分離
    - 1本長さ = (H - かぶり) + (B - かぶり) + 曲げロス
 ============================================================ */
@@ -447,9 +451,10 @@ function calcTate() {
 }
 
 /* ============================================================
-   ② L型 横筋（rebar_L_yoko.html のロジックそのまま）
+   ② L型 横筋
    - 全変数を yoko* プレフィックスで完全分離
-   - 横筋は直線扱い（曲げなし）、継ぎ足しロジック
+   - 横筋は直線扱い(曲げなし)、継ぎ足しロジック
+   - 表示: 実施工延長 = L × 本数 / 定尺総延長 = 既存ロジック
 ============================================================ */
 const Y_DIA = {
   D10: { unit: 0.560, anchor: 400 },
@@ -462,6 +467,7 @@ function clearYokoAll() {
   $('yCount').textContent = '—';
   $('yPerRow').textContent = '—';
   $('yStockCount').textContent = '—';
+  $('yRealTotal').textContent = '—';
   $('yTotal').textContent = '—';
   $('yWeight').textContent = '—';
 }
@@ -482,7 +488,7 @@ function calcYoko() {
     return 0;
   }
 
-  // L型横筋本数（交点1本を内部で除去）
+  // L型横筋本数(交点1本を内部で除去)
   const yoko_rowsH = Math.floor(yoko_H / yoko_p) + 1;
   const yoko_rowsB = Math.floor(yoko_B / yoko_p) + 1;
   const yoko_count = yoko_rowsH + yoko_rowsB - 1;
@@ -499,9 +505,13 @@ function calcYoko() {
   const yoko_total      = yoko_stockTotal * yoko_stock;
   const yoko_weight     = (yoko_total / 1000) * yoko_d.unit;
 
+  // 実施工延長 = 総延長L × 横筋本数(現場基準)
+  const yoko_realTotal = yoko_L * yoko_count;
+
   $('yCount').textContent      = yoko_count.toLocaleString() + ' 本';
   $('yPerRow').textContent     = yoko_perRow.toLocaleString() + ' 本';
   $('yStockCount').textContent = yoko_stockTotal.toLocaleString() + ' 本';
+  $('yRealTotal').textContent  = (yoko_realTotal / 1000).toFixed(2) + ' m';
   $('yTotal').textContent      = (yoko_total / 1000).toFixed(2) + ' m';
   $('yWeight').textContent     = yoko_weight.toFixed(2) + ' kg';
 
@@ -520,7 +530,7 @@ function recalcAll() {
 }
 
 /* ============================================================
-   localStorage（統合キー）
+   localStorage(統合キー)
 ============================================================ */
 const KEY = 'rebarLWall_v1';
 function saveAll() {
