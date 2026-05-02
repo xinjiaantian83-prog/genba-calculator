@@ -170,6 +170,10 @@
       <input type="number" id="iPitch" inputmode="decimal" value="200">
     </div>
     <div class="input-row">
+      <label>かぶり（mm）</label>
+      <input type="number" id="iCover" inputmode="decimal" value="40">
+    </div>
+    <div class="input-row">
       <label>定尺長（mm）</label>
       <input type="number" id="iStock" inputmode="decimal" value="5000">
     </div>
@@ -215,10 +219,10 @@
 
 <script>
 const DIA = {
-  D10: { anchor: 400, unit: 0.560 },
-  D13: { anchor: 520, unit: 0.995 },
-  D16: { anchor: 640, unit: 1.56  },
-  D19: { anchor: 760, unit: 2.25  }
+  D10: { unit: 0.560 },
+  D13: { unit: 0.995 },
+  D16: { unit: 1.56  },
+  D19: { unit: 2.25  }
 };
 
 let currentDia = 'D10';
@@ -246,18 +250,27 @@ function calc() {
   const L     = parseFloat($('iL').value);
   const H     = parseFloat($('iH').value);
   const p     = parseFloat($('iPitch').value);
+  const cover = parseFloat($('iCover').value);
   const stock = parseFloat($('iStock').value);
   const d     = DIA[currentDia];
 
   if (!isFinite(L) || L <= 0 || !isFinite(H) || H <= 0
-      || !isFinite(p) || p <= 0 || !isFinite(stock) || stock <= 0) {
+      || !isFinite(p) || p <= 0 || !isFinite(cover) || cover < 0
+      || !isFinite(stock) || stock <= 0) {
     clearAll();
     save();
     return;
   }
 
-  const count  = Math.floor(L / p) + 1;
-  const perLen = H + d.anchor * 2;
+  const perLen = H - cover * 2;
+  if (perLen <= 0) {
+    clearAll();
+    $('rPerLen').textContent = 'かぶり過大';
+    save();
+    return;
+  }
+
+  const count = Math.floor(L / p) + 1;
 
   $('rCount').textContent  = count.toLocaleString() + ' 本';
   $('rPerLen').textContent = Math.round(perLen).toLocaleString() + ' mm';
@@ -284,7 +297,7 @@ function calc() {
   save();
 }
 
-const KEY = 'tatesuji_v1';
+const KEY = 'tatesuji_v2';
 function save() {
   try {
     localStorage.setItem(KEY, JSON.stringify({
@@ -292,6 +305,7 @@ function save() {
       iL: $('iL').value,
       iH: $('iH').value,
       iPitch: $('iPitch').value,
+      iCover: $('iCover').value,
       iStock: $('iStock').value
     }));
   } catch (e) {}
@@ -302,7 +316,7 @@ function load() {
     if (!raw) return;
     const d = JSON.parse(raw);
     if (d.dia) currentDia = d.dia;
-    ['iL','iH','iPitch','iStock'].forEach(id => {
+    ['iL','iH','iPitch','iCover','iStock'].forEach(id => {
       if (d[id] !== undefined && d[id] !== null && d[id] !== '') $(id).value = d[id];
     });
     document.querySelectorAll('.dia-btn').forEach(b => {
@@ -311,7 +325,7 @@ function load() {
   } catch (e) {}
 }
 
-['iL','iH','iPitch','iStock'].forEach(id => $(id).addEventListener('input', calc));
+['iL','iH','iPitch','iCover','iStock'].forEach(id => $(id).addEventListener('input', calc));
 load();
 calc();
 </script>
