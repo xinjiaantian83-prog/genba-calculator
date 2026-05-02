@@ -145,6 +145,21 @@
     color: #ffe9a8;
     text-shadow: 0 0 8px #ffd26630;
   }
+  .result-row.scrap .val {
+    color: #ffb968;
+  }
+
+  .stock-warn {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #2a1010;
+    border: 1px solid #ff9a9a55;
+    border-radius: 10px;
+    color: #ff9a9a;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+  }
 </style>
 </head>
 <body>
@@ -213,6 +228,18 @@
       <span class="lbl">総重量</span>
       <span class="val" id="rWeight">—</span>
     </div>
+    <div class="result-row scrap" id="rowScrapPer">
+      <span class="lbl">1本あたり余り</span>
+      <span class="val" id="rScrapPer">—</span>
+    </div>
+    <div class="result-row scrap" id="rowScrapTotal">
+      <span class="lbl">総余り</span>
+      <span class="val" id="rScrapTotal">—</span>
+    </div>
+  </div>
+
+  <div class="stock-warn" id="stockWarn" style="display:none;">
+    ※ 定尺不足（このサイズでは取れません）
   </div>
 
 </div>
@@ -244,6 +271,11 @@ function clearAll() {
   $('rStockCount').textContent = '—';
   $('rTotal').textContent = '—';
   $('rWeight').textContent = '—';
+  $('rScrapPer').textContent = '—';
+  $('rScrapTotal').textContent = '—';
+  $('rowScrapPer').style.display = '';
+  $('rowScrapTotal').style.display = '';
+  $('stockWarn').style.display = 'none';
 }
 
 function calc() {
@@ -281,6 +313,11 @@ function calc() {
     $('rStockCount').textContent = '—';
     $('rTotal').textContent = '—';
     $('rWeight').textContent = '—';
+    $('rScrapPer').textContent = '—';
+    $('rScrapTotal').textContent = '—';
+    $('rowScrapPer').style.display = 'none';
+    $('rowScrapTotal').style.display = 'none';
+    $('stockWarn').style.display = '';
     save();
     return;
   }
@@ -293,6 +330,16 @@ function calc() {
   $('rStockCount').textContent = stockCount.toLocaleString() + ' 本';
   $('rTotal').textContent      = (total / 1000).toFixed(2) + ' m';
   $('rWeight').textContent     = weight.toFixed(2) + ' kg';
+
+  // 余り
+  const scrapPer   = stock - perLen * perStock;
+  const scrapTotal = scrapPer * stockCount;
+
+  $('rScrapPer').textContent   = Math.round(scrapPer).toLocaleString() + ' mm';
+  $('rScrapTotal').textContent = (scrapTotal / 1000).toFixed(2) + ' m';
+  $('rowScrapPer').style.display = '';
+  $('rowScrapTotal').style.display = '';
+  $('stockWarn').style.display = 'none';
 
   save();
 }
