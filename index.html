@@ -951,93 +951,45 @@ const padL = 30, padR = 100, padT = 30, padB = 40;
     return;
   }
 
-  // スケーリング: 横と縦を描画エリアに収める
-  const scaleX = drawW / h;
-  const scaleY = (v > 0) ? drawH / v : drawH;
-  // 縦が0のときも一応描画できるようscaleYを使うが、共通スケールにすると比率が崩れるので個別スケールでOK（図形理解優先）
-  // ただし、見栄えのため比率を保持しつつ収まるように：
-  let s;
-  if (v <= 0) {
-    s = scaleX;
-  } else {
-    s = Math.min(scaleX, scaleY);
-  }
-  // 最小描画高さ確保（縦が極端に小さい場合でも見える）
-  const minDraw = 8;
-  const drawHpx_raw = v * s;
-  const drawWpx_raw = h * s;
+    const scale = Math.min(drawW / h, drawH / Math.max(v, 1));
 
-  // 縦が小さすぎる場合は縦だけ強調表示用に拡大（実比率は数値で表現）
-  let drawWpx = drawWpx_raw;
-  let drawHpx = Math.max(drawHpx_raw, minDraw);
+  const x0 = padL;
+  const y0 = VB_H - padB;
 
-  // 描画エリア中央寄せ
-  const x0 = padL + (drawW - drawWpx) / 2;     // 左下基準のx
-  const y0 = padT + drawH;                      // 底辺y（下）
-  const xR = x0 + drawWpx;                      // 右下x
-  const yT = y0 - drawHpx;                      // 右上y（斜辺の終点）
+  const x1 = x0 + h * scale;
+  const y1 = y0;
 
-  let html = '';
+  const x2 = x1;
+  const y2 = y0 - v * scale;
 
-  // 直角三角形（左下=直角、右下、右上）
-  // 横寸法：底辺（左下→右下）
-  // 縦寸法：右側（右下→右上）
-  // 斜距離：斜辺（左下→右上）
-  const pBL = [x0, y0];
-  const pBR = [xR, y0];
-  const pTR = [xR, yT];
+  svg.innerHTML = `
+    <line x1="${x0}" y1="${y0}" x2="${x1}" y2="${y1}"
+      stroke="#00ffd5" stroke-width="5" stroke-linecap="square"/>
 
-  // 塗り
-  html += `<polygon points="${pBL.join(',')} ${pBR.join(',')} ${pTR.join(',')}"
-            fill="#0d2926" stroke="#00ffd5" stroke-width="2" stroke-linejoin="round"/>`;
+    <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"
+      stroke="#00ffd5" stroke-width="5" stroke-linecap="square"/>
 
-  // 直角マーク（左下）
-  const rmSize = 10;
-  html += `<polyline points="${pBL[0]},${pBL[1]-rmSize} ${pBL[0]+rmSize},${pBL[1]-rmSize} ${pBL[0]+rmSize},${pBL[1]}"
-            fill="none" stroke="#4ad9c2" stroke-width="1"/>`;
+    <line x1="${x0}" y1="${y0}" x2="${x2}" y2="${y2}"
+      stroke="#00ffd5" stroke-width="5" stroke-linecap="square"/>
 
-  // 角度の弧（左下の角）
-  const arcR = Math.min(28, drawWpx * 0.35, drawHpx * 0.6);
-  if (arcR > 6 && angle !== null && isFinite(angle) && angle > 0) {
-    const rad = angle * Math.PI / 180;
-    const ax = pBL[0] + arcR;
-    const ay = pBL[1];
-    const bx = pBL[0] + arcR * Math.cos(-rad);
-    const by = pBL[1] + arcR * Math.sin(-rad);
-    html += `<path d="M ${ax} ${ay} A ${arcR} ${arcR} 0 0 1 ${bx} ${by}"
-              fill="none" stroke="#ffb968" stroke-width="1.5"/>`;
-  }
+    <rect x="${x0}" y="${y0 - 18}" width="18" height="18"
+      fill="none" stroke="#00ffd5" stroke-width="4"/>
 
-  // ラベル: 横寸法（底辺中央の下）
-  html += `<text x="${(pBL[0]+pBR[0])/2}" y="${pBL[1]+18}" fill="#00ffd5"
-            font-size="11" font-family="monospace" text-anchor="middle" font-weight="bold">横 ${Math.round(h)}mm</text>`;
+    <text x="${(x0 + x1) / 2}" y="${y0 + 22}"
+      fill="#4ad9c2" font-size="11" font-family="monospace" text-anchor="middle">
+      横 ${Math.round(h)}
+    </text>
 
-  // ラベル: 縦寸法（右側の中央、右に表示）
-  html += `<text x="${pBR[0]+6}" y="${(pBR[1]+pTR[1])/2 + 4}" fill="#00ff88"
-            font-size="11" font-family="monospace" font-weight="bold">縦 ${Math.round(v)}mm</text>`;
+    <text x="${x2 + 8}" y="${(y1 + y2) / 2}"
+      fill="#4ad9c2" font-size="11" font-family="monospace">
+      縦 ${Math.round(v)}
+    </text>
 
-  // ラベル: 斜距離（斜辺の中央、上側に表示）
-  const midX = (pBL[0]+pTR[0])/2;
-  const midY = (pBL[1]+pTR[1])/2;
-  // 斜辺の上側にオフセット
-  const offX = -10;
-  const offY = -8;
-  html += `<text x="${midX+offX}" y="${midY+offY}" fill="#7ae6ff"
-            font-size="11" font-family="monospace" text-anchor="end" font-weight="bold">斜 ${slope.toFixed(1)}mm</text>`;
-
-  // ラベル: 角度（左下、弧の外側）
-  if (angle !== null && isFinite(angle)) {
-    html += `<text x="${pBL[0]+arcR+4}" y="${pBL[1]-6}" fill="#ffb968"
-              font-size="10" font-family="monospace" font-weight="bold">${angle.toFixed(1)}°</text>`;
-  }
-
-  // 図下に勾配%
-  if (pct !== null && isFinite(pct)) {
-    html += `<text x="${VB_W/2}" y="${VB_H-6}" fill="#cfeee8"
-              font-size="11" font-family="monospace" text-anchor="middle">勾配: ${pct.toFixed(2)}%</text>`;
-  }
-
-  svg.innerHTML = html;
+    <text x="${(x0 + x2) / 2 - 8}" y="${(y0 + y2) / 2 - 8}"
+      fill="#00ffd5" font-size="11" font-family="monospace" text-anchor="middle">
+      ${Math.round(slope)}mm
+    </text>
+  `;
 }
 
 function calcDoma() {
