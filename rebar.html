@@ -249,6 +249,27 @@
 
   .mode-section { display: none; }
   .mode-section.active { display: block; }
+
+  /* === レイアウト改善：結果2カラム === */
+  .result-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  @media (max-width: 480px) {
+    .result-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* === 余白最適化（既存スタイルを上書き） === */
+  .card { padding: 10px; }
+  .result-box { padding: 4px 12px; }
+  .result-row { padding: 9px 0; }
+  .section-title { margin: 10px 0 6px; }
+
+  /* === SVG高さを少し縮める === */
+  .rebar-fig svg { max-height: 180px; }
 </style>
 </head>
 <body>
@@ -432,79 +453,88 @@
       </div>
     </div>
 
-    <!-- ===== L型 縦筋 結果 ===== -->
-    <div class="section-title">① L型 縦筋</div>
+    <!-- ===== L型 縦筋 + 横筋（2カラム） ===== -->
+    <div class="result-grid">
 
-    <!-- 加工目安図 -->
-    <div class="rebar-fig">
-      <svg id="LtFig" viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet"></svg>
-    </div>
+      <!-- 左：L型 縦筋 -->
+      <div>
+        <div class="section-title">① L型 縦筋</div>
 
-    <div class="result-box">
-      <div class="result-row">
-        <span class="lbl">L型縦筋本数</span>
-        <span class="val" id="LtCount">—</span>
-      </div>
-      <div class="result-row">
-        <span class="lbl">1本長さ</span>
-        <span class="val" id="LtPerLen">—</span>
-      </div>
-      <div class="result-row">
-        <span class="lbl">1本から取れる本数</span>
-        <span class="val" id="LtPerStock">—</span>
-      </div>
-      <div class="result-row">
-        <span class="lbl">定尺必要本数</span>
-        <span class="val" id="LtStockCount">—</span>
-      </div>
-      <div class="result-row">
-        <span class="lbl">総延長</span>
-        <span class="val" id="LtTotal">—</span>
-      </div>
-      <div class="result-row main">
-        <span class="lbl">総重量</span>
-        <span class="val" id="LtWeight">—</span>
-      </div>
-      <div class="result-row scrap" id="LtRowScrapPer">
-        <span class="lbl">1本あたり余り</span>
-        <span class="val" id="LtScrapPer">—</span>
-      </div>
-      <div class="result-row scrap" id="LtRowScrapTotal">
-        <span class="lbl">総余り</span>
-        <span class="val" id="LtScrapTotal">—</span>
-      </div>
-    </div>
-    <div class="stock-warn" id="LtStockWarn" style="display:none;">
-      ※ 定尺不足(このサイズでは取れません)
-    </div>
+        <!-- 加工目安図 -->
+        <div class="rebar-fig">
+          <svg id="LtFig" viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet"></svg>
+        </div>
 
-    <!-- ===== L型 横筋 結果 ===== -->
-    <div class="section-title">② L型 横筋</div>
-    <div class="result-box">
-      <div class="result-row">
-        <span class="lbl">L型横筋本数</span>
-        <span class="val" id="LyCount">—</span>
+        <div class="result-box">
+          <div class="result-row">
+            <span class="lbl">L型縦筋本数</span>
+            <span class="val" id="LtCount">—</span>
+          </div>
+          <div class="result-row">
+            <span class="lbl">1本長さ</span>
+            <span class="val" id="LtPerLen">—</span>
+          </div>
+          <div class="result-row">
+            <span class="lbl">1本から取れる本数</span>
+            <span class="val" id="LtPerStock">—</span>
+          </div>
+          <div class="result-row">
+            <span class="lbl">定尺必要本数</span>
+            <span class="val" id="LtStockCount">—</span>
+          </div>
+          <div class="result-row">
+            <span class="lbl">総延長</span>
+            <span class="val" id="LtTotal">—</span>
+          </div>
+          <div class="result-row main">
+            <span class="lbl">総重量</span>
+            <span class="val" id="LtWeight">—</span>
+          </div>
+          <div class="result-row scrap" id="LtRowScrapPer">
+            <span class="lbl">1本あたり余り</span>
+            <span class="val" id="LtScrapPer">—</span>
+          </div>
+          <div class="result-row scrap" id="LtRowScrapTotal">
+            <span class="lbl">総余り</span>
+            <span class="val" id="LtScrapTotal">—</span>
+          </div>
+        </div>
+        <div class="stock-warn" id="LtStockWarn" style="display:none;">
+          ※ 定尺不足(このサイズでは取れません)
+        </div>
       </div>
-      <div class="result-row">
-        <span class="lbl">1段あたり必要本数</span>
-        <span class="val" id="LyPerRow">—</span>
+
+      <!-- 右：L型 横筋 -->
+      <div>
+        <div class="section-title">② L型 横筋</div>
+        <div class="result-box">
+          <div class="result-row">
+            <span class="lbl">L型横筋本数</span>
+            <span class="val" id="LyCount">—</span>
+          </div>
+          <div class="result-row">
+            <span class="lbl">1段あたり必要本数</span>
+            <span class="val" id="LyPerRow">—</span>
+          </div>
+          <div class="result-row">
+            <span class="lbl">総定尺本数</span>
+            <span class="val" id="LyStockCount">—</span>
+          </div>
+          <div class="result-row">
+            <span class="lbl">実施工延長</span>
+            <span class="val" id="LyRealTotal">—</span>
+          </div>
+          <div class="result-row">
+            <span class="lbl">定尺総延長</span>
+            <span class="val" id="LyTotal">—</span>
+          </div>
+          <div class="result-row main">
+            <span class="lbl">総重量</span>
+            <span class="val" id="LyWeight">—</span>
+          </div>
+        </div>
       </div>
-      <div class="result-row">
-        <span class="lbl">総定尺本数</span>
-        <span class="val" id="LyStockCount">—</span>
-      </div>
-      <div class="result-row">
-        <span class="lbl">実施工延長</span>
-        <span class="val" id="LyRealTotal">—</span>
-      </div>
-      <div class="result-row">
-        <span class="lbl">定尺総延長</span>
-        <span class="val" id="LyTotal">—</span>
-      </div>
-      <div class="result-row main">
-        <span class="lbl">総重量</span>
-        <span class="val" id="LyWeight">—</span>
-      </div>
+
     </div>
 
     <!-- ===== 合計重量(L型) ===== -->
