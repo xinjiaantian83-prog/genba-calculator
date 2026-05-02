@@ -49,7 +49,6 @@
   }
   .reset-btn:active { background: #3a1010; }
 
-  /* 形状切替タブ */
   .shape-tabs {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -75,7 +74,6 @@
     box-shadow: inset 0 0 12px #00ffd520;
   }
 
-  /* 鉄筋サイズ選択 */
   .size-tabs {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -217,13 +215,11 @@
     <button class="reset-btn" onclick="resetRebar()">リセット</button>
   </h2>
 
-  <!-- 形状切替 -->
   <div class="shape-tabs">
     <button class="shape-tab active" id="tabL" onclick="setShape('L')">L型</button>
     <button class="shape-tab" id="tabI" onclick="setShape('I')">I型</button>
   </div>
 
-  <!-- 鉄筋サイズ -->
   <div class="input-row">
     <label>鉄筋サイズ</label>
     <div class="size-tabs">
@@ -233,7 +229,6 @@
     </div>
   </div>
 
-  <!-- 共通入力 -->
   <div class="grid-2">
     <div class="input-row">
       <label>ピッチ @（mm）</label>
@@ -245,7 +240,6 @@
     </div>
   </div>
 
-  <!-- 高さ / ベース出幅（L型のみ） -->
   <div class="grid-2">
     <div class="input-row">
       <label>高さ H（mm）</label>
@@ -257,7 +251,6 @@
     </div>
   </div>
 
-  <!-- 被り / ロス率 -->
   <div class="grid-2">
     <div class="input-row">
       <label>被り（mm）</label>
@@ -269,18 +262,15 @@
     </div>
   </div>
 
-  <!-- 定尺 -->
   <div class="input-row">
     <label>定尺（mm）</label>
     <input type="number" id="rStock" inputmode="decimal" value="4000" oninput="calcRebar()">
   </div>
 
-  <!-- 図形 -->
   <div class="rebar-fig">
-    <svg id="rebarSvg" viewBox="0 0 280 220" xmlns="http://www.w3.org/2000/svg"></svg>
+    <svg id="rebarSvg" viewBox="0 0 320 260" xmlns="http://www.w3.org/2000/svg"></svg>
   </div>
 
-  <!-- 結果 -->
   <div class="result-box">
     <div class="result-row">
       <span class="lbl">鉄筋径</span>
@@ -322,7 +312,6 @@
 
 <script>
 const STORAGE_KEY = 'rebarPick_v1';
-const SAVE_FIELDS = ['shape','size','rPitch','rLength','rH','rB','rCover','rLoss','rStock'];
 
 let currentShape = 'L';
 let currentSize  = 'D10';
@@ -333,7 +322,6 @@ function setShape(s) {
   currentShape = s;
   document.getElementById('tabL').classList.toggle('active', s === 'L');
   document.getElementById('tabI').classList.toggle('active', s === 'I');
-  // I型のときはB欄を非表示
   document.getElementById('rowB').style.display = (s === 'I') ? 'none' : '';
   calcRebar();
 }
@@ -361,7 +349,6 @@ function calcRebar() {
   document.getElementById('rDia').textContent = currentSize + ' (φ' + dia + 'mm)';
   document.getElementById('rAnchor').textContent = anchor + ' mm (40D)';
 
-  // 定尺ラベル
   const stockLblEl = document.getElementById('rStockLbl');
   if (isFinite(stock) && stock > 0) {
     if (Math.round(stock) === 4000) {
@@ -373,7 +360,6 @@ function calcRebar() {
     stockLblEl.textContent = '定尺鉄筋必要本数';
   }
 
-  // 必須項目チェック
   const baseValid = isFinite(pitch) && pitch > 0
                  && isFinite(L) && L > 0
                  && isFinite(H) && H > 0
@@ -421,115 +407,224 @@ function calcRebar() {
 function drawRebarSvg(H, B, cover, anchor) {
   const svg = document.getElementById('rebarSvg');
   if (!svg) return;
-  const VB_W = 280, VB_H = 220;
-  const padL = 30, padR = 60, padT = 25, padB = 35;
-  const drawW = VB_W - padL - padR;
-  const drawH = VB_H - padT - padB;
+  const VB_W = 320, VB_H = 260;
+
+  // 配色
+  const C_CONC      = '#00ffd540'; // 薄シアン（コンクリ外形）
+  const C_CONC_FILL = '#0d2926';
+  const C_REBAR     = '#7af5ff';   // 太い明るいシアン（鉄筋）
+  const C_DIM       = '#00ff88';   // 寸法線（細い緑）
+  const C_NOTE      = '#ffd266';   // 注記（黄色）
+  const C_COVER     = '#cfeee8';   // 被りラベル
 
   let html = '';
 
   if (currentShape === 'L') {
-    const valid = isFinite(H) && isFinite(B) && H > 0 && B > 0;
+    const valid = isFinite(H) && isFinite(B) && H > 0 && B > 0
+               && isFinite(cover) && cover >= 0;
     if (!valid) {
       html += `<text x="${VB_W/2}" y="${VB_H/2}" fill="#4ad9c2" font-size="12" font-family="monospace" text-anchor="middle">H・B を入力してください</text>`;
       svg.innerHTML = html;
       return;
     }
-    // L型：縦+底版
-    const refMax = Math.max(H, B);
-    const sX = drawW / refMax;
-    const sY = drawH / refMax;
-    const s = Math.min(sX, sY);
 
-    const wH = H * s;
-    const wB = B * s;
+    // 描画領域（外周ラベル分のマージンを確保）
+    const padL = 50, padR = 70, padT = 30, padB = 50;
+    const drawW = VB_W - padL - padR;
+    const drawH = VB_H - padT - padB;
 
-    const x0 = padL;            // 左下基準x
-    const y0 = padT + drawH;    // 底（地面側）y
+    // L型擁壁の外形寸法（簡略化）
+    // 縦壁の幅は H の約12%、底版の厚みは B の約20%（最低限の壁厚を確保）
+    const stemW = Math.max(H * 0.12, 60);
+    const baseT = Math.max(B * 0.20, 60);
 
-    // 縦鉄筋（左側、上に向かって伸びる）
-    const xv = x0 + 6;
-    const yvTop = y0 - wH;
-    // 定着（縦の上端から少し折れ下がるイメージ）— 視覚的に少し描く
-    const ancLen = Math.min(wH * 0.18, 18);
+    // 外形全体（縦壁高さ H, 横ベース B として描画）
+    // 外形の外接サイズ（mm）
+    const outerW = B;
+    const outerH = H;
 
-    // 底版鉄筋（右に伸びる）
-    const xbEnd = x0 + wB;
-    const yb = y0 - 6;
+    // スケーリング
+    const sX = drawW / outerW;
+    const sY = drawH / outerH;
+    const s  = Math.min(sX, sY);
 
-    // 曲げ部円弧の半径
-    const rBend = Math.min(wH, wB) * 0.08;
+    // mm→px ヘルパー
+    const px = (mm) => mm * s;
 
-    // 縦の主鉄筋（縦線 + 上端の定着フック）
-    html += `<path d="M ${xv} ${y0} L ${xv} ${yvTop + rBend} A ${rBend} ${rBend} 0 0 1 ${xv + rBend} ${yvTop} L ${xv + rBend + ancLen} ${yvTop}"
-              fill="none" stroke="#00ffd5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
-    // 縦鉄筋の定着長ラベル
-    html += `<text x="${xv + rBend + ancLen + 4}" y="${yvTop + 4}" fill="#ffb968" font-size="10" font-family="monospace">定着 ${anchor}mm</text>`;
+    // 配置基準（左下原点）
+    const x0 = padL + (drawW - outerW * s) / 2; // 左
+    const y0 = padT + (drawH - outerH * s) / 2 + outerH * s; // 底辺y
 
-    // 底版鉄筋（横線 + 端部の定着フック）
-    html += `<path d="M ${x0} ${yb} L ${xbEnd - rBend} ${yb} A ${rBend} ${rBend} 0 0 1 ${xbEnd} ${yb - rBend} L ${xbEnd} ${yb - rBend - ancLen}"
-              fill="none" stroke="#00ff88" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+    // L型擁壁外形ポイント（左上から時計回り）
+    // 縦壁: 左上 → 縦壁右上 → 底版上面（縦壁右下=底版上面と接続） → 底版右上 → 底版右下 → 左下 → 左上 戻り
+    const x_outLeft   = x0;                          // 外形左
+    const x_stemRight = x0 + px(stemW);              // 縦壁右辺（底版より上）
+    const x_outRight  = x0 + px(outerW);             // 底版右
+    const y_outTop    = y0 - px(outerH);             // 縦壁上端
+    const y_baseTop   = y0 - px(baseT);              // 底版上面
+    const y_outBot    = y0;                          // 底版下端
 
-    // 曲げ部の連結（縦と底版が交わる部分）
-    html += `<circle cx="${xv}" cy="${yb}" r="3" fill="#7ae6ff"/>`;
+    const concPath =
+      `M ${x_outLeft} ${y_outTop} ` +
+      `L ${x_stemRight} ${y_outTop} ` +
+      `L ${x_stemRight} ${y_baseTop} ` +
+      `L ${x_outRight} ${y_baseTop} ` +
+      `L ${x_outRight} ${y_outBot} ` +
+      `L ${x_outLeft} ${y_outBot} Z`;
 
-    // 寸法線：H（左外）
-    html += `<line x1="${x0 - 14}" y1="${y0}" x2="${x0 - 14}" y2="${yvTop}" stroke="#00ff88" stroke-width="1"/>`;
-    html += `<line x1="${x0 - 18}" y1="${y0}" x2="${x0 - 10}" y2="${y0}" stroke="#00ff88" stroke-width="1"/>`;
-    html += `<line x1="${x0 - 18}" y1="${yvTop}" x2="${x0 - 10}" y2="${yvTop}" stroke="#00ff88" stroke-width="1"/>`;
-    html += `<text x="${x0 - 16}" y="${(y0 + yvTop)/2}" fill="#00ff88" font-size="10" font-family="monospace" text-anchor="end" transform="rotate(-90 ${x0 - 16} ${(y0 + yvTop)/2})">H=${Math.round(H)}</text>`;
+    html += `<path d="${concPath}" fill="${C_CONC_FILL}" stroke="${C_CONC}" stroke-width="2" stroke-linejoin="round"/>`;
 
-    // 寸法線：B（下）
-    html += `<line x1="${x0}" y1="${y0 + 14}" x2="${xbEnd}" y2="${y0 + 14}" stroke="#00ffd5" stroke-width="1"/>`;
-    html += `<line x1="${x0}" y1="${y0 + 10}" x2="${x0}" y2="${y0 + 18}" stroke="#00ffd5" stroke-width="1"/>`;
-    html += `<line x1="${xbEnd}" y1="${y0 + 10}" x2="${xbEnd}" y2="${y0 + 18}" stroke="#00ffd5" stroke-width="1"/>`;
-    html += `<text x="${(x0 + xbEnd)/2}" y="${y0 + 28}" fill="#00ffd5" font-size="10" font-family="monospace" text-anchor="middle">B=${Math.round(B)}</text>`;
+    // 地面ライン
+    html += `<line x1="${5}" y1="${y_outBot}" x2="${VB_W - 5}" y2="${y_outBot}" stroke="#4ad9c2" stroke-width="1" stroke-dasharray="3 3"/>`;
 
-    // 被りラベル
-    html += `<text x="${xv + 4}" y="${y0 - 4}" fill="#cfeee8" font-size="9" font-family="monospace">被り${Math.round(cover)}</text>`;
+    // 被り（px）
+    const covPx = Math.max(px(cover), 4);
+
+    // L型鉄筋（縦筋 → 曲げ → ベース筋 → 定着）
+    // 縦筋：縦壁内の中央線寄り（被り分内側）。縦壁の右側（土圧側）に配筋する想定で右寄り。
+    const xRebar     = x_stemRight - covPx;          // 縦筋のx（縦壁の被り分内側）
+    const yRebarTop  = y_outTop + covPx;             // 縦筋の上端
+    // ベース筋：底版内、上面被り分内側、左から右へ
+    const yBaseRebar = y_baseTop + covPx;            // ベース筋の高さ
+    const xBaseEnd   = x_outRight - covPx;           // ベース筋の右端
+
+    // 曲げ部の半径
+    const rBend = Math.max(Math.min(px(H), px(B)) * 0.04, 4);
+
+    // 定着長（px）— 過剰に伸びないようキャップ
+    const ancPx = Math.min(px(anchor), 50);
+
+    // 定着方向：
+    // ・縦筋上端 → 内側（左）に折って定着
+    // ・ベース筋右端 → 上に折って定着
+    const xAnchorTopEnd = xRebar - rBend - ancPx;    // 縦筋定着端x
+    const yAnchorRightEnd = yBaseRebar - rBend - ancPx; // ベース筋定着端y
+
+    // 1本の連続線として描画：
+    // 上の定着端 → 縦筋上 → 曲げ（縦→ベース） → ベース筋 → 曲げ（ベース→定着上向き） → ベース筋上の定着端
+    const rebarPath =
+      `M ${xAnchorTopEnd} ${yRebarTop} ` +                           // 縦筋上端の定着端（左）
+      `L ${xRebar - rBend} ${yRebarTop} ` +
+      `A ${rBend} ${rBend} 0 0 1 ${xRebar} ${yRebarTop + rBend} ` +  // 上端の曲げ（左→下）
+      `L ${xRebar} ${yBaseRebar - rBend} ` +                          // 縦筋本体
+      `A ${rBend} ${rBend} 0 0 1 ${xRebar + rBend} ${yBaseRebar} ` + // 縦→ベースの曲げ
+      `L ${xBaseEnd - rBend} ${yBaseRebar} ` +                        // ベース筋本体
+      `A ${rBend} ${rBend} 0 0 1 ${xBaseEnd} ${yBaseRebar - rBend} `+ // ベース右端の曲げ（右→上）
+      `L ${xBaseEnd} ${yAnchorRightEnd}`;                             // ベース定着端
+
+    html += `<path d="${rebarPath}" fill="none" stroke="${C_REBAR}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`;
+
+    // 定着長ラベル（縦筋上端側）
+    html += `<text x="${xAnchorTopEnd - 4}" y="${yRebarTop - 4}" fill="${C_NOTE}"
+              font-size="10" font-family="monospace" text-anchor="end">定着 ${anchor}mm</text>`;
+    // 定着長ラベル（ベース筋右端側）
+    html += `<text x="${xBaseEnd + 4}" y="${yAnchorRightEnd + 4}" fill="${C_NOTE}"
+              font-size="10" font-family="monospace">定着 ${anchor}mm</text>`;
+
+    // 被りライン（縦筋・縦壁右端から内側へ）
+    html += `<line x1="${x_stemRight}" y1="${yRebarTop + 12}" x2="${xRebar}" y2="${yRebarTop + 12}"
+              stroke="${C_COVER}" stroke-width="1"/>`;
+    html += `<text x="${(x_stemRight + xRebar)/2}" y="${yRebarTop + 24}" fill="${C_COVER}"
+              font-size="9" font-family="monospace" text-anchor="middle">被り${Math.round(cover)}</text>`;
+
+    // 寸法線：H（左外側）
+    html += `<line x1="${x_outLeft - 18}" y1="${y_outTop}" x2="${x_outLeft - 18}" y2="${y_outBot}" stroke="${C_DIM}" stroke-width="1"/>`;
+    html += `<line x1="${x_outLeft - 22}" y1="${y_outTop}" x2="${x_outLeft - 14}" y2="${y_outTop}" stroke="${C_DIM}" stroke-width="1"/>`;
+    html += `<line x1="${x_outLeft - 22}" y1="${y_outBot}" x2="${x_outLeft - 14}" y2="${y_outBot}" stroke="${C_DIM}" stroke-width="1"/>`;
+    html += `<text x="${x_outLeft - 20}" y="${(y_outTop + y_outBot)/2}" fill="${C_DIM}"
+              font-size="10" font-family="monospace" text-anchor="end"
+              transform="rotate(-90 ${x_outLeft - 20} ${(y_outTop + y_outBot)/2})">H=${Math.round(H)}</text>`;
+
+    // 寸法線：B（下外側）
+    html += `<line x1="${x_outLeft}" y1="${y_outBot + 18}" x2="${x_outRight}" y2="${y_outBot + 18}" stroke="${C_DIM}" stroke-width="1"/>`;
+    html += `<line x1="${x_outLeft}" y1="${y_outBot + 14}" x2="${x_outLeft}" y2="${y_outBot + 22}" stroke="${C_DIM}" stroke-width="1"/>`;
+    html += `<line x1="${x_outRight}" y1="${y_outBot + 14}" x2="${x_outRight}" y2="${y_outBot + 22}" stroke="${C_DIM}" stroke-width="1"/>`;
+    html += `<text x="${(x_outLeft + x_outRight)/2}" y="${y_outBot + 32}" fill="${C_DIM}"
+              font-size="10" font-family="monospace" text-anchor="middle">B=${Math.round(B)}</text>`;
 
   } else {
     // I型
-    const valid = isFinite(H) && H > 0;
+    const valid = isFinite(H) && H > 0 && isFinite(cover) && cover >= 0;
     if (!valid) {
       html += `<text x="${VB_W/2}" y="${VB_H/2}" fill="#4ad9c2" font-size="12" font-family="monospace" text-anchor="middle">H を入力してください</text>`;
       svg.innerHTML = html;
       return;
     }
-    const s = drawH / H;
-    const wH = H * s;
-    const xc = padL + drawW / 2;
-    const yTop = padT + (drawH - wH) / 2;
-    const yBot = yTop + wH;
 
-    // 上下の被りライン（薄い水平線）
-    const coverPx = (cover * s);
-    html += `<line x1="${xc - 40}" y1="${yTop}" x2="${xc + 40}" y2="${yTop}" stroke="#4ad9c2" stroke-width="1" stroke-dasharray="3 3"/>`;
-    html += `<line x1="${xc - 40}" y1="${yBot}" x2="${xc + 40}" y2="${yBot}" stroke="#4ad9c2" stroke-width="1" stroke-dasharray="3 3"/>`;
+    const padL = 60, padR = 60, padT = 30, padB = 30;
+    const drawW = VB_W - padL - padR;
+    const drawH = VB_H - padT - padB;
 
-    // 鉄筋本体（被り分内側に入った縦線）
-    const yRebarTop = yTop + coverPx;
-    const yRebarBot = yBot - coverPx;
+    // I型外形：縦長の四角（幅は適度に）
+    // 幅は H の25%程度を仮定、最低120mm相当
+    const wallW = Math.max(H * 0.20, 120);
+    const sX = drawW / wallW;
+    const sY = drawH / H;
+    const s  = Math.min(sX, sY);
+    const px = (mm) => mm * s;
+
+    const wPx = px(wallW);
+    const hPx = px(H);
+    const x0 = padL + (drawW - wPx) / 2;
+    const y0 = padT + (drawH - hPx) / 2 + hPx;
+    const x1 = x0 + wPx;
+    const yTop = y0 - hPx;
+
+    // 外形（コンクリ）
+    html += `<rect x="${x0}" y="${yTop}" width="${wPx}" height="${hPx}"
+              fill="${C_CONC_FILL}" stroke="${C_CONC}" stroke-width="2"/>`;
+
+    // 被り
+    const covPx = Math.max(px(cover), 4);
+    const xRebar = (x0 + x1) / 2;            // 鉄筋（中央配置）
+    const yRebarTop = yTop + covPx;
+    const yRebarBot = y0 - covPx;
+
     if (yRebarBot > yRebarTop) {
-      const ancLen = Math.min(wH * 0.18, 22);
-      html += `<path d="M ${xc} ${yRebarBot} L ${xc} ${yRebarTop} L ${xc + ancLen} ${yRebarTop}"
-                fill="none" stroke="#00ffd5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
-      html += `<path d="M ${xc} ${yRebarBot} L ${xc - ancLen} ${yRebarBot}"
-                fill="none" stroke="#00ffd5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
-      // 定着長ラベル
-      html += `<text x="${xc + ancLen + 4}" y="${yRebarTop + 4}" fill="#ffb968" font-size="10" font-family="monospace">定着 ${anchor}mm</text>`;
-      html += `<text x="${xc - ancLen - 4}" y="${yRebarBot + 4}" fill="#ffb968" font-size="10" font-family="monospace" text-anchor="end">定着 ${anchor}mm</text>`;
+      // 定着長（縦長から左右に折り返し）
+      const ancPx = Math.min(px(anchor), Math.max(wPx * 0.35, 30));
+
+      // 鉄筋本体（縦線）
+      html += `<line x1="${xRebar}" y1="${yRebarTop}" x2="${xRebar}" y2="${yRebarBot}"
+                stroke="${C_REBAR}" stroke-width="3" stroke-linecap="round"/>`;
+      // 上端のフック（右へ）
+      html += `<line x1="${xRebar}" y1="${yRebarTop}" x2="${xRebar + ancPx}" y2="${yRebarTop}"
+                stroke="${C_REBAR}" stroke-width="3" stroke-linecap="round"/>`;
+      // 下端のフック（左へ）
+      html += `<line x1="${xRebar}" y1="${yRebarBot}" x2="${xRebar - ancPx}" y2="${yRebarBot}"
+                stroke="${C_REBAR}" stroke-width="3" stroke-linecap="round"/>`;
+
+      // 定着ラベル
+      html += `<text x="${xRebar + ancPx + 4}" y="${yRebarTop + 4}" fill="${C_NOTE}"
+                font-size="10" font-family="monospace">定着 ${anchor}mm</text>`;
+      html += `<text x="${xRebar - ancPx - 4}" y="${yRebarBot + 4}" fill="${C_NOTE}"
+                font-size="10" font-family="monospace" text-anchor="end">定着 ${anchor}mm</text>`;
     }
 
-    // 寸法線：H（右）
-    html += `<line x1="${xc + 50}" y1="${yTop}" x2="${xc + 50}" y2="${yBot}" stroke="#00ff88" stroke-width="1"/>`;
-    html += `<line x1="${xc + 46}" y1="${yTop}" x2="${xc + 54}" y2="${yTop}" stroke="#00ff88" stroke-width="1"/>`;
-    html += `<line x1="${xc + 46}" y1="${yBot}" x2="${xc + 54}" y2="${yBot}" stroke="#00ff88" stroke-width="1"/>`;
-    html += `<text x="${xc + 52}" y="${(yTop + yBot)/2}" fill="#00ff88" font-size="10" font-family="monospace" text-anchor="start" transform="rotate(-90 ${xc + 52} ${(yTop + yBot)/2})">H=${Math.round(H)}</text>`;
+    // 上下被りの矢印
+    html += `<line x1="${x0 + 6}" y1="${yTop}" x2="${x0 + 6}" y2="${yTop + covPx}"
+              stroke="${C_COVER}" stroke-width="1"/>`;
+    html += `<text x="${x0 + 10}" y="${yTop + covPx/2 + 3}" fill="${C_COVER}"
+              font-size="9" font-family="monospace">被り${Math.round(cover)}</text>`;
 
-    // 被りラベル
-    html += `<text x="${xc - 50}" y="${yTop - 4}" fill="#cfeee8" font-size="9" font-family="monospace">被り${Math.round(cover)}</text>`;
-    html += `<text x="${xc - 50}" y="${yBot + 12}" fill="#cfeee8" font-size="9" font-family="monospace">被り${Math.round(cover)}</text>`;
+    html += `<line x1="${x0 + 6}" y1="${y0 - covPx}" x2="${x0 + 6}" y2="${y0}"
+              stroke="${C_COVER}" stroke-width="1"/>`;
+    html += `<text x="${x0 + 10}" y="${y0 - covPx/2 + 3}" fill="${C_COVER}"
+              font-size="9" font-family="monospace">被り${Math.round(cover)}</text>`;
+
+    // 左右被り
+    html += `<line x1="${x0}" y1="${yTop + 12}" x2="${x0 + covPx}" y2="${yTop + 12}"
+              stroke="${C_COVER}" stroke-width="1"/>`;
+    html += `<line x1="${x1 - covPx}" y1="${yTop + 12}" x2="${x1}" y2="${yTop + 12}"
+              stroke="${C_COVER}" stroke-width="1"/>`;
+
+    // 寸法線：H（右側）
+    html += `<line x1="${x1 + 18}" y1="${yTop}" x2="${x1 + 18}" y2="${y0}" stroke="${C_DIM}" stroke-width="1"/>`;
+    html += `<line x1="${x1 + 14}" y1="${yTop}" x2="${x1 + 22}" y2="${yTop}" stroke="${C_DIM}" stroke-width="1"/>`;
+    html += `<line x1="${x1 + 14}" y1="${y0}" x2="${x1 + 22}" y2="${y0}" stroke="${C_DIM}" stroke-width="1"/>`;
+    html += `<text x="${x1 + 20}" y="${(yTop + y0)/2}" fill="${C_DIM}"
+              font-size="10" font-family="monospace"
+              transform="rotate(-90 ${x1 + 20} ${(yTop + y0)/2})" text-anchor="middle">H=${Math.round(H)}</text>`;
   }
 
   svg.innerHTML = html;
@@ -572,7 +667,6 @@ function bootRestore() {
       }
     });
   }
-  // タブ反映
   document.getElementById('tabL').classList.toggle('active', currentShape === 'L');
   document.getElementById('tabI').classList.toggle('active', currentShape === 'I');
   document.getElementById('rowB').style.display = (currentShape === 'I') ? 'none' : '';
