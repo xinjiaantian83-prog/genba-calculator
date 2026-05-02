@@ -937,9 +937,10 @@ function calcSlope() {
 
 function drawSlopeSvg(h, v, slope, angle, pct) {
   const svg = document.getElementById('slopeSvg');
+ 
   if (!svg) return;
-  const VB_W = 280, VB_H = 200;
-  const padL = 30, padR = 30, padT = 30, padB = 40;
+ const VB_W = 320, VB_H = 200;
+const padL = 30, padR = 100, padT = 30, padB = 40;
   const drawW = VB_W - padL - padR;
   const drawH = VB_H - padT - padB;
 
