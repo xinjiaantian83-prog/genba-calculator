@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>鉄筋拾い</title>
+<style>
+  * {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #0a0e0d;
+    color: #e0fff8;
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
+    overscroll-behavior: none;
+  }
+  body {
+    min-height: 100vh;
+    padding-bottom: 40px;
+  }
+  .app {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 14px;
+  }
+  h2 {
+    color: #00ffd5;
+    font-size: 18px;
+    margin: 0 0 12px 0;
+    text-shadow: 0 0 6px #00ffd540;
+    border-left: 4px solid #00ff88;
+    padding-left: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .reset-btn {
+    background: #2a0e0e;
+    color: #ff7a7a;
+    border: 1px solid #ff7a7a55;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .reset-btn:active { background: #3a1010; }
+
+  /* 形状切替タブ */
+  .shape-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .shape-tab {
+    background: #0c1f1d;
+    color: #4ad9c2;
+    border: 1px solid #008c7a;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+  }
+  .shape-tab:active { background: #103631; }
+  .shape-tab.active {
+    background: linear-gradient(160deg, #0d2926, #061613);
+    color: #00ffd5;
+    border-color: #00ffd5;
+    box-shadow: inset 0 0 12px #00ffd520;
+  }
+
+  /* 鉄筋サイズ選択 */
+  .size-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .size-tab {
+    background: #0c1f1d;
+    color: #4ad9c2;
+    border: 1px solid #008c7a;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+  }
+  .size-tab:active { background: #103631; }
+  .size-tab.active {
+    background: #0a2622;
+    color: #00ffd5;
+    border-color: #00ffd5;
+  }
+
+  .input-row { margin-bottom: 10px; }
+  .input-row label {
+    display: block;
+    font-size: 13px;
+    color: #4ad9c2;
+    margin-bottom: 4px;
+    font-weight: 600;
+  }
+  .input-row input {
+    width: 100%;
+    background: #061613;
+    border: 1px solid #008c7a;
+    color: #00ffd5;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 700;
+    -webkit-appearance: none;
+  }
+  .input-row input:focus {
+    outline: none;
+    border-color: #00ffd5;
+    box-shadow: 0 0 0 2px #00ffd530;
+  }
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .rebar-fig {
+    background: #0a1f1c;
+    border: 1px solid #00ffd540;
+    border-radius: 12px;
+    padding: 14px;
+    text-align: center;
+    margin: 14px 0;
+  }
+  .rebar-fig svg {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .result-box {
+    background: #061613;
+    border: 1px solid #00ff8855;
+    border-radius: 12px;
+    padding: 14px;
+    margin-top: 14px;
+    box-shadow: inset 0 0 12px #00ff8810;
+  }
+  .result-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 8px 0;
+    border-bottom: 1px dashed #0c3d3a;
+  }
+  .result-row:last-child { border-bottom: none; }
+  .result-row .lbl {
+    font-size: 13px;
+    color: #4ad9c2;
+  }
+  .result-row .val {
+    font-size: 22px;
+    font-weight: 800;
+    color: #00ff88;
+    text-shadow: 0 0 8px #00ff8850;
+    font-family: "SF Mono", Menlo, monospace;
+  }
+  .result-row.main .val {
+    font-size: 26px;
+    color: #ffe9a8;
+  }
+
+  .note {
+    font-size: 11px;
+    color: #6a8a85;
+    margin-top: 10px;
+    line-height: 1.6;
+  }
+
+  .header {
+    text-align: center;
+    padding: 8px 0 14px;
+    border-bottom: 1px solid #0c3d3a;
+    margin-bottom: 14px;
+  }
+  .header h1 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: #00ffd5;
+    text-shadow: 0 0 8px #00ffd560;
+  }
+  .header .sub {
+    margin-top: 2px;
+    font-size: 11px;
+    color: #4ad9c2;
+    letter-spacing: 1px;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="header">
+    <h1>🔩 鉄筋拾い</h1>
+    <div class="sub">REBAR ESTIMATOR</div>
+  </div>
+
+  <h2>
+    <span>L型 / I型 鉄筋拾い</span>
+    <button class="reset-btn" onclick="resetRebar()">リセット</button>
+  </h2>
+
+  <!-- 形状切替 -->
+  <div class="shape-tabs">
+    <button class="shape-tab active" id="tabL" onclick="setShape('L')">L型</button>
+    <button class="shape-tab" id="tabI" onclick="setShape('I')">I型</button>
+  </div>
+
+  <!-- 鉄筋サイズ -->
+  <div class="input-row">
+    <label>鉄筋サイズ</label>
+    <div class="size-tabs">
+      <button class="size-tab active" id="sizeD10" onclick="setSize('D10')">D10</button>
+      <button class="size-tab" id="sizeD13" onclick="setSize('D13')">D13</button>
+      <button class="size-tab" id="sizeD16" onclick="setSize('D16')">D16</button>
+    </div>
+  </div>
+
+  <!-- 共通入力 -->
+  <div class="grid-2">
+    <div class="input-row">
+      <label>ピッチ @（mm）</label>
+      <input type="number" id="rPitch" inputmode="decimal" value="200" oninput="calcRebar()">
+    </div>
+    <div class="input-row">
+      <label>延長 L（mm）</label>
+      <input type="number" id="rLength" inputmode="decimal" placeholder="例: 10000" oninput="calcRebar()">
+    </div>
+  </div>
+
+  <!-- 高さ / ベース出幅（L型のみ） -->
+  <div class="grid-2">
+    <div class="input-row">
+      <label>高さ H（mm）</label>
+      <input type="number" id="rH" inputmode="decimal" placeholder="例: 1500" oninput="calcRebar()">
+    </div>
+    <div class="input-row" id="rowB">
+      <label>ベース出幅 B（mm）</label>
+      <input type="number" id="rB" inputmode="decimal" placeholder="例: 600" oninput="calcRebar()">
+    </div>
+  </div>
+
+  <!-- 被り / ロス率 -->
+  <div class="grid-2">
+    <div class="input-row">
+      <label>被り（mm）</label>
+      <input type="number" id="rCover" inputmode="decimal" value="50" oninput="calcRebar()">
+    </div>
+    <div class="input-row">
+      <label>ロス率（%）</label>
+      <input type="number" id="rLoss" inputmode="decimal" value="10" oninput="calcRebar()">
+    </div>
+  </div>
+
+  <!-- 定尺 -->
+  <div class="input-row">
+    <label>定尺（mm）</label>
+    <input type="number" id="rStock" inputmode="decimal" value="4000" oninput="calcRebar()">
+  </div>
+
+  <!-- 図形 -->
+  <div class="rebar-fig">
+    <svg id="rebarSvg" viewBox="0 0 280 220" xmlns="http://www.w3.org/2000/svg"></svg>
+  </div>
+
+  <!-- 結果 -->
+  <div class="result-box">
+    <div class="result-row">
+      <span class="lbl">鉄筋径</span>
+      <span class="val" id="rDia">—</span>
+    </div>
+    <div class="result-row">
+      <span class="lbl">定着長（40D）</span>
+      <span class="val" id="rAnchor">—</span>
+    </div>
+    <div class="result-row">
+      <span class="lbl">1本あたり加工長</span>
+      <span class="val" id="rPerLen">—</span>
+    </div>
+    <div class="result-row">
+      <span class="lbl">必要本数</span>
+      <span class="val" id="rCount">—</span>
+    </div>
+    <div class="result-row">
+      <span class="lbl">総延長</span>
+      <span class="val" id="rTotal">—</span>
+    </div>
+    <div class="result-row">
+      <span class="lbl">ロス込み総延長</span>
+      <span class="val" id="rTotalLoss">—</span>
+    </div>
+    <div class="result-row main">
+      <span class="lbl" id="rStockLbl">4m鉄筋必要本数</span>
+      <span class="val" id="rStockCount">—</span>
+    </div>
+  </div>
+
+  <div class="note">
+    ※ 構造計算ではなく<b style="color:#ffd266;">材料拾いの目安</b>です。<br>
+    ※ 被り・定着・継手・曲げ・ロスは<b style="color:#ffd266;">設計図・現場条件を優先</b>してください。<br>
+    ※ 入力値は自動保存されます。
+  </div>
+
+</div>
+
+<script>
+const STORAGE_KEY = 'rebarPick_v1';
+const SAVE_FIELDS = ['shape','size','rPitch','rLength','rH','rB','rCover','rLoss','rStock'];
+
+let currentShape = 'L';
+let currentSize  = 'D10';
+
+const SIZE_DIA = { D10: 10, D13: 13, D16: 16 };
+
+function setShape(s) {
+  currentShape = s;
+  document.getElementById('tabL').classList.toggle('active', s === 'L');
+  document.getElementById('tabI').classList.toggle('active', s === 'I');
+  // I型のときはB欄を非表示
+  document.getElementById('rowB').style.display = (s === 'I') ? 'none' : '';
+  calcRebar();
+}
+
+function setSize(s) {
+  currentSize = s;
+  ['D10','D13','D16'].forEach(k => {
+    document.getElementById('size'+k).classList.toggle('active', k === s);
+  });
+  calcRebar();
+}
+
+function calcRebar() {
+  const dia    = SIZE_DIA[currentSize] || 10;
+  const pitch  = parseFloat(document.getElementById('rPitch').value);
+  const L      = parseFloat(document.getElementById('rLength').value);
+  const H      = parseFloat(document.getElementById('rH').value);
+  const B      = parseFloat(document.getElementById('rB').value);
+  const cover  = parseFloat(document.getElementById('rCover').value);
+  const loss   = parseFloat(document.getElementById('rLoss').value);
+  const stock  = parseFloat(document.getElementById('rStock').value);
+
+  const anchor = dia * 40;
+
+  document.getElementById('rDia').textContent = currentSize + ' (φ' + dia + 'mm)';
+  document.getElementById('rAnchor').textContent = anchor + ' mm (40D)';
+
+  // 定尺ラベル
+  const stockLblEl = document.getElementById('rStockLbl');
+  if (isFinite(stock) && stock > 0) {
+    if (Math.round(stock) === 4000) {
+      stockLblEl.textContent = '4m鉄筋必要本数';
+    } else {
+      stockLblEl.textContent = '定尺鉄筋必要本数（' + Math.round(stock) + 'mm）';
+    }
+  } else {
+    stockLblEl.textContent = '定尺鉄筋必要本数';
+  }
+
+  // 必須項目チェック
+  const baseValid = isFinite(pitch) && pitch > 0
+                 && isFinite(L) && L > 0
+                 && isFinite(H) && H > 0
+                 && isFinite(cover) && cover >= 0
+                 && isFinite(loss) && loss >= 0
+                 && isFinite(stock) && stock > 0;
+
+  let perLen = NaN;
+  if (currentShape === 'L') {
+    if (baseValid && isFinite(B) && B > 0) {
+      perLen = (H - cover) + (B - cover) + anchor;
+    }
+  } else {
+    if (baseValid) {
+      perLen = (H - cover * 2) + anchor;
+    }
+  }
+
+  if (!isFinite(perLen) || perLen <= 0) {
+    document.getElementById('rPerLen').textContent = '—';
+    document.getElementById('rCount').textContent = '—';
+    document.getElementById('rTotal').textContent = '—';
+    document.getElementById('rTotalLoss').textContent = '—';
+    document.getElementById('rStockCount').textContent = '—';
+    drawRebarSvg(H, B, cover, anchor);
+    saveAll();
+    return;
+  }
+
+  const count = Math.ceil(L / pitch) + 1;
+  const total = perLen * count;
+  const totalLoss = total * (1 + loss / 100);
+  const stockCount = Math.ceil(totalLoss / stock);
+
+  document.getElementById('rPerLen').textContent = Math.round(perLen).toLocaleString() + ' mm';
+  document.getElementById('rCount').textContent  = count.toLocaleString() + ' 本';
+  document.getElementById('rTotal').textContent  = (total / 1000).toFixed(2) + ' m';
+  document.getElementById('rTotalLoss').textContent = (totalLoss / 1000).toFixed(2) + ' m';
+  document.getElementById('rStockCount').textContent = stockCount.toLocaleString() + ' 本';
+
+  drawRebarSvg(H, B, cover, anchor);
+  saveAll();
+}
+
+function drawRebarSvg(H, B, cover, anchor) {
+  const svg = document.getElementById('rebarSvg');
+  if (!svg) return;
+  const VB_W = 280, VB_H = 220;
+  const padL = 30, padR = 60, padT = 25, padB = 35;
+  const drawW = VB_W - padL - padR;
+  const drawH = VB_H - padT - padB;
+
+  let html = '';
+
+  if (currentShape === 'L') {
+    const valid = isFinite(H) && isFinite(B) && H > 0 && B > 0;
+    if (!valid) {
+      html += `<text x="${VB_W/2}" y="${VB_H/2}" fill="#4ad9c2" font-size="12" font-family="monospace" text-anchor="middle">H・B を入力してください</text>`;
+      svg.innerHTML = html;
+      return;
+    }
+    // L型：縦+底版
+    const refMax = Math.max(H, B);
+    const sX = drawW / refMax;
+    const sY = drawH / refMax;
+    const s = Math.min(sX, sY);
+
+    const wH = H * s;
+    const wB = B * s;
+
+    const x0 = padL;            // 左下基準x
+    const y0 = padT + drawH;    // 底（地面側）y
+
+    // 縦鉄筋（左側、上に向かって伸びる）
+    const xv = x0 + 6;
+    const yvTop = y0 - wH;
+    // 定着（縦の上端から少し折れ下がるイメージ）— 視覚的に少し描く
+    const ancLen = Math.min(wH * 0.18, 18);
+
+    // 底版鉄筋（右に伸びる）
+    const xbEnd = x0 + wB;
+    const yb = y0 - 6;
+
+    // 曲げ部円弧の半径
+    const rBend = Math.min(wH, wB) * 0.08;
+
+    // 縦の主鉄筋（縦線 + 上端の定着フック）
+    html += `<path d="M ${xv} ${y0} L ${xv} ${yvTop + rBend} A ${rBend} ${rBend} 0 0 1 ${xv + rBend} ${yvTop} L ${xv + rBend + ancLen} ${yvTop}"
+              fill="none" stroke="#00ffd5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+    // 縦鉄筋の定着長ラベル
+    html += `<text x="${xv + rBend + ancLen + 4}" y="${yvTop + 4}" fill="#ffb968" font-size="10" font-family="monospace">定着 ${anchor}mm</text>`;
+
+    // 底版鉄筋（横線 + 端部の定着フック）
+    html += `<path d="M ${x0} ${yb} L ${xbEnd - rBend} ${yb} A ${rBend} ${rBend} 0 0 1 ${xbEnd} ${yb - rBend} L ${xbEnd} ${yb - rBend - ancLen}"
+              fill="none" stroke="#00ff88" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+
+    // 曲げ部の連結（縦と底版が交わる部分）
+    html += `<circle cx="${xv}" cy="${yb}" r="3" fill="#7ae6ff"/>`;
+
+    // 寸法線：H（左外）
+    html += `<line x1="${x0 - 14}" y1="${y0}" x2="${x0 - 14}" y2="${yvTop}" stroke="#00ff88" stroke-width="1"/>`;
+    html += `<line x1="${x0 - 18}" y1="${y0}" x2="${x0 - 10}" y2="${y0}" stroke="#00ff88" stroke-width="1"/>`;
+    html += `<line x1="${x0 - 18}" y1="${yvTop}" x2="${x0 - 10}" y2="${yvTop}" stroke="#00ff88" stroke-width="1"/>`;
+    html += `<text x="${x0 - 16}" y="${(y0 + yvTop)/2}" fill="#00ff88" font-size="10" font-family="monospace" text-anchor="end" transform="rotate(-90 ${x0 - 16} ${(y0 + yvTop)/2})">H=${Math.round(H)}</text>`;
+
+    // 寸法線：B（下）
+    html += `<line x1="${x0}" y1="${y0 + 14}" x2="${xbEnd}" y2="${y0 + 14}" stroke="#00ffd5" stroke-width="1"/>`;
+    html += `<line x1="${x0}" y1="${y0 + 10}" x2="${x0}" y2="${y0 + 18}" stroke="#00ffd5" stroke-width="1"/>`;
+    html += `<line x1="${xbEnd}" y1="${y0 + 10}" x2="${xbEnd}" y2="${y0 + 18}" stroke="#00ffd5" stroke-width="1"/>`;
+    html += `<text x="${(x0 + xbEnd)/2}" y="${y0 + 28}" fill="#00ffd5" font-size="10" font-family="monospace" text-anchor="middle">B=${Math.round(B)}</text>`;
+
+    // 被りラベル
+    html += `<text x="${xv + 4}" y="${y0 - 4}" fill="#cfeee8" font-size="9" font-family="monospace">被り${Math.round(cover)}</text>`;
+
+  } else {
+    // I型
+    const valid = isFinite(H) && H > 0;
+    if (!valid) {
+      html += `<text x="${VB_W/2}" y="${VB_H/2}" fill="#4ad9c2" font-size="12" font-family="monospace" text-anchor="middle">H を入力してください</text>`;
+      svg.innerHTML = html;
+      return;
+    }
+    const s = drawH / H;
+    const wH = H * s;
+    const xc = padL + drawW / 2;
+    const yTop = padT + (drawH - wH) / 2;
+    const yBot = yTop + wH;
+
+    // 上下の被りライン（薄い水平線）
+    const coverPx = (cover * s);
+    html += `<line x1="${xc - 40}" y1="${yTop}" x2="${xc + 40}" y2="${yTop}" stroke="#4ad9c2" stroke-width="1" stroke-dasharray="3 3"/>`;
+    html += `<line x1="${xc - 40}" y1="${yBot}" x2="${xc + 40}" y2="${yBot}" stroke="#4ad9c2" stroke-width="1" stroke-dasharray="3 3"/>`;
+
+    // 鉄筋本体（被り分内側に入った縦線）
+    const yRebarTop = yTop + coverPx;
+    const yRebarBot = yBot - coverPx;
+    if (yRebarBot > yRebarTop) {
+      const ancLen = Math.min(wH * 0.18, 22);
+      html += `<path d="M ${xc} ${yRebarBot} L ${xc} ${yRebarTop} L ${xc + ancLen} ${yRebarTop}"
+                fill="none" stroke="#00ffd5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+      html += `<path d="M ${xc} ${yRebarBot} L ${xc - ancLen} ${yRebarBot}"
+                fill="none" stroke="#00ffd5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+      // 定着長ラベル
+      html += `<text x="${xc + ancLen + 4}" y="${yRebarTop + 4}" fill="#ffb968" font-size="10" font-family="monospace">定着 ${anchor}mm</text>`;
+      html += `<text x="${xc - ancLen - 4}" y="${yRebarBot + 4}" fill="#ffb968" font-size="10" font-family="monospace" text-anchor="end">定着 ${anchor}mm</text>`;
+    }
+
+    // 寸法線：H（右）
+    html += `<line x1="${xc + 50}" y1="${yTop}" x2="${xc + 50}" y2="${yBot}" stroke="#00ff88" stroke-width="1"/>`;
+    html += `<line x1="${xc + 46}" y1="${yTop}" x2="${xc + 54}" y2="${yTop}" stroke="#00ff88" stroke-width="1"/>`;
+    html += `<line x1="${xc + 46}" y1="${yBot}" x2="${xc + 54}" y2="${yBot}" stroke="#00ff88" stroke-width="1"/>`;
+    html += `<text x="${xc + 52}" y="${(yTop + yBot)/2}" fill="#00ff88" font-size="10" font-family="monospace" text-anchor="start" transform="rotate(-90 ${xc + 52} ${(yTop + yBot)/2})">H=${Math.round(H)}</text>`;
+
+    // 被りラベル
+    html += `<text x="${xc - 50}" y="${yTop - 4}" fill="#cfeee8" font-size="9" font-family="monospace">被り${Math.round(cover)}</text>`;
+    html += `<text x="${xc - 50}" y="${yBot + 12}" fill="#cfeee8" font-size="9" font-family="monospace">被り${Math.round(cover)}</text>`;
+  }
+
+  svg.innerHTML = html;
+}
+
+function saveAll() {
+  try {
+    const data = {
+      shape: currentShape,
+      size:  currentSize,
+      rPitch:  document.getElementById('rPitch').value,
+      rLength: document.getElementById('rLength').value,
+      rH:      document.getElementById('rH').value,
+      rB:      document.getElementById('rB').value,
+      rCover:  document.getElementById('rCover').value,
+      rLoss:   document.getElementById('rLoss').value,
+      rStock:  document.getElementById('rStock').value
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  } catch (e) {}
+}
+
+function loadAll() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch (e) { return null; }
+}
+
+function bootRestore() {
+  const data = loadAll();
+  if (data) {
+    if (data.shape) currentShape = data.shape;
+    if (data.size)  currentSize  = data.size;
+    ['rPitch','rLength','rH','rB','rCover','rLoss','rStock'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el && data[id] !== undefined && data[id] !== null && data[id] !== '') {
+        el.value = data[id];
+      }
+    });
+  }
+  // タブ反映
+  document.getElementById('tabL').classList.toggle('active', currentShape === 'L');
+  document.getElementById('tabI').classList.toggle('active', currentShape === 'I');
+  document.getElementById('rowB').style.display = (currentShape === 'I') ? 'none' : '';
+  ['D10','D13','D16'].forEach(k => {
+    document.getElementById('size'+k).classList.toggle('active', k === currentSize);
+  });
+  calcRebar();
+}
+
+function resetRebar() {
+  if (!confirm('リセットしますか？')) return;
+  currentShape = 'L';
+  currentSize  = 'D10';
+  document.getElementById('rPitch').value  = '200';
+  document.getElementById('rLength').value = '';
+  document.getElementById('rH').value      = '';
+  document.getElementById('rB').value      = '';
+  document.getElementById('rCover').value  = '50';
+  document.getElementById('rLoss').value   = '10';
+  document.getElementById('rStock').value  = '4000';
+
+  document.getElementById('tabL').classList.add('active');
+  document.getElementById('tabI').classList.remove('active');
+  document.getElementById('rowB').style.display = '';
+  ['D10','D13','D16'].forEach(k => {
+    document.getElementById('size'+k).classList.toggle('active', k === 'D10');
+  });
+
+  try {
+    const data = {
+      shape: 'L', size: 'D10',
+      rPitch: '200', rLength: '', rH: '', rB: '',
+      rCover: '50', rLoss: '10', rStock: '4000'
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  } catch (e) {}
+
+  calcRebar();
+  alert('reset ok');
+}
+
+bootRestore();
+</script>
+</body>
+</html>
