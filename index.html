@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
- <link rel="apple-touch-icon" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
 <link rel="icon" href="icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>現場電卓</title>
@@ -98,9 +98,21 @@
     background: #103631;
   }
   .home-btn .ico {
-    font-size: 30px;
     display: block;
     margin-bottom: 6px;
+  }
+  .home-svg {
+    width: 44px;
+    height: 44px;
+    display: block;
+    margin: 0 auto 8px;
+  }
+  .home-svg * {
+    stroke: #00ffd5;
+    stroke-width: 8;
+    fill: none;
+    stroke-linecap: square;
+    stroke-linejoin: miter;
   }
   .home-btn .label {
     font-size: 14px;
@@ -173,74 +185,6 @@
     border-color: #ff7eb088;
   }
 
-  .auto-row {
-    background: #0a2622;
-    border: 1px dashed #00ffd580;
-    color: #00ffd5;
-    padding: 10px 12px;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-  }
-  .auto-row .lbl {
-    font-size: 13px;
-    color: #4ad9c2;
-    font-weight: 600;
-  }
-  .auto-row .val {
-    font-size: 22px;
-    font-weight: 800;
-    color: #00ff88;
-    font-family: "SF Mono", Menlo, monospace;
-  }
-  .auto-row .badge {
-    font-size: 10px;
-    color: #ffd266;
-    margin-left: 6px;
-    border: 1px solid #ffd26688;
-    padding: 1px 6px;
-    border-radius: 4px;
-  }
-
-  .auto-cell {
-    background: linear-gradient(160deg, #0d2e26, #061a16);
-    border: 1.5px solid #ffd26688;
-    border-radius: 8px;
-    padding: 8px 10px;
-    box-shadow: 0 0 6px #ffd26615;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    min-height: 70px;
-  }
-  .auto-cell .lbl {
-    font-size: 13px;
-    color: #ffd266;
-    font-weight: 700;
-    margin-bottom: 4px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .auto-cell .badge {
-    font-size: 9px;
-    color: #ffd266;
-    border: 1px solid #ffd26688;
-    padding: 1px 5px;
-    border-radius: 4px;
-    font-weight: 600;
-  }
-  .auto-cell .val {
-    font-size: 20px;
-    font-weight: 900;
-    color: #ffe9a8;
-    font-family: "SF Mono", Menlo, monospace;
-    text-align: right;
-    letter-spacing: 0.5px;
-  }
-
   .result-box {
     background: #061613;
     border: 1px solid #00ff8855;
@@ -273,18 +217,6 @@
     color: #6a8a85;
     margin-top: 8px;
     line-height: 1.5;
-  }
-
-  .saved-badge {
-    display: inline-block;
-    font-size: 10px;
-    color: #4ad9c2;
-    background: #0a2622;
-    border: 1px solid #008c7a;
-    padding: 2px 8px;
-    border-radius: 10px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
   }
 
   .calc-display {
@@ -377,20 +309,7 @@
     margin-top: 2px;
   }
 
-  .wall-fig {
-    background: #0a1f1c;
-    border: 1px solid #00ffd540;
-    border-radius: 12px;
-    padding: 16px;
-    text-align: center;
-    margin: 14px 0;
-  }
-  .wall-fig svg {
-    max-width: 100%;
-    height: auto;
-  }
-
-  .slope-fig {
+  .wall-fig, .slope-fig {
     background: #0a1f1c;
     border: 1px solid #00ffd540;
     border-radius: 12px;
@@ -398,7 +317,7 @@
     text-align: center;
     margin: 14px 0;
   }
-  .slope-fig svg {
+  .wall-fig svg, .slope-fig svg {
     max-width: 100%;
     height: auto;
   }
@@ -511,27 +430,93 @@
       <h1>⚙ 現場電卓</h1>
       <div class="sub">GENBA TOOLBOX</div>
     </div>
+
     <div class="home-grid">
       <button class="home-btn" onclick="show('calc')">
-        <span class="num">01</span><span class="ico">🔢</span><span class="label">普通電卓</span>
+        <span class="num">01</span>
+        <span class="ico">
+          <svg class="home-svg" viewBox="0 0 100 100">
+            <rect x="22" y="18" width="56" height="64"/>
+            <line x1="22" y1="42" x2="78" y2="42"/>
+            <line x1="40" y1="42" x2="40" y2="82"/>
+            <line x1="60" y1="42" x2="60" y2="82"/>
+          </svg>
+        </span>
+        <span class="label">普通電卓</span>
       </button>
+
       <button class="home-btn" onclick="show('slope')">
-        <span class="num">02</span><span class="ico">📐</span><span class="label">勾配・斜距離</span>
+        <span class="num">02</span>
+        <span class="ico">
+          <svg class="home-svg" viewBox="0 0 100 100">
+            <polyline points="22,78 78,78 78,28 22,78"/>
+            <rect x="22" y="60" width="18" height="18"/>
+          </svg>
+        </span>
+        <span class="label">勾配・斜距離</span>
       </button>
+
       <button class="home-btn" onclick="show('doma')">
-        <span class="num">03</span><span class="ico">🏗️</span><span class="label">土間コン</span>
+        <span class="num">03</span>
+        <span class="ico">
+          <svg class="home-svg" viewBox="0 0 100 100">
+            <rect x="20" y="30" width="60" height="42"/>
+            <line x1="20" y1="51" x2="80" y2="51"/>
+            <line x1="40" y1="30" x2="40" y2="72"/>
+            <line x1="60" y1="30" x2="60" y2="72"/>
+          </svg>
+        </span>
+        <span class="label">土間コン</span>
       </button>
+
       <button class="home-btn" onclick="show('wall')">
-        <span class="num">04</span><span class="ico">🧱</span><span class="label">重力式擁壁</span>
+        <span class="num">04</span>
+        <span class="ico">
+          <svg class="home-svg" viewBox="0 0 100 100">
+            <polygon points="28,78 78,78 62,26 28,26"/>
+          </svg>
+        </span>
+        <span class="label">重力式擁壁</span>
       </button>
+
       <button class="home-btn" onclick="show('block')">
-        <span class="num">05</span><span class="ico">🧱</span><span class="label">ブロックサポート</span>
+        <span class="num">05</span>
+        <span class="ico">
+          <svg class="home-svg" viewBox="0 0 100 100">
+            <rect x="18" y="30" width="64" height="42"/>
+            <line x1="18" y1="51" x2="82" y2="51"/>
+            <line x1="50" y1="30" x2="50" y2="72"/>
+          </svg>
+        </span>
+        <span class="label">ブロックサポート</span>
       </button>
+
       <button class="home-btn" onclick="show('grav')">
-        <span class="num">06</span><span class="ico">⚖️</span><span class="label">比重表</span>
+        <span class="num">06</span>
+        <span class="ico">
+          <svg class="home-svg" viewBox="0 0 100 100">
+            <line x1="50" y1="18" x2="50" y2="82"/>
+            <line x1="26" y1="38" x2="74" y2="38"/>
+            <line x1="34" y1="38" x2="22" y2="66"/>
+            <line x1="66" y1="38" x2="78" y2="66"/>
+            <line x1="34" y1="82" x2="66" y2="82"/>
+          </svg>
+        </span>
+        <span class="label">比重表</span>
       </button>
+
       <button class="home-btn" onclick="show('namacon')" style="grid-column: span 2;">
-        <span class="num">07</span><span class="ico">🚛</span><span class="label">生コン目安</span>
+        <span class="num">07</span>
+        <span class="ico">
+          <svg class="home-svg" viewBox="0 0 100 100">
+            <rect x="16" y="48" width="46" height="24"/>
+            <circle cx="30" cy="76" r="6"/>
+            <circle cx="58" cy="76" r="6"/>
+            <line x1="64" y1="48" x2="82" y2="34"/>
+            <line x1="82" y1="34" x2="82" y2="72"/>
+          </svg>
+        </span>
+        <span class="label">生コン目安</span>
       </button>
     </div>
   </div>
@@ -690,31 +675,16 @@
     <div class="sepa-box">
       <div class="sepa-title">セパ目安（高さごとの幅）</div>
       <div class="sepa-list">
-        <div class="sepa-row h1">
-          <span class="lbl">h1:</span>
-          <span class="val" id="rW1">—</span>
-        </div>
-        <div class="sepa-row h2">
-          <span class="lbl">h2:</span>
-          <span class="val" id="rW2">—</span>
-        </div>
-        <div class="sepa-row h3">
-          <span class="lbl">h3:</span>
-          <span class="val" id="rW3">—</span>
-        </div>
+        <div class="sepa-row h1"><span class="lbl">h1:</span><span class="val" id="rW1">—</span></div>
+        <div class="sepa-row h2"><span class="lbl">h2:</span><span class="val" id="rW2">—</span></div>
+        <div class="sepa-row h3"><span class="lbl">h3:</span><span class="val" id="rW3">—</span></div>
       </div>
     </div>
 
     <div class="vol-box">
       <div class="vol-title">断面・コンクリート量（参考）</div>
-      <div class="vol-row">
-        <span class="lbl">断面面積</span>
-        <span class="val" id="rAreaSec">— ㎡</span>
-      </div>
-      <div class="vol-row">
-        <span class="lbl">延長1mあたり</span>
-        <span class="val" id="rVolPerM">— m³</span>
-      </div>
+      <div class="vol-row"><span class="lbl">断面面積</span><span class="val" id="rAreaSec">— ㎡</span></div>
+      <div class="vol-row"><span class="lbl">延長1mあたり</span><span class="val" id="rVolPerM">— m³</span></div>
       <div class="vol-row" id="rTotalRow" style="display:none;">
         <span class="lbl">総コン量（L=<span id="rLshow">—</span>m）</span>
         <span class="val" id="rVolTotal">— m³</span>
@@ -937,10 +907,10 @@ function calcSlope() {
 
 function drawSlopeSvg(h, v, slope, angle, pct) {
   const svg = document.getElementById('slopeSvg');
- 
   if (!svg) return;
- const VB_W = 320, VB_H = 200;
-const padL = 30, padR = 100, padT = 30, padB = 40;
+
+  const VB_W = 320, VB_H = 200;
+  const padL = 30, padR = 100, padT = 30, padB = 40;
   const drawW = VB_W - padL - padR;
   const drawH = VB_H - padT - padB;
 
@@ -951,44 +921,22 @@ const padL = 30, padR = 100, padT = 30, padB = 40;
     return;
   }
 
-    const scale = Math.min(drawW / h, drawH / Math.max(v, 1));
-
+  const scale = Math.min(drawW / h, drawH / Math.max(v, 1));
   const x0 = padL;
   const y0 = VB_H - padB;
-
   const x1 = x0 + h * scale;
   const y1 = y0;
-
   const x2 = x1;
   const y2 = y0 - v * scale;
 
   svg.innerHTML = `
-    <line x1="${x0}" y1="${y0}" x2="${x1}" y2="${y1}"
-      stroke="#00ffd5" stroke-width="5" stroke-linecap="square"/>
-
-    <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"
-      stroke="#00ffd5" stroke-width="5" stroke-linecap="square"/>
-
-    <line x1="${x0}" y1="${y0}" x2="${x2}" y2="${y2}"
-      stroke="#00ffd5" stroke-width="5" stroke-linecap="square"/>
-
-    <rect x="${x0}" y="${y0 - 18}" width="18" height="18"
-      fill="none" stroke="#00ffd5" stroke-width="4"/>
-
-    <text x="${(x0 + x1) / 2}" y="${y0 + 22}"
-      fill="#4ad9c2" font-size="11" font-family="monospace" text-anchor="middle">
-      横 ${Math.round(h)}
-    </text>
-
-    <text x="${x2 + 8}" y="${(y1 + y2) / 2}"
-      fill="#4ad9c2" font-size="11" font-family="monospace">
-      縦 ${Math.round(v)}
-    </text>
-
-    <text x="${(x0 + x2) / 2 - 8}" y="${(y0 + y2) / 2 - 8}"
-      fill="#00ffd5" font-size="11" font-family="monospace" text-anchor="middle">
-      ${Math.round(slope)}mm
-    </text>
+    <line x1="${x0}" y1="${y0}" x2="${x1}" y2="${y1}" stroke="#00ffd5" stroke-width="5" stroke-linecap="square"/>
+    <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#00ffd5" stroke-width="5" stroke-linecap="square"/>
+    <line x1="${x0}" y1="${y0}" x2="${x2}" y2="${y2}" stroke="#00ffd5" stroke-width="5" stroke-linecap="square"/>
+    <rect x="${x0}" y="${y0 - 18}" width="18" height="18" fill="none" stroke="#00ffd5" stroke-width="4"/>
+    <text x="${(x0 + x1) / 2}" y="${y0 + 22}" fill="#4ad9c2" font-size="11" font-family="monospace" text-anchor="middle">横 ${Math.round(h)}</text>
+    <text x="${x2 + 8}" y="${(y1 + y2) / 2}" fill="#4ad9c2" font-size="11" font-family="monospace">縦 ${Math.round(v)}</text>
+    <text x="${(x0 + x2) / 2 - 8}" y="${(y0 + y2) / 2 - 8}" fill="#00ffd5" font-size="11" font-family="monospace" text-anchor="middle">${Math.round(slope)}mm</text>
   `;
 }
 
@@ -1110,14 +1058,11 @@ function calcWall() {
   if (B !== null) {
     const areaSec = ((T + B) / 2 / 1000) * (H / 1000);
     areaSecEl.textContent = areaSec.toFixed(3) + ' ㎡';
-
-    const m3PerM = areaSec;
-    volPerEl.textContent = m3PerM.toFixed(3) + ' m³';
+    volPerEl.textContent = areaSec.toFixed(3) + ' m³';
 
     if (isFinite(L) && L > 0) {
-      const total = m3PerM * L;
       lShowEl.textContent = L;
-      volTotalEl.textContent = total.toFixed(2) + ' m³';
+      volTotalEl.textContent = (areaSec * L).toFixed(2) + ' m³';
       totalRowEl.style.display = 'flex';
     } else {
       totalRowEl.style.display = 'none';
@@ -1160,29 +1105,19 @@ function drawWallSvg(H, T, B, marks) {
   const pTL = [xLeft, yTop];
 
   let html = '';
-
   html += `<line x1="5" y1="${yBottom}" x2="${VB_W - 5}" y2="${yBottom}" stroke="#4ad9c2" stroke-width="1.2" stroke-dasharray="3 3"/>`;
-
   html += `<polygon points="${pBL.join(',')} ${pBR.join(',')} ${pTR.join(',')} ${pTL.join(',')}"
             fill="#13332e" stroke="#00ffd5" stroke-width="2" stroke-linejoin="round"/>`;
 
   if (valid) {
-    html += `<text x="${xLeft - 4}" y="${yTop + drawH / 2 + 4}" fill="#7ae6ff"
-              font-size="9" font-family="monospace" text-anchor="end">前面</text>`;
-    html += `<text x="${xLeft + (wTop + wBottom) / 2 + 6}" y="${yTop + drawH / 2}"
-              fill="#7ae6ff" font-size="9" font-family="monospace">背面</text>`;
-
-    html += `<text x="${xLeft + wTop / 2}" y="${yTop - 6}" fill="#00ffd5"
-              font-size="10" font-family="monospace" text-anchor="middle">T=${Math.round(T)}</text>`;
-    html += `<text x="${xLeft + wBottom / 2}" y="${yBottom + 16}" fill="#00ffd5"
-              font-size="10" font-family="monospace" text-anchor="middle">B=${Math.round(B)}</text>`;
-
+    html += `<text x="${xLeft - 4}" y="${yTop + drawH / 2 + 4}" fill="#7ae6ff" font-size="9" font-family="monospace" text-anchor="end">前面</text>`;
+    html += `<text x="${xLeft + (wTop + wBottom) / 2 + 6}" y="${yTop + drawH / 2}" fill="#7ae6ff" font-size="9" font-family="monospace">背面</text>`;
+    html += `<text x="${xLeft + wTop / 2}" y="${yTop - 6}" fill="#00ffd5" font-size="10" font-family="monospace" text-anchor="middle">T=${Math.round(T)}</text>`;
+    html += `<text x="${xLeft + wBottom / 2}" y="${yBottom + 16}" fill="#00ffd5" font-size="10" font-family="monospace" text-anchor="middle">B=${Math.round(B)}</text>`;
     html += `<line x1="${xLeft - 12}" y1="${yTop}" x2="${xLeft - 12}" y2="${yBottom}" stroke="#00ff88" stroke-width="1"/>`;
     html += `<line x1="${xLeft - 16}" y1="${yTop}" x2="${xLeft - 8}" y2="${yTop}" stroke="#00ff88" stroke-width="1"/>`;
     html += `<line x1="${xLeft - 16}" y1="${yBottom}" x2="${xLeft - 8}" y2="${yBottom}" stroke="#00ff88" stroke-width="1"/>`;
-    html += `<text x="${xLeft - 14}" y="${yTop + drawH / 2}" fill="#00ff88"
-              font-size="10" font-family="monospace" text-anchor="end"
-              transform="rotate(-90 ${xLeft - 14} ${yTop + drawH / 2})">H=${Math.round(H)}</text>`;
+    html += `<text x="${xLeft - 14}" y="${yTop + drawH / 2}" fill="#00ff88" font-size="10" font-family="monospace" text-anchor="end" transform="rotate(-90 ${xLeft - 14} ${yTop + drawH / 2})">H=${Math.round(H)}</text>`;
   }
 
   if (valid) {
@@ -1191,18 +1126,12 @@ function drawWallSvg(H, T, B, marks) {
       if (m.w === null) return;
       const y = yTop + (m.h / H) * drawH;
       const xR = xLeft + px(m.w);
-      html += `<line x1="${xLeft}" y1="${y}" x2="${xR}" y2="${y}"
-                stroke="${colors[i]}" stroke-width="1.6" stroke-dasharray="4 3"/>`;
-      html += `<text x="${xR + 6}" y="${y + 4}" fill="${colors[i]}"
-                font-size="11" font-family="monospace" font-weight="bold">${m.label}: ${Math.round(m.w)}mm</text>`;
-      html += `<text x="${xLeft + 4}" y="${y - 3}" fill="${colors[i]}"
-                font-size="9" font-family="monospace">↓${Math.round(m.h)}</text>`;
+      html += `<line x1="${xLeft}" y1="${y}" x2="${xR}" y2="${y}" stroke="${colors[i]}" stroke-width="1.6" stroke-dasharray="4 3"/>`;
+      html += `<text x="${xR + 6}" y="${y + 4}" fill="${colors[i]}" font-size="11" font-family="monospace" font-weight="bold">${m.label}: ${Math.round(m.w)}mm</text>`;
+      html += `<text x="${xLeft + 4}" y="${y - 3}" fill="${colors[i]}" font-size="9" font-family="monospace">↓${Math.round(m.h)}</text>`;
     });
   } else {
-    html += `<text x="${VB_W / 2}" y="${VB_H / 2}" fill="#4ad9c2"
-              font-size="11" font-family="monospace" text-anchor="middle">
-              H・T・勾配 を入力してください
-            </text>`;
+    html += `<text x="${VB_W / 2}" y="${VB_H / 2}" fill="#4ad9c2" font-size="11" font-family="monospace" text-anchor="middle">H・T・勾配 を入力してください</text>`;
   }
 
   svg.innerHTML = html;
@@ -1228,19 +1157,16 @@ function calcBlock() {
   }
 
   const perRow = Math.ceil(L_mm / len);
-  const cb = perRow * N;
-  cbEl.textContent = cb.toLocaleString() + ' 枚';
+  cbEl.textContent = (perRow * N).toLocaleString() + ' 枚';
 
   if (isFinite(vp) && vp > 0) {
-    const vbar = Math.ceil(L_mm / vp) + 1;
-    vbarEl.textContent = vbar + ' 本';
+    vbarEl.textContent = (Math.ceil(L_mm / vp) + 1) + ' 本';
   } else {
     vbarEl.textContent = '—';
   }
 
   if (isFinite(hp) && hp > 0) {
-    const hbar = Math.ceil(N / hp) * perRow;
-    hbarEl.textContent = hbar.toLocaleString() + ' 本';
+    hbarEl.textContent = (Math.ceil(N / hp) * perRow).toLocaleString() + ' 本';
   } else {
     hbarEl.textContent = '—';
   }
