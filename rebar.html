@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>鉄筋数量計算</title>
+<title>鉄筋拾い</title>
 <style>
   * {
     box-sizing: border-box;
@@ -12,30 +12,57 @@
   html, body {
     margin: 0;
     padding: 0;
-    background: #f4f6f5;
-    color: #1a1f1d;
+    background: #0a0e0d;
+    color: #e0fff8;
     font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
+    overscroll-behavior: none;
   }
   body {
     min-height: 100vh;
-    padding: 16px;
+    padding: 14px 14px 40px;
   }
   .app {
     max-width: 480px;
     margin: 0 auto;
   }
-  h1 {
+
+  /* ヘッダー */
+  .header {
+    text-align: center;
+    padding: 8px 0 14px;
+    border-bottom: 1px solid #0c3d3a;
+    margin-bottom: 14px;
+  }
+  .header h1 {
+    margin: 0;
     font-size: 20px;
-    font-weight: 700;
-    margin: 4px 0 16px;
-    color: #1a1f1d;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: #00ffd5;
+    text-shadow: 0 0 8px #00ffd560;
+  }
+  .header .sub {
+    margin-top: 2px;
+    font-size: 11px;
+    color: #4ad9c2;
     letter-spacing: 1px;
   }
-  h1 .sub {
+
+  /* カード */
+  .card {
+    background: linear-gradient(160deg, #0d2926, #061613);
+    border: 1px solid #00ffd540;
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 14px;
+    box-shadow: inset 0 0 12px #00ffd510, 0 2px 6px #000;
+  }
+  .card-title {
     font-size: 11px;
-    font-weight: 500;
-    color: #777;
-    margin-left: 8px;
+    color: #4ad9c2;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
   }
 
   /* タブ */
@@ -43,37 +70,37 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 8px;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
   }
   .tab {
-    background: #fff;
-    color: #555;
-    border: 1px solid #d6dcd9;
+    background: #0c1f1d;
+    color: #4ad9c2;
+    border: 1px solid #008c7a;
     padding: 14px;
     border-radius: 10px;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 700;
     cursor: pointer;
     text-align: center;
   }
-  .tab:active { background: #ecefee; }
+  .tab:active { background: #103631; }
   .tab.active {
-    background: #1a8c7a;
-    color: #fff;
-    border-color: #1a8c7a;
+    background: linear-gradient(160deg, #0d2926, #061613);
+    color: #00ffd5;
+    border-color: #00ffd5;
+    box-shadow: inset 0 0 12px #00ffd520;
   }
 
-  /* 鉄筋径セレクタ */
+  /* 鉄筋径 */
   .dia-row {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 6px;
-    margin-bottom: 12px;
   }
   .dia-btn {
-    background: #fff;
-    color: #555;
-    border: 1px solid #d6dcd9;
+    background: #061613;
+    color: #4ad9c2;
+    border: 1px solid #008c7a;
     padding: 10px 4px;
     border-radius: 8px;
     font-size: 14px;
@@ -81,42 +108,29 @@
     cursor: pointer;
     text-align: center;
   }
-  .dia-btn:active { background: #ecefee; }
+  .dia-btn:active { background: #103631; }
   .dia-btn.active {
-    background: #e6f4f1;
-    color: #1a8c7a;
-    border-color: #1a8c7a;
+    background: #0a2622;
+    color: #00ffd5;
+    border-color: #00ffd5;
+    box-shadow: 0 0 6px #00ffd530;
   }
 
   /* 入力 */
-  .group {
-    background: #fff;
-    border: 1px solid #e3e7e6;
-    border-radius: 12px;
-    padding: 14px;
-    margin-bottom: 14px;
-  }
-  .group-title {
-    font-size: 12px;
-    color: #888;
-    font-weight: 600;
-    margin-bottom: 10px;
-    letter-spacing: 0.5px;
-  }
-  .input-row { margin-bottom: 12px; }
+  .input-row { margin-bottom: 10px; }
   .input-row:last-child { margin-bottom: 0; }
   .input-row label {
     display: block;
     font-size: 13px;
-    color: #555;
+    color: #4ad9c2;
     margin-bottom: 4px;
     font-weight: 600;
   }
   .input-row input[type="number"] {
     width: 100%;
-    background: #fafbfa;
-    border: 1px solid #d6dcd9;
-    color: #1a1f1d;
+    background: #061613;
+    border: 1px solid #008c7a;
+    color: #00ffd5;
     padding: 12px;
     border-radius: 8px;
     font-size: 17px;
@@ -125,8 +139,8 @@
   }
   .input-row input[type="number"]:focus {
     outline: none;
-    border-color: #1a8c7a;
-    box-shadow: 0 0 0 2px #1a8c7a30;
+    border-color: #00ffd5;
+    box-shadow: 0 0 0 2px #00ffd530;
   }
   .grid-2 {
     display: grid;
@@ -134,48 +148,16 @@
     gap: 10px;
   }
 
-  /* 折りたたみ */
-  details {
-    background: #fff;
-    border: 1px solid #e3e7e6;
-    border-radius: 12px;
-    padding: 0;
-    margin-bottom: 14px;
-    overflow: hidden;
-  }
-  details > summary {
-    list-style: none;
-    cursor: pointer;
-    padding: 14px;
-    font-size: 13px;
-    font-weight: 700;
-    color: #555;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  details > summary::-webkit-details-marker { display: none; }
-  details > summary::after {
-    content: '▼';
-    font-size: 10px;
-    color: #999;
-    transition: transform .2s;
-  }
-  details[open] > summary::after { transform: rotate(180deg); }
-  details > .body {
-    padding: 0 14px 14px;
-  }
-
   /* トグル */
   .toggle-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 0;
+    padding: 6px 0;
   }
-  .toggle-row .label {
+  .toggle-row .lbl {
     font-size: 14px;
-    color: #333;
+    color: #cfeee8;
     font-weight: 600;
   }
   .switch {
@@ -183,12 +165,13 @@
     display: inline-block;
     width: 46px;
     height: 26px;
+    flex-shrink: 0;
   }
   .switch input { opacity: 0; width: 0; height: 0; }
   .slider {
     position: absolute; cursor: pointer;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: #ccc;
+    background: #2a3a36;
     border-radius: 999px;
     transition: .2s;
   }
@@ -196,23 +179,45 @@
     position: absolute; content: "";
     height: 20px; width: 20px;
     left: 3px; top: 3px;
-    background: #fff;
+    background: #cfeee8;
     border-radius: 50%;
     transition: .2s;
   }
-  .switch input:checked + .slider { background: #1a8c7a; }
-  .switch input:checked + .slider:before { transform: translateX(20px); }
-
+  .switch input:checked + .slider { background: #00ffd5; }
+  .switch input:checked + .slider:before { transform: translateX(20px); background: #061613; }
   .sub-input {
-    margin-top: 8px;
-    margin-left: 0;
+    margin-top: 6px;
+    margin-bottom: 4px;
   }
   .sub-input.hidden { display: none; }
 
+  /* 自動算出表示 */
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    background: #0a2622;
+    border: 1px dashed #00ffd580;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-top: 6px;
+  }
+  .info-row .lbl {
+    font-size: 12px;
+    color: #4ad9c2;
+    font-weight: 600;
+  }
+  .info-row .val {
+    font-size: 16px;
+    color: #00ffd5;
+    font-weight: 800;
+    font-family: "SF Mono", Menlo, monospace;
+  }
+
   /* 図 */
   .fig {
-    background: #fff;
-    border: 1px solid #e3e7e6;
+    background: #0a1f1c;
+    border: 1px solid #00ffd540;
     border-radius: 12px;
     padding: 14px;
     text-align: center;
@@ -221,38 +226,6 @@
   .fig svg {
     max-width: 100%;
     height: auto;
-  }
-
-  /* 結果 */
-  .result {
-    background: #fff;
-    border: 1px solid #e3e7e6;
-    border-radius: 12px;
-    padding: 4px 14px;
-    margin-bottom: 14px;
-  }
-  .result-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    padding: 14px 0;
-    border-bottom: 1px solid #eef2f0;
-  }
-  .result-row:last-child { border-bottom: none; }
-  .result-row .lbl {
-    font-size: 13px;
-    color: #777;
-    font-weight: 600;
-  }
-  .result-row .val {
-    font-size: 22px;
-    font-weight: 800;
-    color: #1a1f1d;
-    font-family: "SF Mono", Menlo, monospace;
-  }
-  .result-row.main .val {
-    font-size: 28px;
-    color: #1a8c7a;
   }
 
   /* 定着チェック */
@@ -267,19 +240,21 @@
     align-items: center;
   }
   .anchor-check.ok {
-    background: #e6f4f1;
-    color: #1a8c7a;
-    border: 1px solid #1a8c7a55;
+    background: #0d2e26;
+    color: #7af5b1;
+    border: 1px solid #7af5b188;
+    box-shadow: 0 0 8px #7af5b120;
   }
   .anchor-check.ng {
-    background: #fdecec;
-    color: #c1372e;
-    border: 1px solid #c1372e55;
+    background: #2a1010;
+    color: #ff9a9a;
+    border: 1px solid #ff9a9a88;
+    box-shadow: 0 0 8px #ff9a9a20;
   }
   .anchor-check.none {
-    background: #f0f3f2;
-    color: #888;
-    border: 1px solid #d6dcd9;
+    background: #0c1f1d;
+    color: #6a8a85;
+    border: 1px solid #2a3a36;
   }
   .anchor-check .small {
     font-size: 11px;
@@ -288,46 +263,109 @@
     opacity: 0.85;
   }
 
+  /* 結果 */
+  .result-box {
+    background: #061613;
+    border: 1px solid #00ff8855;
+    border-radius: 12px;
+    padding: 4px 14px;
+    margin-bottom: 14px;
+    box-shadow: inset 0 0 12px #00ff8810;
+  }
+  .result-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 12px 0;
+    border-bottom: 1px dashed #0c3d3a;
+  }
+  .result-row:last-child { border-bottom: none; }
+  .result-row .lbl {
+    font-size: 13px;
+    color: #4ad9c2;
+    font-weight: 600;
+  }
+  .result-row .val {
+    font-size: 22px;
+    font-weight: 800;
+    color: #00ff88;
+    text-shadow: 0 0 8px #00ff8850;
+    font-family: "SF Mono", Menlo, monospace;
+  }
+  .result-row.main .val {
+    font-size: 26px;
+    color: #ffe9a8;
+    text-shadow: 0 0 8px #ffd26630;
+  }
+
   .note {
     font-size: 11px;
-    color: #888;
+    color: #6a8a85;
     line-height: 1.6;
-    margin-top: 8px;
+    margin-top: 10px;
+  }
+
+  /* リセット */
+  .reset-btn {
+    background: #2a0e0e;
+    color: #ff7a7a;
+    border: 1px solid #ff7a7a55;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .reset-btn:active { background: #3a1010; }
+
+  .sec-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
   }
 </style>
 </head>
 <body>
 <div class="app">
 
-  <h1>鉄筋数量計算<span class="sub">材料拾い目安</span></h1>
+  <div class="header">
+    <h1>🔩 鉄筋拾い</h1>
+    <div class="sub">REBAR ESTIMATOR</div>
+  </div>
+
+  <div class="sec-head">
+    <span style="color:#00ffd5; font-size:13px; font-weight:700; letter-spacing:1px;">材料拾い目安</span>
+    <button class="reset-btn" onclick="resetAll()">リセット</button>
+  </div>
 
   <!-- モードタブ -->
   <div class="tabs">
-    <button class="tab active" id="tabStraight" onclick="setMode('S')">直線筋</button>
+    <button class="tab active" id="tabS" onclick="setMode('S')">直線筋</button>
     <button class="tab" id="tabL" onclick="setMode('L')">L型筋</button>
   </div>
 
   <!-- 鉄筋径 -->
-  <div class="group">
-    <div class="group-title">鉄筋径</div>
+  <div class="card">
+    <div class="card-title">鉄筋径</div>
     <div class="dia-row">
       <button class="dia-btn active" data-dia="D10" onclick="setDia('D10')">D10</button>
       <button class="dia-btn" data-dia="D13" onclick="setDia('D13')">D13</button>
       <button class="dia-btn" data-dia="D16" onclick="setDia('D16')">D16</button>
       <button class="dia-btn" data-dia="D19" onclick="setDia('D19')">D19</button>
     </div>
-    <div class="result-row" style="padding:6px 0; border:none;">
-      <span class="lbl">定着長（40d）</span>
-      <span class="val" id="rAnchor" style="font-size:18px; color:#1a8c7a;">—</span>
+    <div class="info-row">
+      <span class="lbl">定着長 40d / 曲げロス / 単重</span>
+      <span class="val" id="rDiaInfo">— / — / —</span>
     </div>
   </div>
 
   <!-- 直線筋 入力 -->
-  <div id="paneStraight">
-    <div class="group">
-      <div class="group-title">直線筋 入力</div>
+  <div id="paneS">
+    <div class="card">
+      <div class="card-title">直線筋 入力</div>
       <div class="input-row">
-        <label>対象長さ L（mm）</label>
+        <label>施工延長 L（mm）</label>
         <input type="number" id="sL" inputmode="decimal" placeholder="例: 5000">
       </div>
       <div class="grid-2">
@@ -340,20 +378,47 @@
           <input type="number" id="sCover" inputmode="decimal" value="40">
         </div>
       </div>
+
+      <div class="toggle-row">
+        <span class="lbl">左定着を切寸に加算</span>
+        <label class="switch"><input type="checkbox" id="sLeftOn"><span class="slider"></span></label>
+      </div>
+      <div class="sub-input hidden" id="sLeftWrap">
+        <div class="input-row">
+          <label>左定着長（mm）</label>
+          <input type="number" id="sLeftLen" inputmode="decimal" placeholder="自動：40d">
+        </div>
+      </div>
+
+      <div class="toggle-row">
+        <span class="lbl">右定着を切寸に加算</span>
+        <label class="switch"><input type="checkbox" id="sRightOn"><span class="slider"></span></label>
+      </div>
+      <div class="sub-input hidden" id="sRightWrap">
+        <div class="input-row">
+          <label>右定着長（mm）</label>
+          <input type="number" id="sRightLen" inputmode="decimal" placeholder="自動：40d">
+        </div>
+      </div>
+
+      <div class="input-row" style="margin-top:10px;">
+        <label>定尺長（mm）</label>
+        <input type="number" id="sStock" inputmode="decimal" value="4000">
+      </div>
     </div>
   </div>
 
   <!-- L型筋 入力 -->
   <div id="paneL" style="display:none;">
-    <div class="group">
-      <div class="group-title">L型筋 入力</div>
+    <div class="card">
+      <div class="card-title">L型筋 入力</div>
       <div class="grid-2">
         <div class="input-row">
           <label>高さ H（mm）</label>
           <input type="number" id="lH" inputmode="decimal" placeholder="例: 1500">
         </div>
         <div class="input-row">
-          <label>底幅 B（mm）</label>
+          <label>ベース幅 B（mm）</label>
           <input type="number" id="lB" inputmode="decimal" placeholder="例: 600">
         </div>
       </div>
@@ -367,54 +432,54 @@
           <input type="number" id="lCover" inputmode="decimal" value="40">
         </div>
       </div>
-    </div>
 
-    <details>
-      <summary>折り返し設定</summary>
-      <div class="body">
-        <div class="toggle-row">
-          <span class="label">上部折り返し</span>
-          <label class="switch"><input type="checkbox" id="lTop"><span class="slider"></span></label>
-        </div>
-        <div class="sub-input hidden" id="lTopWrap">
-          <div class="input-row">
-            <label>上部折り返し長（mm）</label>
-            <input type="number" id="lTopLen" inputmode="decimal" placeholder="自動：10d">
-          </div>
-        </div>
-
-        <div class="toggle-row">
-          <span class="label">下部折り返し</span>
-          <label class="switch"><input type="checkbox" id="lBot"><span class="slider"></span></label>
-        </div>
-        <div class="sub-input hidden" id="lBotWrap">
-          <div class="input-row">
-            <label>下部折り返し長（mm）</label>
-            <input type="number" id="lBotLen" inputmode="decimal" placeholder="自動：10d">
-          </div>
+      <div class="toggle-row">
+        <span class="lbl">上部折り返し</span>
+        <label class="switch"><input type="checkbox" id="lTopOn"><span class="slider"></span></label>
+      </div>
+      <div class="sub-input hidden" id="lTopWrap">
+        <div class="input-row">
+          <label>上部折り返し長（mm）</label>
+          <input type="number" id="lTopLen" inputmode="decimal" placeholder="自動：10d">
         </div>
       </div>
-    </details>
+
+      <div class="toggle-row">
+        <span class="lbl">下部折り返し</span>
+        <label class="switch"><input type="checkbox" id="lBotOn"><span class="slider"></span></label>
+      </div>
+      <div class="sub-input hidden" id="lBotWrap">
+        <div class="input-row">
+          <label>下部折り返し長（mm）</label>
+          <input type="number" id="lBotLen" inputmode="decimal" placeholder="自動：10d">
+        </div>
+      </div>
+
+      <div class="input-row" style="margin-top:10px;">
+        <label>定尺長（mm）</label>
+        <input type="number" id="lStock" inputmode="decimal" value="4000">
+      </div>
+    </div>
   </div>
 
-  <!-- 図（L型のみ表示） -->
-  <div class="fig" id="figWrap">
-    <svg id="fig" viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg"></svg>
+  <!-- 図（L型のみ） -->
+  <div class="fig" id="figWrap" style="display:none;">
+    <svg id="fig" viewBox="0 0 320 240" xmlns="http://www.w3.org/2000/svg"></svg>
   </div>
 
   <!-- 定着チェック -->
   <div class="anchor-check none" id="anchorCheck">
     <div>
       <div>定着チェック</div>
-      <div class="small" id="anchorCheckSmall">入力待ち</div>
+      <div class="small" id="anchorMsg">入力待ち</div>
     </div>
-    <div id="anchorCheckIcon">—</div>
+    <div id="anchorIcon">—</div>
   </div>
 
   <!-- 結果 -->
-  <div class="result">
+  <div class="result-box">
     <div class="result-row">
-      <span class="lbl">本数</span>
+      <span class="lbl">必要本数</span>
       <span class="val" id="rCount">—</span>
     </div>
     <div class="result-row">
@@ -425,38 +490,48 @@
       <span class="lbl">総延長</span>
       <span class="val" id="rTotal">—</span>
     </div>
-    <div class="result-row main">
+    <div class="result-row">
       <span class="lbl">総重量</span>
       <span class="val" id="rWeight">—</span>
+    </div>
+    <div class="result-row">
+      <span class="lbl">定尺1本から取れる本数</span>
+      <span class="val" id="rPerStock">—</span>
+    </div>
+    <div class="result-row main">
+      <span class="lbl">定尺必要本数</span>
+      <span class="val" id="rStockCount">—</span>
     </div>
   </div>
 
   <div class="note">
     ※ 構造計算ではなく材料拾いの目安です。<br>
-    ※ かぶり・定着・継手・ロスは設計図・現場条件を優先してください。
+    ※ かぶり・定着・継手・納まりは設計図・現場条件を優先してください。<br>
+    ※ 入力値は自動保存されます。
   </div>
 
 </div>
 
 <script>
-// 鉄筋径ごとの定数
+/* 鉄筋径ごとの定数 */
 const DIA_TABLE = {
-  D10: { d: 10, bendLoss: 50, unit: 0.560 },
-  D13: { d: 13, bendLoss: 60, unit: 0.995 },
-  D16: { d: 16, bendLoss: 70, unit: 1.56 },
-  D19: { d: 19, bendLoss: 80, unit: 2.25 }
+  D10: { d: 10, anchor: 400, bendLoss: 50, unit: 0.560 },
+  D13: { d: 13, anchor: 520, bendLoss: 60, unit: 0.995 },
+  D16: { d: 16, anchor: 640, bendLoss: 70, unit: 1.56  },
+  D19: { d: 19, anchor: 760, bendLoss: 80, unit: 2.25  }
 };
 
-let currentMode = 'S'; // 'S' | 'L'
+let currentMode = 'S';
 let currentDia  = 'D10';
 
-function $(id) { return document.getElementById(id); }
+const $ = (id) => document.getElementById(id);
+const num = (id) => { const v = parseFloat($(id).value); return isFinite(v) ? v : NaN; };
 
 function setMode(m) {
   currentMode = m;
-  $('tabStraight').classList.toggle('active', m === 'S');
+  $('tabS').classList.toggle('active', m === 'S');
   $('tabL').classList.toggle('active', m === 'L');
-  $('paneStraight').style.display = (m === 'S') ? '' : 'none';
+  $('paneS').style.display = (m === 'S') ? '' : 'none';
   $('paneL').style.display = (m === 'L') ? '' : 'none';
   $('figWrap').style.display = (m === 'L') ? '' : 'none';
   calc();
@@ -470,48 +545,50 @@ function setDia(d) {
   calc();
 }
 
-function num(id) {
-  const v = parseFloat($(id).value);
-  return isFinite(v) ? v : NaN;
-}
-
 function clearResults() {
   $('rCount').textContent = '—';
   $('rPerLen').textContent = '—';
   $('rTotal').textContent = '—';
   $('rWeight').textContent = '—';
-  setAnchor('none', '入力待ち', '—');
+  $('rPerStock').textContent = '—';
+  $('rStockCount').textContent = '—';
 }
-
 function setAnchor(state, msg, icon) {
   const el = $('anchorCheck');
   el.classList.remove('ok','ng','none');
   el.classList.add(state);
-  $('anchorCheckSmall').textContent = msg;
-  $('anchorCheckIcon').textContent = icon;
+  $('anchorMsg').textContent = msg;
+  $('anchorIcon').textContent = icon;
 }
 
 function calc() {
   const dia = DIA_TABLE[currentDia];
-  const anchor = dia.d * 40;
-  $('rAnchor').textContent = anchor + ' mm';
+  $('rDiaInfo').textContent = dia.anchor + 'mm / ' + dia.bendLoss + 'mm / ' + dia.unit + 'kg/m';
 
-  if (currentMode === 'S') {
-    calcStraight(dia, anchor);
-  } else {
-    calcL(dia, anchor);
-  }
+  if (currentMode === 'S') calcStraight(dia);
+  else                     calcL(dia);
+
   drawFig();
   saveAll();
 }
 
-function calcStraight(dia, anchor) {
+function calcStraight(dia) {
   const L     = num('sL');
   const pitch = num('sPitch');
   const cover = num('sCover');
+  const stock = num('sStock');
 
-  if (!isFinite(L) || L <= 0 || !isFinite(pitch) || pitch <= 0 || !isFinite(cover) || cover < 0) {
+  const leftOn  = $('sLeftOn').checked;
+  const rightOn = $('sRightOn').checked;
+  let leftLen  = num('sLeftLen');
+  let rightLen = num('sRightLen');
+  if (!isFinite(leftLen)  || leftLen  <= 0) leftLen  = dia.anchor;
+  if (!isFinite(rightLen) || rightLen <= 0) rightLen = dia.anchor;
+
+  if (!isFinite(L) || L <= 0 || !isFinite(pitch) || pitch <= 0
+      || !isFinite(cover) || cover < 0 || !isFinite(stock) || stock <= 0) {
     clearResults();
+    setAnchor('none', '入力待ち', '—');
     return;
   }
 
@@ -523,38 +600,65 @@ function calcStraight(dia, anchor) {
   }
 
   const count = Math.floor(eff / pitch) + 1;
-  const perLen = L + anchor + anchor; // 左右定着
-  const total = perLen * count;
+
+  let perLen = L;
+  if (leftOn)  perLen += leftLen;
+  if (rightOn) perLen += rightLen;
+
+  const total  = perLen * count;
   const weight = (total / 1000) * dia.unit;
 
-  $('rCount').textContent = count.toLocaleString() + ' 本';
+  $('rCount').textContent  = count.toLocaleString() + ' 本';
   $('rPerLen').textContent = Math.round(perLen).toLocaleString() + ' mm';
-  $('rTotal').textContent = (total / 1000).toFixed(2) + ' m';
+  $('rTotal').textContent  = (total / 1000).toFixed(2) + ' m';
   $('rWeight').textContent = weight.toFixed(2) + ' kg';
 
-  // 直線筋では定着チェックの基準が違うので簡易的に「定着OK」表示はせず、参考表示
-  setAnchor('none', '定着長は両端 ' + anchor + 'mm（40d）として計算', 'i');
+  const perStock = Math.floor(stock / perLen);
+  if (perStock <= 0) {
+    $('rPerStock').textContent = '定尺不足';
+    $('rStockCount').textContent = '—';
+  } else {
+    const stockCount = Math.ceil(count / perStock);
+    $('rPerStock').textContent  = perStock + ' 本/定尺';
+    $('rStockCount').textContent = stockCount.toLocaleString() + ' 本';
+  }
+
+  // 直線筋の定着チェック：両端の余長で40dを満たすか（ON時のみ）
+  if (!leftOn && !rightOn) {
+    setAnchor('none', '左右定着OFF（両端納まりは別途確認）', 'i');
+  } else {
+    let okMsg = [];
+    let ngMsg = [];
+    if (leftOn)  (leftLen  >= dia.anchor) ? okMsg.push('左 ' + leftLen  + 'mm') : ngMsg.push('左 ' + leftLen  + 'mm');
+    if (rightOn) (rightLen >= dia.anchor) ? okMsg.push('右 ' + rightLen + 'mm') : ngMsg.push('右 ' + rightLen + 'mm');
+    if (ngMsg.length === 0) {
+      setAnchor('ok', okMsg.join(' / ') + ' ≧ 40d(' + dia.anchor + 'mm)', 'OK');
+    } else {
+      setAnchor('ng', ngMsg.join(' / ') + ' < 40d(' + dia.anchor + 'mm)', '不足');
+    }
+  }
 }
 
-function calcL(dia, anchor) {
+function calcL(dia) {
   const H     = num('lH');
   const B     = num('lB');
   const pitch = num('lPitch');
   const cover = num('lCover');
+  const stock = num('lStock');
 
-  const topOn = $('lTop').checked;
-  const botOn = $('lBot').checked;
-
-  // 折り返し長：未入力なら 10d
-  const tenD = dia.d * 10;
+  const topOn = $('lTopOn').checked;
+  const botOn = $('lBotOn').checked;
   let topLen = num('lTopLen');
   let botLen = num('lBotLen');
+  const tenD = dia.d * 10;
   if (!isFinite(topLen) || topLen <= 0) topLen = tenD;
   if (!isFinite(botLen) || botLen <= 0) botLen = tenD;
 
   if (!isFinite(H) || H <= 0 || !isFinite(B) || B <= 0
-      || !isFinite(pitch) || pitch <= 0 || !isFinite(cover) || cover < 0) {
+      || !isFinite(pitch) || pitch <= 0 || !isFinite(cover) || cover < 0
+      || !isFinite(stock) || stock <= 0) {
     clearResults();
+    setAnchor('none', '入力待ち', '—');
     return;
   }
 
@@ -567,53 +671,59 @@ function calcL(dia, anchor) {
 
   const count = Math.floor(eff / pitch) + 1;
 
-  // 1本切寸 = H + B + 定着 + 曲げロス
-  let perLen = H + B + anchor + dia.bendLoss;
+  // 1本切寸（定着40dは加算しない）
+  let perLen = H + B + dia.bendLoss;
   if (topOn) perLen += topLen;
   if (botOn) perLen += botLen;
 
-  const total = perLen * count;
+  const total  = perLen * count;
   const weight = (total / 1000) * dia.unit;
 
-  $('rCount').textContent = count.toLocaleString() + ' 本';
+  $('rCount').textContent  = count.toLocaleString() + ' 本';
   $('rPerLen').textContent = Math.round(perLen).toLocaleString() + ' mm';
-  $('rTotal').textContent = (total / 1000).toFixed(2) + ' m';
+  $('rTotal').textContent  = (total / 1000).toFixed(2) + ' m';
   $('rWeight').textContent = weight.toFixed(2) + ' kg';
 
-  // 定着チェック（ベース側）
+  const perStock = Math.floor(stock / perLen);
+  if (perStock <= 0) {
+    $('rPerStock').textContent = '定尺不足';
+    $('rStockCount').textContent = '—';
+  } else {
+    const stockCount = Math.ceil(count / perStock);
+    $('rPerStock').textContent  = perStock + ' 本/定尺';
+    $('rStockCount').textContent = stockCount.toLocaleString() + ' 本';
+  }
+
+  // 定着チェック（ベース幅 - かぶり×2 ≧ 40d）
   const baseEff = B - cover * 2;
-  if (baseEff >= anchor) {
-    setAnchor('ok', '有効長 ' + Math.round(baseEff) + 'mm ≧ 定着 ' + anchor + 'mm', 'OK');
+  if (baseEff >= dia.anchor) {
+    setAnchor('ok',
+      '有効ベース ' + Math.round(baseEff) + 'mm ≧ 40d(' + dia.anchor + 'mm)',
+      'OK');
   } else {
     setAnchor('ng',
-      '有効長 ' + Math.round(baseEff) + 'mm < 定着 ' + anchor + 'mm（フック等を検討）',
+      '有効ベース ' + Math.round(baseEff) + 'mm < 40d(' + dia.anchor + 'mm)（納まり確認・フック等検討）',
       '不足');
   }
 }
 
-// L型図
+/* L型図（簡略） */
 function drawFig() {
+  if (currentMode !== 'L') return;
   const svg = $('fig');
-  const VB_W = 320, VB_H = 220;
-  if (currentMode !== 'L') {
-    svg.innerHTML = '';
-    return;
-  }
+  const VB_W = 320, VB_H = 240;
 
   const H = num('lH');
   const B = num('lB');
   const cover = num('lCover');
   const dia = DIA_TABLE[currentDia];
-  const anchor = dia.d * 40;
 
-  let html = '';
   if (!isFinite(H) || H <= 0 || !isFinite(B) || B <= 0) {
-    html += `<text x="${VB_W/2}" y="${VB_H/2}" fill="#999" font-size="12" font-family="sans-serif" text-anchor="middle">H・B を入力してください</text>`;
-    svg.innerHTML = html;
+    svg.innerHTML = `<text x="${VB_W/2}" y="${VB_H/2}" fill="#4ad9c2" font-size="12" font-family="monospace" text-anchor="middle">H・B を入力してください</text>`;
     return;
   }
 
-  const padL = 50, padR = 70, padT = 25, padB = 45;
+  const padL = 50, padR = 50, padT = 25, padB = 50;
   const drawW = VB_W - padL - padR;
   const drawH = VB_H - padT - padB;
 
@@ -628,81 +738,91 @@ function drawFig() {
   const xR = x0 + wB;
   const yT = y0 - wH;
 
-  // L型筋本体（縦→曲げ→横）。フックは描かない指示なので両端は直線で終了。
-  const r = Math.max(Math.min(wH, wB) * 0.06, 6);
-  const ancPxV = Math.min(anchor * s, wB * 0.4); // 上端定着の見た目（左へ折る代わりに上で停止表現）
-  const ancPxH = Math.min(anchor * s, wH * 0.3);
-
-  // 縦筋（左寄り、被り分内側）
   const covPx = Math.max(cover * s, 4);
-  const xV = x0 + covPx;
-  const yV_top = yT + 6; // 上端（少し内側）
-  const yBase  = y0 - covPx;
-  const xH_end = xR - 6;
 
-  const path =
-    `M ${xV} ${yV_top} ` +
+  let html = '';
+
+  // L型外形（薄い参考枠：縦壁＋底版）
+  const stemW = Math.max(wB * 0.18, 16);
+  const baseT = Math.max(wH * 0.16, 16);
+  const concPath =
+    `M ${x0} ${yT} L ${x0 + stemW} ${yT} ` +
+    `L ${x0 + stemW} ${y0 - baseT} L ${xR} ${y0 - baseT} ` +
+    `L ${xR} ${y0} L ${x0} ${y0} Z`;
+  html += `<path d="${concPath}" fill="#0d2926" stroke="#00ffd540" stroke-width="1.5" stroke-linejoin="round"/>`;
+
+  // L型筋（太めの丸線、フックなし）
+  const xV = x0 + covPx;             // 縦筋x（被り内側）
+  const yVtop = yT + covPx;          // 縦筋上端（被り）
+  const yBase = y0 - covPx;          // 底筋y（被り）
+  const xBend = xV;                  // 折れ位置
+  const xHend = xR - covPx;          // 底筋右端
+  const r = Math.max(Math.min(wH, wB) * 0.05, 6);
+
+  const rebarPath =
+    `M ${xV} ${yVtop} ` +
     `L ${xV} ${yBase - r} ` +
     `A ${r} ${r} 0 0 0 ${xV + r} ${yBase} ` +
-    `L ${xH_end} ${yBase}`;
-
-  html += `<path d="${path}" fill="none" stroke="#1a8c7a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>`;
-
-  // L型コンクリ外形（補助：薄い線）
-  const stemW = Math.max(wB * 0.20, 18);
-  const baseT = Math.max(wH * 0.18, 18);
-  const concPath =
-    `M ${x0} ${yT} L ${x0 + stemW} ${yT} L ${x0 + stemW} ${y0 - baseT} L ${xR} ${y0 - baseT} L ${xR} ${y0} L ${x0} ${y0} Z`;
-  html = `<path d="${concPath}" fill="#f4f6f5" stroke="#d6dcd9" stroke-width="1.5" stroke-linejoin="round"/>` + html;
+    `L ${xHend} ${yBase}`;
+  html += `<path d="${rebarPath}" fill="none" stroke="#7af5ff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>`;
 
   // 寸法線：H（左外）
-  html += `<line x1="${x0 - 18}" y1="${yT}" x2="${x0 - 18}" y2="${y0}" stroke="#888" stroke-width="1"/>`;
-  html += `<line x1="${x0 - 22}" y1="${yT}" x2="${x0 - 14}" y2="${yT}" stroke="#888" stroke-width="1"/>`;
-  html += `<line x1="${x0 - 22}" y1="${y0}" x2="${x0 - 14}" y2="${y0}" stroke="#888" stroke-width="1"/>`;
-  html += `<text x="${x0 - 20}" y="${(yT + y0)/2}" fill="#555" font-size="11" font-family="monospace" text-anchor="middle" transform="rotate(-90 ${x0 - 20} ${(yT + y0)/2})">H=${Math.round(H)}</text>`;
+  html += `<line x1="${x0 - 18}" y1="${yT}" x2="${x0 - 18}" y2="${y0}" stroke="#00ff88" stroke-width="1"/>`;
+  html += `<line x1="${x0 - 22}" y1="${yT}" x2="${x0 - 14}" y2="${yT}" stroke="#00ff88" stroke-width="1"/>`;
+  html += `<line x1="${x0 - 22}" y1="${y0}" x2="${x0 - 14}" y2="${y0}" stroke="#00ff88" stroke-width="1"/>`;
+  html += `<text x="${x0 - 20}" y="${(yT + y0)/2}" fill="#00ff88"
+            font-size="10" font-family="monospace" text-anchor="middle"
+            transform="rotate(-90 ${x0 - 20} ${(yT + y0)/2})">H=${Math.round(H)}</text>`;
 
   // 寸法線：B（下外）
-  html += `<line x1="${x0}" y1="${y0 + 18}" x2="${xR}" y2="${y0 + 18}" stroke="#888" stroke-width="1"/>`;
-  html += `<line x1="${x0}" y1="${y0 + 14}" x2="${x0}" y2="${y0 + 22}" stroke="#888" stroke-width="1"/>`;
-  html += `<line x1="${xR}" y1="${y0 + 14}" x2="${xR}" y2="${y0 + 22}" stroke="#888" stroke-width="1"/>`;
-  html += `<text x="${(x0 + xR)/2}" y="${y0 + 32}" fill="#555" font-size="11" font-family="monospace" text-anchor="middle">B=${Math.round(B)}</text>`;
+  html += `<line x1="${x0}" y1="${y0 + 18}" x2="${xR}" y2="${y0 + 18}" stroke="#00ff88" stroke-width="1"/>`;
+  html += `<line x1="${x0}" y1="${y0 + 14}" x2="${x0}" y2="${y0 + 22}" stroke="#00ff88" stroke-width="1"/>`;
+  html += `<line x1="${xR}" y1="${y0 + 14}" x2="${xR}" y2="${y0 + 22}" stroke="#00ff88" stroke-width="1"/>`;
+  html += `<text x="${(x0 + xR)/2}" y="${y0 + 32}" fill="#00ff88"
+            font-size="10" font-family="monospace" text-anchor="middle">B=${Math.round(B)}</text>`;
 
-  // 定着長ラベル（ベース側）
-  html += `<text x="${xH_end}" y="${yBase - 6}" fill="#c97a16" font-size="11" font-family="monospace" text-anchor="end" font-weight="bold">定着 ${anchor}mm</text>`;
+  // 定着チェックの注記（B側）
+  const baseEff = B - cover * 2;
+  const okAnchor = baseEff >= dia.anchor;
+  const noteCol = okAnchor ? '#7af5b1' : '#ff9a9a';
+  const noteTxt = okAnchor
+    ? '定着OK (' + Math.round(baseEff) + ' ≧ ' + dia.anchor + ')'
+    : '定着不足 (' + Math.round(baseEff) + ' < ' + dia.anchor + ')';
+  html += `<text x="${(x0 + xR)/2}" y="${yBase - 8}" fill="${noteCol}"
+            font-size="10" font-family="monospace" text-anchor="middle" font-weight="bold">${noteTxt}</text>`;
 
   svg.innerHTML = html;
 }
 
-/* 折り返しトグルの表示制御 */
-function bindToggles() {
-  $('lTop').addEventListener('change', () => {
-    $('lTopWrap').classList.toggle('hidden', !$('lTop').checked);
-    calc();
-  });
-  $('lBot').addEventListener('change', () => {
-    $('lBotWrap').classList.toggle('hidden', !$('lBot').checked);
-    calc();
-  });
-}
+/* トグル & 入力バインド */
+function bindUI() {
+  // トグル表示連動
+  $('sLeftOn').addEventListener('change',  () => { $('sLeftWrap').classList.toggle('hidden', !$('sLeftOn').checked); calc(); });
+  $('sRightOn').addEventListener('change', () => { $('sRightWrap').classList.toggle('hidden', !$('sRightOn').checked); calc(); });
+  $('lTopOn').addEventListener('change',   () => { $('lTopWrap').classList.toggle('hidden', !$('lTopOn').checked); calc(); });
+  $('lBotOn').addEventListener('change',   () => { $('lBotWrap').classList.toggle('hidden', !$('lBotOn').checked); calc(); });
 
-/* 入力イベントを一括バインド */
-function bindInputs() {
-  ['sL','sPitch','sCover',
-   'lH','lB','lPitch','lCover','lTopLen','lBotLen']
+  // 入力連動
+  ['sL','sPitch','sCover','sLeftLen','sRightLen','sStock',
+   'lH','lB','lPitch','lCover','lTopLen','lBotLen','lStock']
    .forEach(id => $(id).addEventListener('input', calc));
 }
 
-/* localStorage 保存・復元 */
-const KEY = 'rebarSimple_v1';
+/* localStorage */
+const KEY = 'rebarPickV2';
 function saveAll() {
   try {
     const data = {
       mode: currentMode,
       dia:  currentDia,
       sL: $('sL').value, sPitch: $('sPitch').value, sCover: $('sCover').value,
+      sLeftOn: $('sLeftOn').checked,   sLeftLen:  $('sLeftLen').value,
+      sRightOn: $('sRightOn').checked, sRightLen: $('sRightLen').value,
+      sStock: $('sStock').value,
       lH: $('lH').value, lB: $('lB').value, lPitch: $('lPitch').value, lCover: $('lCover').value,
-      lTop: $('lTop').checked, lTopLen: $('lTopLen').value,
-      lBot: $('lBot').checked, lBotLen: $('lBotLen').value
+      lTopOn: $('lTopOn').checked, lTopLen: $('lTopLen').value,
+      lBotOn: $('lBotOn').checked, lBotLen: $('lBotLen').value,
+      lStock: $('lStock').value
     };
     localStorage.setItem(KEY, JSON.stringify(data));
   } catch (e) {}
@@ -714,18 +834,47 @@ function loadAll() {
     const d = JSON.parse(raw);
     if (d.mode) currentMode = d.mode;
     if (d.dia)  currentDia  = d.dia;
-    ['sL','sPitch','sCover','lH','lB','lPitch','lCover','lTopLen','lBotLen'].forEach(id => {
+    ['sL','sPitch','sCover','sLeftLen','sRightLen','sStock',
+     'lH','lB','lPitch','lCover','lTopLen','lBotLen','lStock'].forEach(id => {
       if (d[id] !== undefined && d[id] !== null && d[id] !== '') $(id).value = d[id];
     });
-    if (d.lTop) { $('lTop').checked = true; $('lTopWrap').classList.remove('hidden'); }
-    if (d.lBot) { $('lBot').checked = true; $('lBotWrap').classList.remove('hidden'); }
+    if (d.sLeftOn)  { $('sLeftOn').checked  = true; $('sLeftWrap').classList.remove('hidden'); }
+    if (d.sRightOn) { $('sRightOn').checked = true; $('sRightWrap').classList.remove('hidden'); }
+    if (d.lTopOn)   { $('lTopOn').checked   = true; $('lTopWrap').classList.remove('hidden'); }
+    if (d.lBotOn)   { $('lBotOn').checked   = true; $('lBotWrap').classList.remove('hidden'); }
   } catch (e) {}
+}
+
+function resetAll() {
+  if (!confirm('入力値をリセットしますか？')) return;
+  currentMode = 'S';
+  currentDia  = 'D10';
+
+  // 直線
+  $('sL').value = ''; $('sPitch').value = '200'; $('sCover').value = '40';
+  $('sLeftOn').checked = false; $('sLeftLen').value = '';
+  $('sRightOn').checked = false; $('sRightLen').value = '';
+  $('sStock').value = '4000';
+  $('sLeftWrap').classList.add('hidden');
+  $('sRightWrap').classList.add('hidden');
+
+  // L型
+  $('lH').value = ''; $('lB').value = ''; $('lPitch').value = '200'; $('lCover').value = '40';
+  $('lTopOn').checked = false; $('lTopLen').value = '';
+  $('lBotOn').checked = false; $('lBotLen').value = '';
+  $('lStock').value = '4000';
+  $('lTopWrap').classList.add('hidden');
+  $('lBotWrap').classList.add('hidden');
+
+  try { localStorage.removeItem(KEY); } catch (e) {}
+
+  document.querySelectorAll('.dia-btn').forEach(b => b.classList.toggle('active', b.dataset.dia === 'D10'));
+  setMode('S');
 }
 
 /* 起動 */
 loadAll();
-bindToggles();
-bindInputs();
+bindUI();
 setMode(currentMode);
 setDia(currentDia);
 </script>
