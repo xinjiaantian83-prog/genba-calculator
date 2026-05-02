@@ -74,7 +74,19 @@
     box-shadow: inset 0 0 12px #00ffd520;
     text-shadow: 0 0 6px #00ffd560;
   }
+  /* L型タブのアクティブだけは青系で示す */
+  .mode-tab#tabL.active {
+    background: linear-gradient(160deg, #0d2245, #061130);
+    color: #6bb8ff;
+    border-color: #6bb8ff;
+    box-shadow: inset 0 0 12px #6bb8ff20;
+    text-shadow: 0 0 6px #6bb8ff60;
+  }
 
+  /* =========================================================
+     ========== 直壁モード（シアン系：既存スタイル） ==========
+     既存の .card / .result-box / .dia-btn などの定義
+  ========================================================== */
   .card {
     background: linear-gradient(160deg, #0d2926, #061613);
     border: 1px solid #00ffd540;
@@ -91,7 +103,6 @@
     margin-bottom: 6px;
   }
 
-  /* 入力2カラム（スマホでも2列維持、極小画面のみ1列） */
   .input-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -127,7 +138,6 @@
     box-shadow: 0 0 0 2px #00ffd530;
   }
 
-  /* 既存の grid-2 は input-grid と同じ振る舞い */
   .grid-2 {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -221,7 +231,6 @@
     text-align: center;
   }
 
-  /* 結果2カラム + 合計フル幅 */
   .result-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -277,6 +286,90 @@
 
   .mode-section { display: none; }
   .mode-section.active { display: block; }
+
+
+  /* =========================================================
+     ========== L型擁壁モード（青系：上書きスタイル） ==========
+     #modeL 配下に限定して既存スタイルを完全に置換
+  ========================================================== */
+  /* 背景の枠 */
+  #modeL .card {
+    background: linear-gradient(160deg, #0d2245, #06112a);
+    border: 1px solid #6bb8ff40;
+    box-shadow: inset 0 0 12px #6bb8ff10, 0 2px 6px #000;
+  }
+  #modeL .card-title {
+    color: #9bd0ff;
+  }
+
+  /* 入力ラベル・入力ボックス */
+  #modeL .input-row label {
+    color: #9bd0ff;
+  }
+  #modeL .input-row input[type="number"] {
+    background: #050d1f;
+    border: 1px solid #2f6dc4;
+    color: #6bb8ff;
+  }
+  #modeL .input-row input[type="number"]:focus {
+    border-color: #6bb8ff;
+    box-shadow: 0 0 0 2px #6bb8ff30;
+  }
+
+  /* 鉄筋径ボタン */
+  #modeL .dia-btn {
+    background: #050d1f;
+    color: #9bd0ff;
+    border: 1px solid #2f6dc4;
+  }
+  #modeL .dia-btn:active { background: #0f2350; }
+  #modeL .dia-btn.active {
+    background: #0a1a3a;
+    color: #6bb8ff;
+    border-color: #6bb8ff;
+    box-shadow: 0 0 6px #6bb8ff30;
+  }
+
+  /* セクションタイトル */
+  #modeL .section-title {
+    color: #6bb8ff;
+    border-left: 4px solid #4aa3ff;
+    text-shadow: 0 0 6px #6bb8ff40;
+  }
+
+  /* 結果ボックス・行・点線 */
+  #modeL .result-box {
+    background: #050d1f;
+    border: 1px solid #4aa3ff55;
+    box-shadow: inset 0 0 12px #4aa3ff10;
+  }
+  #modeL .result-row {
+    border-bottom: 1px dashed #133166;
+  }
+  #modeL .result-row:last-child { border-bottom: none; }
+  #modeL .result-row .lbl {
+    color: #9bd0ff;
+  }
+  #modeL .result-row .val {
+    color: #4aa3ff;
+    text-shadow: 0 0 6px #4aa3ff50;
+  }
+  #modeL .result-row.main .val {
+    color: #ffe9a8;
+    text-shadow: 0 0 8px #ffd26630;
+  }
+  #modeL .result-row.scrap .val {
+    color: #ffb968;
+  }
+
+  /* 加工目安図カード（L型のみ） */
+  #modeL .rebar-fig {
+    background: #08152e;
+    border: 1px solid #6bb8ff40;
+    box-shadow: inset 0 0 12px #6bb8ff10;
+  }
+
+  /* L型の合計重量カードは共通ゴールドのまま（数値の主役性を維持） */
 </style>
 </head>
 <body>
@@ -298,9 +391,9 @@
   ============================================================ -->
   <section id="modeWall" class="mode-section active">
 
-    <!-- ===== 共通入力（直壁） ===== -->
+    <!-- ===== 直壁寸法 ===== -->
     <div class="card">
-      <div class="card-title">共通入力</div>
+      <div class="card-title">直壁寸法</div>
       <div class="input-grid">
         <!-- 総延長L / 高さH -->
         <div class="input-row">
@@ -332,7 +425,7 @@
           <input type="number" id="cStock" inputmode="decimal" value="5000">
         </div>
 
-        <!-- 鉄筋径(右セル相当・2カラム1セルに収める) -->
+        <!-- 鉄筋径 -->
         <div class="input-row" style="grid-column: 1 / -1; margin-bottom:0;">
           <label>鉄筋径</label>
           <div class="dia-row" id="wallDiaRow">
@@ -434,9 +527,9 @@
   ============================================================ -->
   <section id="modeL" class="mode-section">
 
-    <!-- ===== 共通入力(L型) ===== -->
+    <!-- ===== L型擁壁寸法 ===== -->
     <div class="card">
-      <div class="card-title">共通入力</div>
+      <div class="card-title">L型擁壁寸法</div>
       <div class="input-grid">
         <!-- 総延長L / 立上り高さH -->
         <div class="input-row">
@@ -837,7 +930,7 @@ function drawLTateFig(H_eff, B_eff, bend, total) {
              && isFinite(bend)  && isFinite(total) && total > 0;
 
   if (!valid) {
-    svg.innerHTML = `<text x="160" y="110" fill="#4ad9c2" font-size="13"
+    svg.innerHTML = `<text x="160" y="110" fill="#9bd0ff" font-size="13"
       font-family="monospace" text-anchor="middle">H・B・かぶりを入力してください</text>`;
     return;
   }
@@ -855,18 +948,18 @@ function drawLTateFig(H_eff, B_eff, bend, total) {
   let html = '';
 
   html += `<path d="M ${xStemTop} ${yStemTop} L ${xCorner} ${yCorner} L ${xBaseEnd} ${yBaseEnd}"
-            fill="none" stroke="#7af5ff" stroke-width="4"
+            fill="none" stroke="#6bb8ff" stroke-width="4"
             stroke-linecap="round" stroke-linejoin="round"/>`;
 
   html += `<circle cx="${xCorner}" cy="${yCorner}" r="6"
             fill="#ffd266" stroke="#ffb968" stroke-width="1.5"/>`;
 
   html += `<text x="${xStemTop - 10}" y="${(yStemTop + yCorner)/2 + 4}"
-            fill="#00ff88" font-size="13" font-family="monospace"
+            fill="#4aa3ff" font-size="13" font-family="monospace"
             font-weight="bold" text-anchor="end">縦 ${Math.round(H_eff)}</text>`;
 
   html += `<text x="${(xCorner + xBaseEnd)/2}" y="${yBaseEnd + 22}"
-            fill="#00ff88" font-size="13" font-family="monospace"
+            fill="#4aa3ff" font-size="13" font-family="monospace"
             font-weight="bold" text-anchor="middle">横 ${Math.round(B_eff)}</text>`;
 
   html += `<text x="${xCorner + 12}" y="${yCorner - 8}"
