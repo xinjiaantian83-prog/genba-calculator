@@ -26,7 +26,6 @@
     margin: 0 auto;
     padding: 14px 14px 14px;
   }
-  /* ヘッダー */
   .header {
     text-align: center;
     padding: 8px 0 14px;
@@ -61,7 +60,21 @@
   }
   .back-btn:active { background: #103631; }
 
-  /* ホーム */
+  .reset-btn {
+    display: inline-block;
+    background: #2a0e0e;
+    color: #ff7a7a;
+    border: 1px solid #ff7a7a55;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  .reset-btn:active { background: #3a1010; }
+
   .home-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -100,7 +113,6 @@
     margin-bottom: 4px;
   }
 
-  /* 画面切替 */
   .screen { display: none; }
   .screen.active { display: block; }
 
@@ -111,9 +123,11 @@
     text-shadow: 0 0 6px #00ffd540;
     border-left: 4px solid #00ff88;
     padding-left: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 
-  /* 入力 */
   .input-row {
     margin-bottom: 10px;
   }
@@ -140,8 +154,91 @@
     border-color: #00ffd5;
     box-shadow: 0 0 0 2px #00ffd530;
   }
+  .b-badge {
+    display: inline-block;
+    font-size: 10px;
+    margin-left: 6px;
+    padding: 1px 6px;
+    border-radius: 4px;
+    border: 1px solid #ffd26688;
+    color: #ffd266;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    vertical-align: middle;
+  }
+  .b-badge.manual {
+    color: #ff7eb0;
+    border-color: #ff7eb088;
+  }
 
-  /* 結果 */
+  .auto-row {
+    background: #0a2622;
+    border: 1px dashed #00ffd580;
+    color: #00ffd5;
+    padding: 10px 12px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .auto-row .lbl {
+    font-size: 13px;
+    color: #4ad9c2;
+    font-weight: 600;
+  }
+  .auto-row .val {
+    font-size: 22px;
+    font-weight: 800;
+    color: #00ff88;
+    font-family: "SF Mono", Menlo, monospace;
+  }
+  .auto-row .badge {
+    font-size: 10px;
+    color: #ffd266;
+    margin-left: 6px;
+    border: 1px solid #ffd26688;
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+
+  .auto-cell {
+    background: linear-gradient(160deg, #0d2e26, #061a16);
+    border: 1.5px solid #ffd26688;
+    border-radius: 8px;
+    padding: 8px 10px;
+    box-shadow: 0 0 6px #ffd26615;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 70px;
+  }
+  .auto-cell .lbl {
+    font-size: 13px;
+    color: #ffd266;
+    font-weight: 700;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .auto-cell .badge {
+    font-size: 9px;
+    color: #ffd266;
+    border: 1px solid #ffd26688;
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+  .auto-cell .val {
+    font-size: 20px;
+    font-weight: 900;
+    color: #ffe9a8;
+    font-family: "SF Mono", Menlo, monospace;
+    text-align: right;
+    letter-spacing: 0.5px;
+  }
+
   .result-box {
     background: #061613;
     border: 1px solid #00ff8855;
@@ -176,7 +273,18 @@
     line-height: 1.5;
   }
 
-  /* 普通電卓 */
+  .saved-badge {
+    display: inline-block;
+    font-size: 10px;
+    color: #4ad9c2;
+    background: #0a2622;
+    border: 1px solid #008c7a;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
   .calc-display {
     background: #061613;
     border: 1px solid #008c7a;
@@ -236,7 +344,6 @@
     border-color: #ff7a7a55;
   }
 
-  /* 比重表・生コン表 */
   .table-list {
     background: #061613;
     border: 1px solid #00ff8855;
@@ -268,9 +375,8 @@
     margin-top: 2px;
   }
 
-  /* 擁壁断面図 */
   .wall-fig {
-    background: #061613;
+    background: #0a1f1c;
     border: 1px solid #00ffd540;
     border-radius: 12px;
     padding: 16px;
@@ -281,19 +387,79 @@
     max-width: 100%;
     height: auto;
   }
-  .pending {
-    background: #2a1f08;
-    border: 1px solid #ffaa00;
-    color: #ffd266;
-    padding: 10px 12px;
-    border-radius: 8px;
-    font-size: 13px;
-    text-align: center;
-    margin-bottom: 10px;
+
+  .sepa-box {
+    background: #061613;
+    border: 1px solid #00ffd540;
+    border-radius: 10px;
+    padding: 8px 12px;
+    margin-top: 10px;
+  }
+  .sepa-box .sepa-title {
+    color: #4ad9c2;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+  .sepa-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 14px;
+    align-items: baseline;
+  }
+  .sepa-row {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 4px;
+    padding: 0;
+    border: none;
+  }
+  .sepa-row .lbl {
+    font-size: 12px;
     font-weight: 600;
   }
+  .sepa-row .val {
+    font-size: 19px;
+    font-weight: 500;
+    color: #cfeee8;
+    font-family: "SF Mono", Menlo, monospace;
+    letter-spacing: 0.3px;
+  }
+  .sepa-row.h1 .lbl { color: #ff7eb0; }
+  .sepa-row.h2 .lbl { color: #ffb968; }
+  .sepa-row.h3 .lbl { color: #7ae6ff; }
 
-  /* 自販機ボタン（下部固定） */
+  .vol-box {
+    background: #061613;
+    border: 1px solid #00ff8855;
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-top: 10px;
+  }
+  .vol-box .vol-title {
+    font-size: 12px;
+    color: #4ad9c2;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .vol-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 4px 0;
+  }
+  .vol-row .lbl {
+    font-size: 12px;
+    color: #6a8a85;
+  }
+  .vol-row .val {
+    font-size: 16px;
+    color: #00ff88;
+    font-weight: 700;
+    font-family: "SF Mono", Menlo, monospace;
+  }
+
   .vending-btn {
     position: fixed;
     bottom: 0;
@@ -315,7 +481,6 @@
   }
   .vending-btn:active { filter: brightness(0.92); }
 
-  /* グリッド2列 */
   .grid-2 {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -326,7 +491,6 @@
 <body>
 <div class="app">
 
-  <!-- ホーム -->
   <div id="home" class="screen active">
     <div class="header">
       <h1>⚙ 現場電卓</h1>
@@ -334,44 +498,29 @@
     </div>
     <div class="home-grid">
       <button class="home-btn" onclick="show('calc')">
-        <span class="num">01</span>
-        <span class="ico">🔢</span>
-        <span class="label">普通電卓</span>
+        <span class="num">01</span><span class="ico">🔢</span><span class="label">普通電卓</span>
       </button>
       <button class="home-btn" onclick="show('slope')">
-        <span class="num">02</span>
-        <span class="ico">📐</span>
-        <span class="label">勾配・斜距離</span>
+        <span class="num">02</span><span class="ico">📐</span><span class="label">勾配・斜距離</span>
       </button>
       <button class="home-btn" onclick="show('doma')">
-        <span class="num">03</span>
-        <span class="ico">🏗️</span>
-        <span class="label">土間コン</span>
+        <span class="num">03</span><span class="ico">🏗️</span><span class="label">土間コン</span>
       </button>
       <button class="home-btn" onclick="show('wall')">
-        <span class="num">04</span>
-        <span class="ico">🧱</span>
-        <span class="label">重力式擁壁</span>
+        <span class="num">04</span><span class="ico">🧱</span><span class="label">重力式擁壁</span>
       </button>
       <button class="home-btn" onclick="show('block')">
-        <span class="num">05</span>
-        <span class="ico">🧱</span>
-        <span class="label">ブロックサポート</span>
+        <span class="num">05</span><span class="ico">🧱</span><span class="label">ブロックサポート</span>
       </button>
       <button class="home-btn" onclick="show('grav')">
-        <span class="num">06</span>
-        <span class="ico">⚖️</span>
-        <span class="label">比重表</span>
+        <span class="num">06</span><span class="ico">⚖️</span><span class="label">比重表</span>
       </button>
       <button class="home-btn" onclick="show('namacon')" style="grid-column: span 2;">
-        <span class="num">07</span>
-        <span class="ico">🚛</span>
-        <span class="label">生コン目安</span>
+        <span class="num">07</span><span class="ico">🚛</span><span class="label">生コン目安</span>
       </button>
     </div>
   </div>
 
-  <!-- 1. 普通電卓 -->
   <div id="calc" class="screen">
     <button class="back-btn" onclick="show('home')">← メニューに戻る</button>
     <h2>普通電卓</h2>
@@ -401,10 +550,12 @@
     </div>
   </div>
 
-  <!-- 2. 勾配・斜距離 -->
   <div id="slope" class="screen">
     <button class="back-btn" onclick="show('home')">← メニューに戻る</button>
-    <h2>勾配・斜距離</h2>
+    <h2>
+      <span>勾配・斜距離</span>
+      <button class="reset-btn" onclick="if(confirm('リセットしますか？')){document.getElementById('slopeH').value='';document.getElementById('slopeV').value='';try{var a=JSON.parse(localStorage.getItem('genbaCalc_v1')||'{}');a.slope={slopeH:'',slopeV:''};localStorage.setItem('genbaCalc_v1',JSON.stringify(a));}catch(e){}calcSlope();alert('reset ok');}">リセット</button>
+    </h2>
     <div class="input-row">
       <label>横寸法（mm）</label>
       <input type="number" id="slopeH" inputmode="decimal" placeholder="例: 1000" oninput="calcSlope()">
@@ -414,87 +565,165 @@
       <input type="number" id="slopeV" inputmode="decimal" placeholder="例: 100" oninput="calcSlope()">
     </div>
     <div class="result-box">
-      <div class="result-row"><span class="lbl">斜距離</span><span class="val" id="rSlope">— mm</span></div>
-      <div class="result-row"><span class="lbl">角度</span><span class="val" id="rAngle">— °</span></div>
-      <div class="result-row"><span class="lbl">勾配</span><span class="val" id="rPct">— %</span></div>
-      <div class="result-row"><span class="lbl">分数表記</span><span class="val" id="rRatio">1/—</span></div>
+      <div class="result-row"><span class="lbl">斜距離</span><span class="val" id="rSlope">—</span></div>
+      <div class="result-row"><span class="lbl">角度</span><span class="val" id="rAngle">—</span></div>
+      <div class="result-row"><span class="lbl">勾配</span><span class="val" id="rPct">—</span></div>
+      <div class="result-row"><span class="lbl">分数表記</span><span class="val" id="rRatio">—</span></div>
     </div>
   </div>
 
-  <!-- 3. 土間コン -->
   <div id="doma" class="screen">
     <button class="back-btn" onclick="show('home')">← メニューに戻る</button>
-    <h2>土間コン</h2>
+    <h2>
+      <span>土間コン</span>
+      <button class="reset-btn" onclick="if(confirm('リセットしますか？')){document.getElementById('domaA').value='';document.getElementById('domaB').value='';document.getElementById('domaT').value='';document.getElementById('meshA').value='2000';document.getElementById('meshB').value='1000';document.getElementById('meshLap').value='100';try{var a=JSON.parse(localStorage.getItem('genbaCalc_v1')||'{}');a.doma={domaA:'',domaB:'',domaT:'',meshA:'2000',meshB:'1000',meshLap:'100'};localStorage.setItem('genbaCalc_v1',JSON.stringify(a));}catch(e){}calcDoma();alert('reset ok');}">リセット</button>
+    </h2>
     <div class="grid-2">
       <div class="input-row">
-        <label>縦（m）</label>
-        <input type="number" id="domaA" inputmode="decimal" placeholder="例: 5" oninput="calcDoma()">
+        <label>縦（mm）</label>
+        <input type="number" id="domaA" inputmode="decimal" placeholder="例: 5000" oninput="calcDoma()">
       </div>
       <div class="input-row">
-        <label>横（m）</label>
-        <input type="number" id="domaB" inputmode="decimal" placeholder="例: 4" oninput="calcDoma()">
+        <label>横（mm）</label>
+        <input type="number" id="domaB" inputmode="decimal" placeholder="例: 4000" oninput="calcDoma()">
       </div>
     </div>
     <div class="input-row">
-      <label>厚み（mm）</label>
+      <label>厚み(mm)</label>
       <input type="number" id="domaT" inputmode="decimal" placeholder="例: 100" oninput="calcDoma()">
     </div>
     <div class="grid-2">
       <div class="input-row">
-        <label>メッシュ縦（m）</label>
-        <input type="number" id="meshA" inputmode="decimal" value="2" oninput="calcDoma()">
+        <label>メッシュ縦(mm)</label>
+        <input type="number" id="meshA" inputmode="decimal" value="2000" oninput="calcDoma()">
       </div>
       <div class="input-row">
-        <label>メッシュ横（m）</label>
-        <input type="number" id="meshB" inputmode="decimal" value="1" oninput="calcDoma()">
+        <label>メッシュ横(mm)</label>
+        <input type="number" id="meshB" inputmode="decimal" value="1000" oninput="calcDoma()">
       </div>
     </div>
     <div class="input-row">
-      <label>被せ（mm）</label>
+      <label>被せ(mm)</label>
       <input type="number" id="meshLap" inputmode="decimal" value="100" oninput="calcDoma()">
     </div>
     <div class="result-box">
-      <div class="result-row"><span class="lbl">面積</span><span class="val" id="rArea">— ㎡</span></div>
-      <div class="result-row"><span class="lbl">コンクリート体積</span><span class="val" id="rVol">— m³</span></div>
-      <div class="result-row"><span class="lbl">メッシュ枚数</span><span class="val" id="rMesh">— 枚</span></div>
+      <div class="result-row"><span class="lbl">面積</span><span class="val" id="rArea">—</span></div>
+      <div class="result-row"><span class="lbl">コンクリート体積</span><span class="val" id="rVol">—</span></div>
+      <div class="result-row"><span class="lbl">メッシュ枚数</span><span class="val" id="rMesh">—</span></div>
     </div>
-    <div class="note">※ 1枚目フルサイズ、2枚目以降は被せを差し引いた有効寸法で計算（縦×横方向それぞれ切り上げ）。ロス分は別途見込んでください。</div>
+    <div class="note">※ 1枚目フルサイズ、2枚目以降は被せを差し引いた有効寸法で計算（縦×横方向それぞれ切り上げ）。ロス分は別途見込んでください。<br>※ 入力値は自動保存されます。</div>
   </div>
 
-  <!-- 4. 重力式擁壁 -->
   <div id="wall" class="screen">
     <button class="back-btn" onclick="show('home')">← メニューに戻る</button>
-    <h2>重力式擁壁</h2>
-    <div class="pending">⚠ 準備中</div>
-    <div class="wall-fig">
-      <svg viewBox="0 0 240 200" xmlns="http://www.w3.org/2000/svg">
-        <line x1="10" y1="180" x2="230" y2="180" stroke="#4ad9c2" stroke-width="1.5" stroke-dasharray="3 3"/>
-        <polygon points="80,40 130,40 170,170 60,170" fill="#102e2a" stroke="#00ffd5" stroke-width="2"/>
-        <rect x="40" y="170" width="150" height="14" fill="#0a2622" stroke="#00ffd5" stroke-width="2"/>
-        <line x1="195" y1="40" x2="195" y2="170" stroke="#00ff88" stroke-width="1"/>
-        <line x1="190" y1="40" x2="200" y2="40" stroke="#00ff88" stroke-width="1"/>
-        <line x1="190" y1="170" x2="200" y2="170" stroke="#00ff88" stroke-width="1"/>
-        <text x="205" y="110" fill="#00ff88" font-size="11" font-family="monospace">H</text>
-        <text x="100" y="198" fill="#4ad9c2" font-size="10" font-family="monospace">延長 L</text>
-      </svg>
+    <h2>
+      <span>重力式擁壁 / セパ目安</span>
+      <button class="reset-btn" onclick="if(confirm('リセットしますか？')){document.getElementById('wallH').value='1200';document.getElementById('wallT').value='200';document.getElementById('wallSlope').value='0.3';document.getElementById('wallB').value='';document.getElementById('wallH1').value='';document.getElementById('wallH2').value='';document.getElementById('wallH3').value='';document.getElementById('wallL').value='';wallBManual=false;try{var a=JSON.parse(localStorage.getItem('genbaCalc_v1')||'{}');a.wall={wallH:'1200',wallT:'200',wallSlope:'0.3',wallB:'',wallH1:'',wallH2:'',wallH3:'',wallL:''};localStorage.setItem('genbaCalc_v1',JSON.stringify(a));}catch(e){}calcWall();document.getElementById('wallB').value='';try{var a2=JSON.parse(localStorage.getItem('genbaCalc_v1')||'{}');a2.wall={wallH:'1200',wallT:'200',wallSlope:'0.3',wallB:'',wallH1:'',wallH2:'',wallH3:'',wallL:''};localStorage.setItem('genbaCalc_v1',JSON.stringify(a2));}catch(e){}alert('reset ok');}">リセット</button>
+    </h2>
+
+    <div class="grid-2">
+      <div class="input-row">
+        <label>全高 H（mm）</label>
+        <input type="number" id="wallH" inputmode="decimal" placeholder="例: 1500" oninput="calcWall()">
+      </div>
+      <div class="input-row">
+        <label>天端幅 T（mm）</label>
+        <input type="number" id="wallT" inputmode="decimal" value="300" oninput="calcWall()">
+      </div>
     </div>
-    <div class="note" style="font-size: 13px; color: #4ad9c2; line-height: 1.7;">
-      将来実装予定：<br>
-      ・延長 L（m）と高さ H（m）から<br>
-      　コンクリート体積 m³ を概算<br>
-      ・天端幅／底版幅／勾配の入力対応<br>
-      ・基礎砕石量の目安も追加予定
+
+    <div class="grid-2">
+      <div class="input-row">
+        <label>勾配（例：0.3 = 3分）</label>
+        <input type="number" id="wallSlope" inputmode="decimal" value="0.3" step="0.01" oninput="onSlopeInput()">
+      </div>
+      <div class="input-row">
+        <label>底幅 B（mm）<span class="b-badge" id="bBadge">自動</span></label>
+        <input type="number" id="wallB" inputmode="decimal" placeholder="自動計算" oninput="onBInput()">
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="input-row">
+        <label>確認高さ h1（mm / 上端）</label>
+        <input type="number" id="wallH1" inputmode="decimal" placeholder="例: 300" oninput="calcWall()">
+      </div>
+      <div class="input-row">
+        <label>確認高さ h2（mm / 上端）</label>
+        <input type="number" id="wallH2" inputmode="decimal" placeholder="例: 800" oninput="calcWall()">
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="input-row">
+        <label>確認高さ h3（mm / 上端）</label>
+        <input type="number" id="wallH3" inputmode="decimal" placeholder="例: 1300" oninput="calcWall()">
+      </div>
+      <div class="input-row">
+        <label>延長 L（m / 任意）</label>
+        <input type="number" id="wallL" inputmode="decimal" placeholder="例: 10" oninput="calcWall()">
+      </div>
+    </div>
+
+    <div class="wall-fig">
+      <svg id="wallSvg" viewBox="0 0 280 220" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+
+    <div class="sepa-box">
+      <div class="sepa-title">セパ目安（高さごとの幅）</div>
+      <div class="sepa-list">
+        <div class="sepa-row h1">
+          <span class="lbl">h1:</span>
+          <span class="val" id="rW1">—</span>
+        </div>
+        <div class="sepa-row h2">
+          <span class="lbl">h2:</span>
+          <span class="val" id="rW2">—</span>
+        </div>
+        <div class="sepa-row h3">
+          <span class="lbl">h3:</span>
+          <span class="val" id="rW3">—</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="vol-box">
+      <div class="vol-title">断面・コンクリート量（参考）</div>
+      <div class="vol-row">
+        <span class="lbl">断面面積</span>
+        <span class="val" id="rAreaSec">— ㎡</span>
+      </div>
+      <div class="vol-row">
+        <span class="lbl">延長1mあたり</span>
+        <span class="val" id="rVolPerM">— m³</span>
+      </div>
+      <div class="vol-row" id="rTotalRow" style="display:none;">
+        <span class="lbl">総コン量（L=<span id="rLshow">—</span>m）</span>
+        <span class="val" id="rVolTotal">— m³</span>
+      </div>
+    </div>
+
+    <div class="note">
+      ※ 断面：前面垂直 / 背面のみ勾配。<br>
+      ※ 底幅：B = T + H × 勾配（勾配0.3=3分）<br>
+      ※ セパ：W = T + (B − T) × (h / H)　（h は上端から）<br>
+      ※ コン量：(T + B) ÷ 2 × H × L（台形断面 × 延長）<br>
+      ※ 断面面積：(T + B) ÷ 2 × H（水抜きパイプ等の本数拾い参考）<br>
+      ※ 入力値は自動保存されます。次回開いたときに復元されます。<br>
+      ※ セパ・体積は<b style="color:#ffd266;">目安</b>です。実施工は<b style="color:#ffd266;">設計図・現場条件を優先</b>してください。
     </div>
   </div>
 
-  <!-- 5. ブロックサポート -->
   <div id="block" class="screen">
     <button class="back-btn" onclick="show('home')">← メニューに戻る</button>
-    <h2>ブロックサポート</h2>
+    <h2>
+      <span>ブロックサポート</span>
+      <button class="reset-btn" onclick="if(confirm('リセットしますか？')){document.getElementById('blkL').value='';document.getElementById('blkN').value='';document.getElementById('blkLen').value='400';document.getElementById('blkVp').value='800';document.getElementById('blkHp').value='2';try{var a=JSON.parse(localStorage.getItem('genbaCalc_v1')||'{}');a.block={blkL:'',blkN:'',blkLen:'400',blkVp:'800',blkHp:'2'};localStorage.setItem('genbaCalc_v1',JSON.stringify(a));}catch(e){}calcBlock();alert('reset ok');}">リセット</button>
+    </h2>
     <div class="grid-2">
       <div class="input-row">
-        <label>延長（m）</label>
-        <input type="number" id="blkL" inputmode="decimal" placeholder="例: 10" oninput="calcBlock()">
+        <label>延長(mm)</label>
+        <input type="number" id="blkL" inputmode="decimal" placeholder="例: 10000" oninput="calcBlock()">
       </div>
       <div class="input-row">
         <label>段数</label>
@@ -502,28 +731,27 @@
       </div>
     </div>
     <div class="input-row">
-      <label>ブロック長さ（mm）</label>
+      <label>ブロック長さ(mm)</label>
       <input type="number" id="blkLen" inputmode="numeric" value="400" oninput="calcBlock()">
     </div>
     <div class="grid-2">
       <div class="input-row">
-        <label>縦筋ピッチ（mm）</label>
+        <label>縦筋ピッチ(mm)</label>
         <input type="number" id="blkVp" inputmode="numeric" value="800" oninput="calcBlock()">
       </div>
       <div class="input-row">
-        <label>横筋（◯段ごと）</label>
+        <label>横筋(◯段ごと)</label>
         <input type="number" id="blkHp" inputmode="numeric" value="2" oninput="calcBlock()">
       </div>
     </div>
     <div class="result-box">
-      <div class="result-row"><span class="lbl">CB枚数</span><span class="val" id="rCb">— 枚</span></div>
-      <div class="result-row"><span class="lbl">縦筋本数</span><span class="val" id="rVbar">— 本</span></div>
-      <div class="result-row"><span class="lbl">横筋本数</span><span class="val" id="rHbar">— 本</span></div>
+      <div class="result-row"><span class="lbl">CB枚数</span><span class="val" id="rCb">—</span></div>
+      <div class="result-row"><span class="lbl">縦筋本数</span><span class="val" id="rVbar">—</span></div>
+      <div class="result-row"><span class="lbl">横筋本数</span><span class="val" id="rHbar">—</span></div>
     </div>
-    <div class="note">※ 構造計算ではなく材料拾いの参考値です。実施工は法令・設計図書を優先してください。</div>
+    <div class="note">※ 構造計算ではなく材料拾いの参考値です。実施工は法令・設計図書を優先してください。<br>※ 入力値は自動保存されます。</div>
   </div>
 
-  <!-- 6. 比重表 -->
   <div id="grav" class="screen">
     <button class="back-btn" onclick="show('home')">← メニューに戻る</button>
     <h2>比重早見表</h2>
@@ -538,7 +766,6 @@
     <div class="note">※ 含水率・締固め度合い等で変動します。トラック積載・処分量の概算用としてご利用ください。</div>
   </div>
 
-  <!-- 7. 生コン目安 -->
   <div id="namacon" class="screen">
     <button class="back-btn" onclick="show('home')">← メニューに戻る</button>
     <h2>生コン配合 目安</h2>
@@ -556,31 +783,67 @@
 
 </div>
 
-<!-- 自販機マップ導線（常時表示） -->
 <a href="#" class="vending-btn" onclick="goVending(); return false;">
   🐶 ワンコイン自販機を探す
 </a>
 
 <script>
-/* ====== 画面切替 ====== */
+const STORAGE_KEY = 'genbaCalc_v1';
+
+const SAVE_FIELDS = {
+  slope: ['slopeH', 'slopeV'],
+  doma:  ['domaA', 'domaB', 'domaT', 'meshA', 'meshB', 'meshLap'],
+  wall:  ['wallH', 'wallT', 'wallSlope', 'wallB', 'wallH1', 'wallH2', 'wallH3', 'wallL'],
+  block: ['blkL', 'blkN', 'blkLen', 'blkVp', 'blkHp']
+};
+
+function saveSection(section) {
+  try {
+    const all = loadAll();
+    const data = {};
+    SAVE_FIELDS[section].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) data[id] = el.value;
+    });
+    all[section] = data;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+  } catch (e) {}
+}
+
+function loadAll() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return {};
+    return JSON.parse(raw) || {};
+  } catch (e) { return {}; }
+}
+
+function restoreSection(section) {
+  const all = loadAll();
+  const data = all[section];
+  if (!data) return;
+  SAVE_FIELDS[section].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (data[id] !== undefined && data[id] !== null && data[id] !== '') {
+      el.value = data[id];
+    }
+  });
+}
+
 function show(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0, 0);
 }
-
 function goVending() {
-  // TODO: わんわんコイン自販機マップのURLに差し替え
-  // 例: window.location.href = 'https://example.com/wanwan-map';
   alert('🐶 わんわんコイン自販機マップへ\n（外部マップに接続予定）');
 }
 
-/* ====== 1. 普通電卓 ====== */
 let calcCur = '0';
 let calcPrev = '';
 let calcOp = null;
 let calcReset = false;
-
 function updateDisp() {
   document.getElementById('calcDisp').textContent = formatDispNum(calcCur);
   document.getElementById('calcSub').textContent =
@@ -594,46 +857,29 @@ function formatDispNum(s) {
   }
   return Number(s).toLocaleString();
 }
-function opSym(op) {
-  return ({'+':'＋','-':'−','*':'×','/':'÷','%':'%'})[op] || '';
-}
+function opSym(op) { return ({'+':'＋','-':'−','*':'×','/':'÷','%':'%'})[op] || ''; }
 function cIn(v) {
   if (calcReset) { calcCur = '0'; calcReset = false; }
-  if (v === '.') {
-    if (!calcCur.includes('.')) calcCur += '.';
-  } else if (v === '00') {
-    if (calcCur === '0') return;
-    calcCur += '00';
-  } else {
-    if (calcCur === '0') calcCur = v;
-    else calcCur += v;
-  }
+  if (v === '.') { if (!calcCur.includes('.')) calcCur += '.'; }
+  else if (v === '00') { if (calcCur === '0') return; calcCur += '00'; }
+  else { if (calcCur === '0') calcCur = v; else calcCur += v; }
   updateDisp();
 }
-function cClear() {
-  calcCur = '0'; calcPrev = ''; calcOp = null; calcReset = false;
-  updateDisp();
-}
+function cClear() { calcCur='0'; calcPrev=''; calcOp=null; calcReset=false; updateDisp(); }
 function cBack() {
   if (calcReset) return;
-  if (calcCur.length <= 1 || (calcCur.length === 2 && calcCur.startsWith('-'))) {
-    calcCur = '0';
-  } else {
-    calcCur = calcCur.slice(0, -1);
-  }
+  if (calcCur.length <= 1 || (calcCur.length === 2 && calcCur.startsWith('-'))) calcCur = '0';
+  else calcCur = calcCur.slice(0, -1);
   updateDisp();
 }
 function cOp(op) {
   if (calcOp && !calcReset) cEq();
-  calcPrev = calcCur;
-  calcOp = op;
-  calcReset = true;
+  calcPrev = calcCur; calcOp = op; calcReset = true;
   updateDisp();
 }
 function cEq() {
   if (calcOp === null) return;
-  const a = parseFloat(calcPrev);
-  const b = parseFloat(calcCur);
+  const a = parseFloat(calcPrev), b = parseFloat(calcCur);
   let r = 0;
   switch (calcOp) {
     case '+': r = a + b; break;
@@ -643,22 +889,19 @@ function cEq() {
     case '%': r = a * b / 100; break;
   }
   r = Math.round(r * 1e10) / 1e10;
-  calcCur = String(r);
-  calcPrev = '';
-  calcOp = null;
-  calcReset = true;
+  calcCur = String(r); calcPrev = ''; calcOp = null; calcReset = true;
   updateDisp();
 }
 
-/* ====== 2. 勾配・斜距離 ====== */
 function calcSlope() {
   const h = parseFloat(document.getElementById('slopeH').value);
   const v = parseFloat(document.getElementById('slopeV').value);
-  if (!isFinite(h) || !isFinite(v) || h <= 0) {
-    document.getElementById('rSlope').textContent = '— mm';
-    document.getElementById('rAngle').textContent = '— °';
-    document.getElementById('rPct').textContent = '— %';
-    document.getElementById('rRatio').textContent = '1/—';
+  if (!isFinite(h) || !isFinite(v) || h <= 0 || v < 0) {
+    document.getElementById('rSlope').textContent = '—';
+    document.getElementById('rAngle').textContent = '—';
+    document.getElementById('rPct').textContent = '—';
+    document.getElementById('rRatio').textContent = '—';
+    saveSection('slope');
     return;
   }
   const slope = Math.sqrt(h * h + v * v);
@@ -669,94 +912,295 @@ function calcSlope() {
   document.getElementById('rAngle').textContent = angle.toFixed(2) + ' °';
   document.getElementById('rPct').textContent = pct.toFixed(2) + ' %';
   document.getElementById('rRatio').textContent = '1/' + ratio;
+  saveSection('slope');
 }
 
-/* ====== 3. 土間コン ====== */
 function calcDoma() {
-  const a = parseFloat(document.getElementById('domaA').value);
-  const b = parseFloat(document.getElementById('domaB').value);
-  const t = parseFloat(document.getElementById('domaT').value);
-  const ma = parseFloat(document.getElementById('meshA').value);
-  const mb = parseFloat(document.getElementById('meshB').value);
-  const lap = parseFloat(document.getElementById('meshLap').value);
+  const a_mm  = parseFloat(document.getElementById('domaA').value);
+  const b_mm  = parseFloat(document.getElementById('domaB').value);
+  const t_mm  = parseFloat(document.getElementById('domaT').value);
+  const ma_mm = parseFloat(document.getElementById('meshA').value);
+  const mb_mm = parseFloat(document.getElementById('meshB').value);
+  const lap_mm = parseFloat(document.getElementById('meshLap').value);
+
+  const a   = isFinite(a_mm)  ? a_mm  / 1000 : NaN;
+  const b   = isFinite(b_mm)  ? b_mm  / 1000 : NaN;
+  const ma  = isFinite(ma_mm) ? ma_mm / 1000 : NaN;
+  const mb  = isFinite(mb_mm) ? mb_mm / 1000 : NaN;
+  const t   = t_mm;
+  const lap = lap_mm;
 
   if (!isFinite(a) || !isFinite(b) || a <= 0 || b <= 0) {
-    document.getElementById('rArea').textContent = '— ㎡';
-    document.getElementById('rVol').textContent = '— m³';
-    document.getElementById('rMesh').textContent = '— 枚';
+    document.getElementById('rArea').textContent = '—';
+    document.getElementById('rVol').textContent = '—';
+    document.getElementById('rMesh').textContent = '—';
+    saveSection('doma');
     return;
   }
   const area = a * b;
   document.getElementById('rArea').textContent = area.toFixed(2) + ' ㎡';
 
   if (isFinite(t) && t > 0) {
-    const vol = area * (t / 1000);
-    document.getElementById('rVol').textContent = vol.toFixed(2) + ' m³';
+    document.getElementById('rVol').textContent = (area * (t / 1000)).toFixed(2) + ' m³';
   } else {
-    document.getElementById('rVol').textContent = '— m³';
+    document.getElementById('rVol').textContent = '—';
   }
 
   if (isFinite(ma) && isFinite(mb) && ma > 0 && mb > 0 && isFinite(lap) && lap >= 0) {
     const lapM = lap / 1000;
     let nA, nB;
-    if (a <= ma) {
-      nA = 1;
-    } else {
-      const eff = ma - lapM;
-      nA = eff <= 0 ? Infinity : 1 + Math.ceil((a - ma) / eff);
-    }
-    if (b <= mb) {
-      nB = 1;
-    } else {
-      const eff = mb - lapM;
-      nB = eff <= 0 ? Infinity : 1 + Math.ceil((b - mb) / eff);
-    }
-    if (!isFinite(nA) || !isFinite(nB)) {
-      document.getElementById('rMesh').textContent = '— 枚';
-    } else {
-      document.getElementById('rMesh').textContent = (nA * nB) + ' 枚';
-    }
+    if (a <= ma) nA = 1;
+    else { const eff = ma - lapM; nA = eff <= 0 ? Infinity : 1 + Math.ceil((a - ma) / eff); }
+    if (b <= mb) nB = 1;
+    else { const eff = mb - lapM; nB = eff <= 0 ? Infinity : 1 + Math.ceil((b - mb) / eff); }
+    document.getElementById('rMesh').textContent =
+      (!isFinite(nA) || !isFinite(nB)) ? '—' : (nA * nB) + ' 枚';
   } else {
-    document.getElementById('rMesh').textContent = '— 枚';
+    document.getElementById('rMesh').textContent = '—';
   }
+
+  saveSection('doma');
 }
 
-/* ====== 5. ブロックサポート ====== */
-function calcBlock() {
-  const L = parseFloat(document.getElementById('blkL').value);
-  const N = parseFloat(document.getElementById('blkN').value);
-  const len = parseFloat(document.getElementById('blkLen').value);
-  const vp = parseFloat(document.getElementById('blkVp').value);
-  const hp = parseFloat(document.getElementById('blkHp').value);
+let wallBManual = false;
 
-  if (!isFinite(L) || !isFinite(N) || !isFinite(len) || L <= 0 || N <= 0 || len <= 0) {
-    document.getElementById('rCb').textContent = '— 枚';
-    document.getElementById('rVbar').textContent = '— 本';
-    document.getElementById('rHbar').textContent = '— 本';
+function onSlopeInput() {
+  wallBManual = false;
+  const bEl = document.getElementById('wallB');
+  if (bEl) bEl.value = '';
+  calcWall();
+}
+
+function onBInput() {
+  const bEl = document.getElementById('wallB');
+  const v = bEl ? bEl.value.trim() : '';
+  wallBManual = (v !== '');
+  calcWall();
+}
+
+function calcWall() {
+  const H      = parseFloat(document.getElementById('wallH').value);
+  const T      = parseFloat(document.getElementById('wallT').value);
+  const slope  = parseFloat(document.getElementById('wallSlope').value);
+  const Binput = parseFloat(document.getElementById('wallB').value);
+  const h1     = parseFloat(document.getElementById('wallH1').value);
+  const h2     = parseFloat(document.getElementById('wallH2').value);
+  const h3     = parseFloat(document.getElementById('wallH3').value);
+  const L      = parseFloat(document.getElementById('wallL').value);
+
+  let B = null;
+  const bEl = document.getElementById('wallB');
+  const bBadge = document.getElementById('bBadge');
+
+  if (wallBManual && isFinite(Binput) && Binput > 0) {
+    B = Binput;
+    if (bBadge) {
+      bBadge.textContent = '手入力';
+      bBadge.classList.add('manual');
+    }
+  } else {
+    if (isFinite(H) && isFinite(T) && isFinite(slope) && H > 0 && T > 0 && slope >= 0) {
+      B = T + H * slope;
+    }
+    if (bBadge) {
+      bBadge.textContent = '自動';
+      bBadge.classList.remove('manual');
+    }
+    if (bEl && document.activeElement !== bEl) {
+      bEl.value = (B === null) ? '' : Math.round(B);
+    }
+  }
+
+  function widthAt(h) {
+    if (B === null || H <= 0) return null;
+    if (!isFinite(h) || h < 0 || h > H) return null;
+    return T + (B - T) * (h / H);
+  }
+  const w1 = widthAt(h1);
+  const w2 = widthAt(h2);
+  const w3 = widthAt(h3);
+
+  document.getElementById('rW1').textContent = w1 === null ? '—' : Math.round(w1) + 'mm';
+  document.getElementById('rW2').textContent = w2 === null ? '—' : Math.round(w2) + 'mm';
+  document.getElementById('rW3').textContent = w3 === null ? '—' : Math.round(w3) + 'mm';
+
+  const areaSecEl  = document.getElementById('rAreaSec');
+  const volPerEl   = document.getElementById('rVolPerM');
+  const totalRowEl = document.getElementById('rTotalRow');
+  const volTotalEl = document.getElementById('rVolTotal');
+  const lShowEl    = document.getElementById('rLshow');
+
+  if (B !== null) {
+    const areaSec = ((T + B) / 2 / 1000) * (H / 1000);
+    areaSecEl.textContent = areaSec.toFixed(3) + ' ㎡';
+
+    const m3PerM = areaSec;
+    volPerEl.textContent = m3PerM.toFixed(3) + ' m³';
+
+    if (isFinite(L) && L > 0) {
+      const total = m3PerM * L;
+      lShowEl.textContent = L;
+      volTotalEl.textContent = total.toFixed(2) + ' m³';
+      totalRowEl.style.display = 'flex';
+    } else {
+      totalRowEl.style.display = 'none';
+    }
+  } else {
+    areaSecEl.textContent = '— ㎡';
+    volPerEl.textContent = '— m³';
+    totalRowEl.style.display = 'none';
+  }
+
+  drawWallSvg(H, T, B, [
+    { h: h1, w: w1, label: 'h1' },
+    { h: h2, w: w2, label: 'h2' },
+    { h: h3, w: w3, label: 'h3' }
+  ]);
+
+  saveSection('wall');
+}
+
+function drawWallSvg(H, T, B, marks) {
+  const svg = document.getElementById('wallSvg');
+  const VB_W = 280, VB_H = 220;
+  const padL = 30, padR = 90, padT = 20, padB = 30;
+  const drawW = VB_W - padL - padR;
+  const drawH = VB_H - padT - padB;
+
+  const valid = isFinite(H) && isFinite(T) && B !== null && isFinite(B) && H > 0 && T > 0 && B > 0;
+  const refMax = valid ? Math.max(B, T) : 100;
+  const px = (mm) => (mm / refMax) * drawW;
+
+  const xLeft   = padL;
+  const yBottom = padT + drawH;
+  const yTop    = padT;
+  const wBottom = valid ? px(B) : drawW * 0.6;
+  const wTop    = valid ? px(T) : drawW * 0.3;
+
+  const pBL = [xLeft, yBottom];
+  const pBR = [xLeft + wBottom, yBottom];
+  const pTR = [xLeft + wTop, yTop];
+  const pTL = [xLeft, yTop];
+
+  let html = '';
+
+  html += `<line x1="5" y1="${yBottom}" x2="${VB_W - 5}" y2="${yBottom}" stroke="#4ad9c2" stroke-width="1.2" stroke-dasharray="3 3"/>`;
+
+  html += `<polygon points="${pBL.join(',')} ${pBR.join(',')} ${pTR.join(',')} ${pTL.join(',')}"
+            fill="#13332e" stroke="#00ffd5" stroke-width="2" stroke-linejoin="round"/>`;
+
+  if (valid) {
+    html += `<text x="${xLeft - 4}" y="${yTop + drawH / 2 + 4}" fill="#7ae6ff"
+              font-size="9" font-family="monospace" text-anchor="end">前面</text>`;
+    html += `<text x="${xLeft + (wTop + wBottom) / 2 + 6}" y="${yTop + drawH / 2}"
+              fill="#7ae6ff" font-size="9" font-family="monospace">背面</text>`;
+
+    html += `<text x="${xLeft + wTop / 2}" y="${yTop - 6}" fill="#00ffd5"
+              font-size="10" font-family="monospace" text-anchor="middle">T=${Math.round(T)}</text>`;
+    html += `<text x="${xLeft + wBottom / 2}" y="${yBottom + 16}" fill="#00ffd5"
+              font-size="10" font-family="monospace" text-anchor="middle">B=${Math.round(B)}</text>`;
+
+    html += `<line x1="${xLeft - 12}" y1="${yTop}" x2="${xLeft - 12}" y2="${yBottom}" stroke="#00ff88" stroke-width="1"/>`;
+    html += `<line x1="${xLeft - 16}" y1="${yTop}" x2="${xLeft - 8}" y2="${yTop}" stroke="#00ff88" stroke-width="1"/>`;
+    html += `<line x1="${xLeft - 16}" y1="${yBottom}" x2="${xLeft - 8}" y2="${yBottom}" stroke="#00ff88" stroke-width="1"/>`;
+    html += `<text x="${xLeft - 14}" y="${yTop + drawH / 2}" fill="#00ff88"
+              font-size="10" font-family="monospace" text-anchor="end"
+              transform="rotate(-90 ${xLeft - 14} ${yTop + drawH / 2})">H=${Math.round(H)}</text>`;
+  }
+
+  if (valid) {
+    const colors = ['#ff7eb0', '#ffb968', '#7ae6ff'];
+    marks.forEach((m, i) => {
+      if (m.w === null) return;
+      const y = yTop + (m.h / H) * drawH;
+      const xR = xLeft + px(m.w);
+      html += `<line x1="${xLeft}" y1="${y}" x2="${xR}" y2="${y}"
+                stroke="${colors[i]}" stroke-width="1.6" stroke-dasharray="4 3"/>`;
+      html += `<text x="${xR + 6}" y="${y + 4}" fill="${colors[i]}"
+                font-size="11" font-family="monospace" font-weight="bold">${m.label}: ${Math.round(m.w)}mm</text>`;
+      html += `<text x="${xLeft + 4}" y="${y - 3}" fill="${colors[i]}"
+                font-size="9" font-family="monospace">↓${Math.round(m.h)}</text>`;
+    });
+  } else {
+    html += `<text x="${VB_W / 2}" y="${VB_H / 2}" fill="#4ad9c2"
+              font-size="11" font-family="monospace" text-anchor="middle">
+              H・T・勾配 を入力してください
+            </text>`;
+  }
+
+  svg.innerHTML = html;
+}
+
+function calcBlock() {
+  const L_mm = parseFloat(document.getElementById('blkL').value);
+  const N    = parseFloat(document.getElementById('blkN').value);
+  const len  = parseFloat(document.getElementById('blkLen').value);
+  const vp   = parseFloat(document.getElementById('blkVp').value);
+  const hp   = parseFloat(document.getElementById('blkHp').value);
+
+  const cbEl   = document.getElementById('rCb');
+  const vbarEl = document.getElementById('rVbar');
+  const hbarEl = document.getElementById('rHbar');
+
+  if (!isFinite(L_mm) || !isFinite(N) || !isFinite(len) || L_mm <= 0 || N <= 0 || len <= 0) {
+    cbEl.textContent = '—';
+    vbarEl.textContent = '—';
+    hbarEl.textContent = '—';
+    saveSection('block');
     return;
   }
 
-  const perRow = Math.ceil((L * 1000) / len);
+  const perRow = Math.ceil(L_mm / len);
   const cb = perRow * N;
-  document.getElementById('rCb').textContent = cb.toLocaleString() + ' 枚';
+  cbEl.textContent = cb.toLocaleString() + ' 枚';
 
   if (isFinite(vp) && vp > 0) {
-    const vbar = Math.ceil((L * 1000) / vp) + 1;
-    document.getElementById('rVbar').textContent = vbar + ' 本';
+    const vbar = Math.ceil(L_mm / vp) + 1;
+    vbarEl.textContent = vbar + ' 本';
   } else {
-    document.getElementById('rVbar').textContent = '— 本';
+    vbarEl.textContent = '—';
   }
 
   if (isFinite(hp) && hp > 0) {
-    const hbar = Math.ceil(N / hp);
-    document.getElementById('rHbar').textContent = hbar + ' 本';
+    const hbar = Math.ceil(N / hp) * perRow;
+    hbarEl.textContent = hbar.toLocaleString() + ' 本';
   } else {
-    document.getElementById('rHbar').textContent = '— 本';
+    hbarEl.textContent = '—';
   }
+
+  saveSection('block');
 }
 
-/* 初期表示 */
+function bootRestore() {
+  restoreSection('slope');
+  restoreSection('doma');
+  restoreSection('wall');
+  restoreSection('block');
+
+  const bEl = document.getElementById('wallB');
+  const Bval = bEl ? parseFloat(bEl.value) : NaN;
+  const Hv = parseFloat(document.getElementById('wallH').value);
+  const Tv = parseFloat(document.getElementById('wallT').value);
+  const Sv = parseFloat(document.getElementById('wallSlope').value);
+  if (isFinite(Bval) && Bval > 0) {
+    if (isFinite(Hv) && isFinite(Tv) && isFinite(Sv) && Hv > 0 && Tv > 0 && Sv >= 0) {
+      const autoB = Math.round(Tv + Hv * Sv);
+      wallBManual = (Math.round(Bval) !== autoB);
+    } else {
+      wallBManual = true;
+    }
+  } else {
+    wallBManual = false;
+  }
+
+  calcSlope();
+  calcDoma();
+  calcWall();
+  calcBlock();
+}
+
 updateDisp();
+bootRestore();
 </script>
 </body>
 </html>
