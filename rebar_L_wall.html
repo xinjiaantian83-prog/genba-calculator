@@ -202,6 +202,22 @@
     text-shadow: 0 0 10px #ffd26660;
     letter-spacing: 1px;
   }
+
+  .rebar-fig {
+    background: #0a1f1c;
+    border: 1px solid #00ffd540;
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 14px;
+    text-align: center;
+    box-shadow: inset 0 0 12px #00ffd510;
+  }
+  .rebar-fig svg {
+    width: 100%;
+    height: auto;
+    max-height: 240px;
+    display: block;
+  }
 </style>
 </head>
 <body>
@@ -258,6 +274,12 @@
 
   <!-- ===== L型 縦筋 結果 ===== -->
   <div class="section-title">① L型 縦筋</div>
+
+  <!-- 加工目安図 -->
+  <div class="rebar-fig">
+    <svg id="tFig" viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet"></svg>
+  </div>
+
   <div class="result-box">
     <div class="result-row">
       <span class="lbl">L型縦筋本数</span>
@@ -360,6 +382,66 @@ function readCommon() {
 }
 
 /* ============================================================
+   L型縦筋 加工目安図
+============================================================ */
+function drawTateFig(H_eff, B_eff, bend, total) {
+  const svg = document.getElementById('tFig');
+  if (!svg) return;
+
+  const valid = isFinite(H_eff) && H_eff > 0 && isFinite(B_eff) && B_eff > 0
+             && isFinite(bend)  && isFinite(total) && total > 0;
+
+  if (!valid) {
+    svg.innerHTML = `<text x="160" y="110" fill="#4ad9c2" font-size="13"
+      font-family="monospace" text-anchor="middle">H・B・かぶりを入力してください</text>`;
+    return;
+  }
+
+  // 固定サイズ(比例なし)
+  const xCorner = 90;   // L字の角(曲げ位置)x
+  const yCorner = 160;  // L字の角(曲げ位置)y
+  const stemLen = 120;  // 縦の長さ(固定px)
+  const baseLen = 170;  // 横の長さ(固定px)
+
+  const xStemTop = xCorner;
+  const yStemTop = yCorner - stemLen;
+  const xBaseEnd = xCorner + baseLen;
+  const yBaseEnd = yCorner;
+
+  let html = '';
+
+  // 鉄筋(L字)
+  html += `<path d="M ${xStemTop} ${yStemTop} L ${xCorner} ${yCorner} L ${xBaseEnd} ${yBaseEnd}"
+            fill="none" stroke="#7af5ff" stroke-width="4"
+            stroke-linecap="round" stroke-linejoin="round"/>`;
+
+  // 曲げ位置の●マーク
+  html += `<circle cx="${xCorner}" cy="${yCorner}" r="6"
+            fill="#ffd266" stroke="#ffb968" stroke-width="1.5"/>`;
+
+  // 縦の数値ラベル(立上り有効長)
+  html += `<text x="${xStemTop - 10}" y="${(yStemTop + yCorner)/2 + 4}"
+            fill="#00ff88" font-size="13" font-family="monospace"
+            font-weight="bold" text-anchor="end">縦 ${Math.round(H_eff)}</text>`;
+
+  // 横の数値ラベル(ベース有効長)
+  html += `<text x="${(xCorner + xBaseEnd)/2}" y="${yBaseEnd + 22}"
+            fill="#00ff88" font-size="13" font-family="monospace"
+            font-weight="bold" text-anchor="middle">横 ${Math.round(B_eff)}</text>`;
+
+  // 曲げロス(角の右上に注記)
+  html += `<text x="${xCorner + 12}" y="${yCorner - 8}"
+            fill="#ffd266" font-size="12" font-family="monospace"
+            font-weight="bold">曲げロス ${Math.round(bend)}</text>`;
+
+  // 合計切断長(右上にまとめ表示)
+  html += `<text x="310" y="22" fill="#ffe9a8" font-size="13"
+            font-family="monospace" font-weight="bold" text-anchor="end">合計 ${Math.round(total)} mm</text>`;
+
+  svg.innerHTML = html;
+}
+
+/* ============================================================
    ① L型 縦筋
    - 全変数を tate* プレフィックスで完全分離
    - 1本長さ = (H - かぶり) + (B - かぶり) + 曲げロス
@@ -400,6 +482,7 @@ function calcTate() {
       || !isFinite(tate_cover) || tate_cover < 0
       || !isFinite(tate_stock) || tate_stock <= 0) {
     clearTateAll();
+    drawTateFig(NaN, NaN, NaN, NaN);
     return 0;
   }
 
@@ -407,6 +490,7 @@ function calcTate() {
   if (tate_perLen <= 0) {
     clearTateAll();
     $('tPerLen').textContent = 'かぶり過大';
+    drawTateFig(NaN, NaN, NaN, NaN);
     return 0;
   }
 
@@ -414,6 +498,9 @@ function calcTate() {
 
   $('tCount').textContent  = tate_count.toLocaleString() + ' 本';
   $('tPerLen').textContent = Math.round(tate_perLen).toLocaleString() + ' mm';
+
+  // 図用の値(計算ロジックには影響しない)
+  drawTateFig(tate_H - tate_cover, tate_B - tate_cover, tate_d.bend, tate_perLen);
 
   const tate_perStock = Math.floor(tate_stock / tate_perLen);
   if (tate_perStock <= 0) {
