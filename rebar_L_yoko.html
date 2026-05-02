@@ -145,21 +145,6 @@
     color: #ffe9a8;
     text-shadow: 0 0 8px #ffd26630;
   }
-  .result-row.scrap .val {
-    color: #ffb968;
-  }
-
-  .stock-warn {
-    margin-top: 10px;
-    padding: 10px 14px;
-    background: #2a1010;
-    border: 1px solid #ff9a9a55;
-    border-radius: 10px;
-    color: #ff9a9a;
-    font-size: 13px;
-    font-weight: 700;
-    text-align: center;
-  }
 </style>
 </head>
 <body>
@@ -209,15 +194,11 @@
       <span class="val" id="rCount">—</span>
     </div>
     <div class="result-row">
-      <span class="lbl">1本長さ</span>
-      <span class="val" id="rPerLen">—</span>
+      <span class="lbl">1段あたり必要本数</span>
+      <span class="val" id="rPerRow">—</span>
     </div>
     <div class="result-row">
-      <span class="lbl">1本から取れる本数</span>
-      <span class="val" id="rPerStock">—</span>
-    </div>
-    <div class="result-row">
-      <span class="lbl">定尺必要本数</span>
+      <span class="lbl">総定尺本数</span>
       <span class="val" id="rStockCount">—</span>
     </div>
     <div class="result-row">
@@ -228,28 +209,16 @@
       <span class="lbl">総重量</span>
       <span class="val" id="rWeight">—</span>
     </div>
-    <div class="result-row scrap" id="rowScrapPer">
-      <span class="lbl">1本あたり余り</span>
-      <span class="val" id="rScrapPer">—</span>
-    </div>
-    <div class="result-row scrap" id="rowScrapTotal">
-      <span class="lbl">総余り</span>
-      <span class="val" id="rScrapTotal">—</span>
-    </div>
-  </div>
-
-  <div class="stock-warn" id="stockWarn" style="display:none;">
-    ※ 定尺不足（このサイズでは取れません）
   </div>
 
 </div>
 
 <script>
 const DIA = {
-  D10: { unit: 0.560 },
-  D13: { unit: 0.995 },
-  D16: { unit: 1.56  },
-  D19: { unit: 2.25  }
+  D10: { unit: 0.560, anchor: 400 },
+  D13: { unit: 0.995, anchor: 520 },
+  D16: { unit: 1.56,  anchor: 640 },
+  D19: { unit: 2.25,  anchor: 760 }
 };
 
 let currentDia = 'D10';
@@ -266,16 +235,10 @@ function setDia(d) {
 
 function clearAll() {
   $('rCount').textContent = '—';
-  $('rPerLen').textContent = '—';
-  $('rPerStock').textContent = '—';
+  $('rPerRow').textContent = '—';
   $('rStockCount').textContent = '—';
   $('rTotal').textContent = '—';
   $('rWeight').textContent = '—';
-  $('rScrapPer').textContent = '—';
-  $('rScrapTotal').textContent = '—';
-  $('rowScrapPer').style.display = '';
-  $('rowScrapTotal').style.display = '';
-  $('stockWarn').style.display = 'none';
 }
 
 function calc() {
@@ -295,53 +258,33 @@ function calc() {
   }
 
   // L型横筋本数（交点1本を内部で除去）
-  const rowsH  = Math.floor(H / p) + 1;
-  const rowsB  = Math.floor(B / p) + 1;
-  const count  = rowsH + rowsB - 1;
+  const rowsH = Math.floor(H / p) + 1;
+  const rowsB = Math.floor(B / p) + 1;
+  const count = rowsH + rowsB - 1;
 
-  // 横筋は直線扱い（1本長さ = 総延長 L）
-  const perLen = L;
-
-  $('rCount').textContent  = count.toLocaleString() + ' 本';
-  $('rPerLen').textContent = Math.round(perLen).toLocaleString() + ' mm';
-
-  const perStock = Math.floor(stock / perLen);
-  if (perStock <= 0) {
-    $('rPerStock').textContent   = '定尺不足';
-    $('rStockCount').textContent = '—';
-    $('rTotal').textContent      = '—';
-    $('rWeight').textContent     = '—';
-    $('rScrapPer').textContent   = '—';
-    $('rScrapTotal').textContent = '—';
-    $('rowScrapPer').style.display = 'none';
-    $('rowScrapTotal').style.display = 'none';
-    $('stockWarn').style.display = '';
+  // 継ぎ足しロジック
+  const eff = stock - d.anchor;
+  if (eff <= 0) {
+    clearAll();
     save();
     return;
   }
 
-  const stockCount = Math.ceil(count / perStock);
-  const total      = stockCount * stock;
+  const perRow     = Math.ceil(L / eff);
+  const stockTotal = count * perRow;
+  const total      = stockTotal * stock;
   const weight     = (total / 1000) * d.unit;
 
-  $('rPerStock').textContent   = perStock.toLocaleString() + ' 本';
-  $('rStockCount').textContent = stockCount.toLocaleString() + ' 本';
+  $('rCount').textContent      = count.toLocaleString() + ' 本';
+  $('rPerRow').textContent     = perRow.toLocaleString() + ' 本';
+  $('rStockCount').textContent = stockTotal.toLocaleString() + ' 本';
   $('rTotal').textContent      = (total / 1000).toFixed(2) + ' m';
   $('rWeight').textContent     = weight.toFixed(2) + ' kg';
-
-  const scrapPer   = stock - perLen * perStock;
-  const scrapTotal = scrapPer * stockCount;
-
-  $('rScrapPer').textContent   = Math.round(scrapPer).toLocaleString() + ' mm';
-  $('rScrapTotal').textContent = (scrapTotal / 1000).toFixed(2) + ' m';
-  $('rowScrapPer').style.display = '';
-  $('rowScrapTotal').style.display = '';
-  $('stockWarn').style.display = 'none';
 
   save();
 }
 
-const KEY = 'lYoko_v1';
+const KEY = 'lYoko_v2';
 function save() {
   try {
     localStorage.setItem(KEY, JSON.stringify({
