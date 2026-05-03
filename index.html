@@ -2,10 +2,8 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<link rel="apple-touch-icon" href="icon.png">
-<link rel="icon" href="icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>現場電卓</title>
+<title>現場電卓 GENBA TOOLBOX</title>
 <style>
   * {
     box-sizing: border-box;
@@ -21,26 +19,26 @@
   }
   body {
     min-height: 100vh;
-    padding-bottom: 76px;
+    padding: 16px 14px 80px;
   }
   .app {
     max-width: 480px;
     margin: 0 auto;
-    padding: 14px 14px 14px;
   }
+
   .header {
     text-align: center;
-    padding: 8px 0 14px;
+    padding: 4px 0 14px;
     border-bottom: 1px solid #0c3d3a;
-    margin-bottom: 14px;
+    margin-bottom: 16px;
   }
   .header h1 {
     margin: 0;
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 800;
     letter-spacing: 2px;
     color: #00ffd5;
-    text-shadow: 0 0 8px #00ffd560, 0 0 16px #00ffd530;
+    text-shadow: 0 0 8px #00ffd560;
   }
   .header .sub {
     margin-top: 2px;
@@ -48,162 +46,215 @@
     color: #4ad9c2;
     letter-spacing: 1px;
   }
-  .back-btn {
-    display: inline-block;
-    background: #0c1f1d;
-    color: #00ffd5;
-    border: 1px solid #008c7a;
-    padding: 10px 14px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-    margin-bottom: 14px;
-  }
-  .back-btn:active { background: #103631; }
 
-  .reset-btn {
-    display: inline-block;
-    background: #2a0e0e;
-    color: #ff7a7a;
-    border: 1px solid #ff7a7a55;
-    padding: 6px 10px;
-    border-radius: 6px;
-    font-size: 11px;
-    font-weight: 700;
-    cursor: pointer;
-    margin-left: 8px;
-    vertical-align: middle;
-  }
-  .reset-btn:active { background: #3a1010; }
+  .screen { display: none; }
+  .screen.active { display: block; }
 
   .home-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 12px;
+    margin-top: 8px;
   }
   .home-btn {
     background: linear-gradient(160deg, #0d2926, #061613);
     border: 1px solid #00ffd540;
-    color: #e0fff8;
     border-radius: 14px;
-    padding: 22px 8px;
-    text-align: center;
+    padding: 18px 10px 14px;
+    color: #00ffd5;
     cursor: pointer;
+    text-align: center;
     box-shadow: inset 0 0 12px #00ffd510, 0 2px 6px #000;
-    transition: transform .08s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    min-height: 130px;
+    transition: transform 0.05s;
   }
-  .home-btn:active {
-    transform: scale(0.97);
-    background: #103631;
+  .home-btn:active { transform: scale(0.97); background: #0d3531; }
+  .home-btn .num {
+    font-size: 10px;
+    color: #4ad9c2;
+    letter-spacing: 2px;
+    font-weight: 700;
   }
   .home-btn .ico {
-    display: block;
-    margin-bottom: 6px;
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
-  .home-svg {
-    width: 44px;
-    height: 44px;
-    display: block;
-    margin: 0 auto 8px;
-  }
-  .home-svg * {
-    stroke: #00ffd5;
-    stroke-width: 8;
+  .home-btn .home-svg {
+    width: 100%;
+    height: 100%;
     fill: none;
-    stroke-linecap: square;
-    stroke-linejoin: miter;
+    stroke: #00ffd5;
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    filter: drop-shadow(0 0 4px #00ffd540);
   }
   .home-btn .label {
     font-size: 14px;
-    font-weight: 700;
+    font-weight: 800;
     color: #00ffd5;
+    text-shadow: 0 0 6px #00ffd540;
     letter-spacing: 1px;
   }
-  .home-btn .num {
-    display: block;
-    font-size: 10px;
-    color: #4ad9c2;
-    margin-bottom: 4px;
-  }
 
-  .screen { display: none; }
-  .screen.active { display: block; }
-
-  .screen h2 {
-    color: #00ffd5;
-    font-size: 18px;
-    margin: 0 0 12px 0;
-    text-shadow: 0 0 6px #00ffd540;
-    border-left: 4px solid #00ff88;
-    padding-left: 10px;
+  .screen-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: 8px 0 12px;
+    border-bottom: 1px solid #0c3d3a;
+    margin-bottom: 14px;
+  }
+  .screen-header .back {
+    color: #00ffd5;
+    background: none;
+    border: 1px solid #008c7a;
+    font-size: 13px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .screen-header .back:active { background: #0a3d39; }
+  .screen-header span {
+    font-size: 16px;
+    font-weight: 800;
+    color: #00ffd5;
+    text-shadow: 0 0 6px #00ffd540;
+    letter-spacing: 1px;
+  }
+  .screen-header .reset-btn {
+    color: #ffaa55;
+    background: none;
+    border: 1px solid #ff8c40;
+    font-size: 12px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .screen-header .reset-btn:active { background: #3d1f10; }
+
+  .calc-display {
+    background: #061613;
+    border: 1px solid #008c7a;
+    border-radius: 12px;
+    padding: 18px 16px;
+    text-align: right;
+    font-size: 36px;
+    font-weight: 800;
+    color: #00ffd5;
+    font-family: "SF Mono", Menlo, monospace;
+    margin-bottom: 14px;
+    text-shadow: 0 0 8px #00ffd540;
+    word-break: break-all;
+    min-height: 80px;
   }
 
-  .input-row {
-    margin-bottom: 10px;
+  .calc-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
   }
-  .input-row label {
+  .calc-btn {
+    aspect-ratio: 1 / 1;
+    background: #0d2926;
+    color: #00ffd5;
+    border: 1px solid #008c7a;
+    border-radius: 12px;
+    font-size: 22px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .calc-btn:active { background: #103631; }
+  .calc-btn.op {
+    background: #102f2b;
+    color: #00ff88;
+  }
+  .calc-btn.eq {
+    background: #00b89c;
+    color: #061613;
+    grid-column: span 1;
+  }
+  .calc-btn.eq:active { background: #008c7a; }
+  .calc-btn.clear {
+    background: #2a1010;
+    color: #ff9a9a;
+  }
+  .calc-btn.span2 { grid-column: span 2; }
+
+  .form-row {
+    margin-bottom: 14px;
+  }
+  .form-row label {
     display: block;
     font-size: 13px;
     color: #4ad9c2;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
     font-weight: 600;
   }
-  .input-row input {
+  .form-row input {
     width: 100%;
     background: #061613;
     border: 1px solid #008c7a;
     color: #00ffd5;
-    padding: 12px;
-    border-radius: 8px;
+    padding: 14px;
+    border-radius: 10px;
     font-size: 18px;
     font-weight: 700;
     -webkit-appearance: none;
   }
-  .input-row input:focus {
+  .form-row input:focus {
     outline: none;
     border-color: #00ffd5;
     box-shadow: 0 0 0 2px #00ffd530;
   }
-  .b-badge {
+
+  .auto-badge {
     display: inline-block;
+    margin-left: 8px;
+    padding: 2px 8px;
+    border-radius: 12px;
     font-size: 10px;
-    margin-left: 6px;
-    padding: 1px 6px;
-    border-radius: 4px;
-    border: 1px solid #ffd26688;
-    color: #ffd266;
     font-weight: 700;
-    letter-spacing: 0.5px;
-    vertical-align: middle;
+    letter-spacing: 1px;
+    border: 1px solid #008c7a;
+    color: #4ad9c2;
+    background: #0a2622;
   }
-  .b-badge.manual {
-    color: #ff7eb0;
-    border-color: #ff7eb088;
+  .auto-badge.manual {
+    border-color: #ff8c40;
+    color: #ffaa55;
+    background: #2a1a10;
   }
 
   .result-box {
     background: #061613;
     border: 1px solid #00ff8855;
     border-radius: 12px;
-    padding: 14px;
-    margin-top: 14px;
+    padding: 4px 16px;
+    margin-top: 8px;
     box-shadow: inset 0 0 12px #00ff8810;
   }
   .result-row {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    padding: 8px 0;
+    padding: 14px 0;
     border-bottom: 1px dashed #0c3d3a;
   }
   .result-row:last-child { border-bottom: none; }
   .result-row .lbl {
     font-size: 13px;
     color: #4ad9c2;
+    font-weight: 600;
   }
   .result-row .val {
     font-size: 22px;
@@ -212,186 +263,99 @@
     text-shadow: 0 0 8px #00ff8850;
     font-family: "SF Mono", Menlo, monospace;
   }
-  .note {
-    font-size: 11px;
-    color: #6a8a85;
-    margin-top: 8px;
-    line-height: 1.5;
+  .result-row.main .val {
+    font-size: 28px;
+    color: #ffe9a8;
+    text-shadow: 0 0 8px #ffd26630;
   }
 
-  .calc-display {
-    background: #061613;
-    border: 1px solid #008c7a;
-    border-radius: 10px;
-    padding: 16px;
-    text-align: right;
-    font-size: 36px;
-    font-weight: 800;
-    color: #00ffd5;
-    text-shadow: 0 0 8px #00ffd540;
-    margin-bottom: 10px;
-    word-break: break-all;
-    min-height: 64px;
-    font-family: "SF Mono", Menlo, monospace;
+  .result-row.sepa {
+    padding: 8px 0;
   }
-  .calc-sub {
-    font-size: 14px;
+  .result-row.sepa .lbl {
+    font-size: 12px;
     color: #4ad9c2;
-    min-height: 18px;
-    text-align: right;
-    margin-top: -6px;
-    margin-bottom: 6px;
   }
-  .calc-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
+  .result-row.sepa .val {
+    font-size: 19px;
+    font-weight: 500;
+    color: #00ff88;
+    text-shadow: 0 0 4px #00ff8830;
+    font-family: "SF Mono", Menlo, monospace;
+    opacity: 0.92;
   }
-  .calc-btn {
-    aspect-ratio: 1 / 0.85;
-    background: #102e2a;
-    border: 1px solid #00ffd530;
-    color: #e0fff8;
-    border-radius: 12px;
-    font-size: 22px;
-    font-weight: 700;
-    cursor: pointer;
+
+  .density-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 14px;
+    background: #061613;
+    border-radius: 10px;
+    overflow: hidden;
   }
-  .calc-btn:active {
-    background: #1a4540;
-    transform: scale(0.96);
+  .density-table th, .density-table td {
+    padding: 12px 10px;
+    text-align: left;
+    font-size: 13px;
+    border-bottom: 1px solid #0c3d3a;
   }
-  .calc-btn.op {
+  .density-table th {
     background: #0a2622;
     color: #00ffd5;
-    border-color: #00ffd580;
+    font-weight: 700;
+    font-size: 12px;
   }
-  .calc-btn.eq {
-    background: linear-gradient(160deg, #00cc88, #008855);
-    color: #001613;
-    border-color: #00ff88;
-    font-weight: 900;
+  .density-table td {
+    color: #e0fff8;
   }
-  .calc-btn.fn {
-    background: #2a0e0e;
-    color: #ff7a7a;
-    border-color: #ff7a7a55;
+  .density-table tr:last-child td {
+    border-bottom: none;
+  }
+  .density-table .num {
+    color: #00ff88;
+    font-family: "SF Mono", Menlo, monospace;
+    text-align: right;
+    font-weight: 700;
   }
 
-  .table-list {
+  .info-card {
     background: #061613;
-    border: 1px solid #00ff8855;
+    border: 1px solid #00ffd540;
     border-radius: 12px;
-    padding: 6px 12px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
   }
-  .table-list .row {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    padding: 12px 0;
-    border-bottom: 1px dashed #0c3d3a;
+  .info-card .ttl {
+    font-size: 14px;
+    color: #00ffd5;
+    font-weight: 700;
+    margin-bottom: 8px;
+    border-left: 3px solid #00ff88;
+    padding-left: 8px;
   }
-  .table-list .row:last-child { border-bottom: none; }
-  .table-list .row .name {
-    font-size: 15px;
-    color: #e0fff8;
-    font-weight: 600;
+  .info-card .desc {
+    font-size: 13px;
+    color: #b0e8dc;
+    line-height: 1.7;
   }
-  .table-list .row .val {
-    font-size: 18px;
-    color: #00ff88;
-    font-weight: 800;
-    font-family: "SF Mono", Menlo, monospace;
-  }
-  .table-list .row .desc {
-    font-size: 12px;
-    color: #6a8a85;
-    margin-top: 2px;
+  .info-card .desc strong {
+    color: #ffe9a8;
+    font-weight: 700;
   }
 
   .wall-fig, .slope-fig {
-    background: #0a1f1c;
+    background: #061613;
     border: 1px solid #00ffd540;
     border-radius: 12px;
-    padding: 14px;
+    padding: 12px;
+    margin-top: 10px;
     text-align: center;
-    margin: 14px 0;
   }
   .wall-fig svg, .slope-fig svg {
-    max-width: 100%;
+    width: 100%;
     height: auto;
-  }
-
-  .sepa-box {
-    background: #061613;
-    border: 1px solid #00ffd540;
-    border-radius: 10px;
-    padding: 8px 12px;
-    margin-top: 10px;
-  }
-  .sepa-box .sepa-title {
-    color: #4ad9c2;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    margin-bottom: 6px;
-  }
-  .sepa-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px 14px;
-    align-items: baseline;
-  }
-  .sepa-row {
-    display: inline-flex;
-    align-items: baseline;
-    gap: 4px;
-    padding: 0;
-    border: none;
-  }
-  .sepa-row .lbl {
-    font-size: 12px;
-    font-weight: 600;
-  }
-  .sepa-row .val {
-    font-size: 19px;
-    font-weight: 500;
-    color: #cfeee8;
-    font-family: "SF Mono", Menlo, monospace;
-    letter-spacing: 0.3px;
-  }
-  .sepa-row.h1 .lbl { color: #ff7eb0; }
-  .sepa-row.h2 .lbl { color: #ffb968; }
-  .sepa-row.h3 .lbl { color: #7ae6ff; }
-
-  .vol-box {
-    background: #061613;
-    border: 1px solid #00ff8855;
-    border-radius: 10px;
-    padding: 10px 12px;
-    margin-top: 10px;
-  }
-  .vol-box .vol-title {
-    font-size: 12px;
-    color: #4ad9c2;
-    font-weight: 700;
-    margin-bottom: 4px;
-  }
-  .vol-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    padding: 4px 0;
-  }
-  .vol-row .lbl {
-    font-size: 12px;
-    color: #6a8a85;
-  }
-  .vol-row .val {
-    font-size: 16px;
-    color: #00ff88;
-    font-weight: 700;
-    font-family: "SF Mono", Menlo, monospace;
+    max-height: 220px;
+    display: block;
   }
 
   .vending-btn {
@@ -399,21 +363,39 @@
     bottom: 0;
     left: 0;
     right: 0;
-    background: linear-gradient(90deg, #ff5e9c, #ffaa3e);
-    color: #1a0a00;
+    background: linear-gradient(180deg, #0a1f1c, #061613);
+    color: #4ad9c2;
     text-align: center;
-    padding: 16px 12px;
-    font-size: 16px;
-    font-weight: 800;
+    padding: 14px 12px;
+    font-size: 15px;
+    font-weight: 700;
     border: none;
+    border-top: 1px solid #00ffd540;
     cursor: pointer;
-    box-shadow: 0 -4px 16px #ff5e9c40;
+    box-shadow: 0 -4px 16px #00ffd520, inset 0 1px 0 #00ffd510;
     z-index: 100;
     letter-spacing: 1px;
     text-decoration: none;
     display: block;
+    line-height: 1.3;
   }
-  .vending-btn:active { filter: brightness(0.92); }
+  .vending-btn .vending-main {
+    color: #00ffd5;
+    text-shadow: 0 0 6px #00ffd540;
+  }
+  .vending-btn .vending-sub {
+    display: block;
+    margin-top: 2px;
+    font-size: 10px;
+    font-weight: 600;
+    color: #4ad9c2;
+    letter-spacing: 2px;
+    opacity: 0.75;
+  }
+  .vending-btn:active {
+    background: linear-gradient(180deg, #0d2926, #0a1f1c);
+    filter: brightness(1.05);
+  }
 
   .grid-2 {
     display: grid;
@@ -423,20 +405,23 @@
 </style>
 </head>
 <body>
+
 <div class="app">
 
-  <div id="home" class="screen active">
-    <div class="header">
-      <h1>⚙ 現場電卓</h1>
-      <div class="sub">GENBA TOOLBOX</div>
-    </div>
+  <div class="header">
+    <h1>📐 GENBA TOOLBOX</h1>
+    <div class="sub">現場電卓・施工計算ツール</div>
+  </div>
 
+  <!-- ============================ HOME ============================ -->
+  <div id="home" class="screen active">
     <div class="home-grid">
+
       <button class="home-btn" onclick="show('calc')">
         <span class="num">01</span>
         <span class="ico">
           <svg class="home-svg" viewBox="0 0 100 100">
-            <rect x="22" y="18" width="56" height="64"/>
+            <rect x="20" y="18" width="60" height="64" rx="6"/>
             <line x1="22" y1="42" x2="78" y2="42"/>
             <line x1="40" y1="42" x2="40" y2="82"/>
             <line x1="60" y1="42" x2="60" y2="82"/>
@@ -450,7 +435,7 @@
         <span class="ico">
           <svg class="home-svg" viewBox="0 0 100 100">
             <polyline points="22,78 78,78 78,28 22,78"/>
-            <rect x="22" y="60" width="18" height="18"/>
+            <polyline points="64,78 64,64 78,64" fill="none"/>
           </svg>
         </span>
         <span class="label">勾配・斜距離</span>
@@ -473,7 +458,7 @@
         <span class="num">04</span>
         <span class="ico">
           <svg class="home-svg" viewBox="0 0 100 100">
-            <polygon points="28,78 78,78 62,26 28,26"/>
+            <polyline points="30,80 30,20 60,20 75,80 30,80"/>
           </svg>
         </span>
         <span class="label">重力式擁壁</span>
@@ -483,725 +468,666 @@
         <span class="num">05</span>
         <span class="ico">
           <svg class="home-svg" viewBox="0 0 100 100">
-            <rect x="18" y="30" width="64" height="42"/>
-            <line x1="18" y1="51" x2="82" y2="51"/>
-            <line x1="50" y1="30" x2="50" y2="72"/>
+            <rect x="18" y="22" width="64" height="14"/>
+            <rect x="18" y="40" width="64" height="14"/>
+            <rect x="18" y="58" width="64" height="14"/>
+            <line x1="50" y1="22" x2="50" y2="36"/>
+            <line x1="34" y1="40" x2="34" y2="54"/>
+            <line x1="66" y1="40" x2="66" y2="54"/>
           </svg>
         </span>
         <span class="label">ブロックサポート</span>
       </button>
 
-      <button class="home-btn" onclick="show('grav')">
+      <button class="home-btn" onclick="show('density')">
         <span class="num">06</span>
         <span class="ico">
           <svg class="home-svg" viewBox="0 0 100 100">
-            <line x1="50" y1="18" x2="50" y2="82"/>
-            <line x1="26" y1="38" x2="74" y2="38"/>
-            <line x1="34" y1="38" x2="22" y2="66"/>
-            <line x1="66" y1="38" x2="78" y2="66"/>
-            <line x1="34" y1="82" x2="66" y2="82"/>
+            <rect x="22" y="22" width="56" height="56"/>
+            <line x1="22" y1="40" x2="78" y2="40"/>
+            <line x1="22" y1="58" x2="78" y2="58"/>
+            <line x1="50" y1="22" x2="50" y2="78"/>
           </svg>
         </span>
         <span class="label">比重表</span>
       </button>
 
-      <button class="home-btn" onclick="show('namacon')" style="grid-column: span 2;">
+      <button class="home-btn" onclick="show('mix')" style="grid-column: span 2;">
         <span class="num">07</span>
         <span class="ico">
           <svg class="home-svg" viewBox="0 0 100 100">
-            <rect x="16" y="48" width="46" height="24"/>
-            <circle cx="30" cy="76" r="6"/>
-            <circle cx="58" cy="76" r="6"/>
-            <line x1="64" y1="48" x2="82" y2="34"/>
-            <line x1="82" y1="34" x2="82" y2="72"/>
+            <circle cx="50" cy="50" r="28"/>
+            <line x1="22" y1="50" x2="78" y2="50"/>
+            <line x1="50" y1="22" x2="50" y2="78"/>
           </svg>
         </span>
         <span class="label">生コン目安</span>
       </button>
+
     </div>
   </div>
 
+  <!-- ============================ 普通電卓 ============================ -->
   <div id="calc" class="screen">
-    <button class="back-btn" onclick="show('home')">← メニューに戻る</button>
-    <h2>普通電卓</h2>
-    <div class="calc-sub" id="calcSub"></div>
+    <div class="screen-header">
+      <button class="back" onclick="show('home')">← 戻る</button>
+      <span>普通電卓</span>
+      <button class="reset-btn" onclick="if(confirm('クリアしますか？')){calcClear();alert('reset ok');}">C</button>
+    </div>
+
     <div class="calc-display" id="calcDisp">0</div>
+
     <div class="calc-grid">
-      <button class="calc-btn fn" onclick="cClear()">C</button>
-      <button class="calc-btn fn" onclick="cBack()">⌫</button>
-      <button class="calc-btn op" onclick="cOp('%')">%</button>
-      <button class="calc-btn op" onclick="cOp('/')">÷</button>
-      <button class="calc-btn" onclick="cIn('7')">7</button>
-      <button class="calc-btn" onclick="cIn('8')">8</button>
-      <button class="calc-btn" onclick="cIn('9')">9</button>
-      <button class="calc-btn op" onclick="cOp('*')">×</button>
-      <button class="calc-btn" onclick="cIn('4')">4</button>
-      <button class="calc-btn" onclick="cIn('5')">5</button>
-      <button class="calc-btn" onclick="cIn('6')">6</button>
-      <button class="calc-btn op" onclick="cOp('-')">−</button>
-      <button class="calc-btn" onclick="cIn('1')">1</button>
-      <button class="calc-btn" onclick="cIn('2')">2</button>
-      <button class="calc-btn" onclick="cIn('3')">3</button>
-      <button class="calc-btn op" onclick="cOp('+')">＋</button>
-      <button class="calc-btn" onclick="cIn('00')">00</button>
-      <button class="calc-btn" onclick="cIn('0')">0</button>
-      <button class="calc-btn" onclick="cIn('.')">.</button>
-      <button class="calc-btn eq" onclick="cEq()">=</button>
+      <button class="calc-btn clear" onclick="calcClear()">C</button>
+      <button class="calc-btn op" onclick="calcInput('⌫')">⌫</button>
+      <button class="calc-btn op" onclick="calcInput('%')">%</button>
+      <button class="calc-btn op" onclick="calcInput('÷')">÷</button>
+
+      <button class="calc-btn" onclick="calcInput('7')">7</button>
+      <button class="calc-btn" onclick="calcInput('8')">8</button>
+      <button class="calc-btn" onclick="calcInput('9')">9</button>
+      <button class="calc-btn op" onclick="calcInput('×')">×</button>
+
+      <button class="calc-btn" onclick="calcInput('4')">4</button>
+      <button class="calc-btn" onclick="calcInput('5')">5</button>
+      <button class="calc-btn" onclick="calcInput('6')">6</button>
+      <button class="calc-btn op" onclick="calcInput('-')">−</button>
+
+      <button class="calc-btn" onclick="calcInput('1')">1</button>
+      <button class="calc-btn" onclick="calcInput('2')">2</button>
+      <button class="calc-btn" onclick="calcInput('3')">3</button>
+      <button class="calc-btn op" onclick="calcInput('+')">+</button>
+
+      <button class="calc-btn span2" onclick="calcInput('0')">0</button>
+      <button class="calc-btn" onclick="calcInput('00')">00</button>
+      <button class="calc-btn eq" onclick="calcEq()">=</button>
+
+      <button class="calc-btn span2" onclick="calcInput('.')">.</button>
     </div>
   </div>
 
+  <!-- ============================ 勾配・斜距離 ============================ -->
   <div id="slope" class="screen">
-    <button class="back-btn" onclick="show('home')">← メニューに戻る</button>
-    <h2>
+    <div class="screen-header">
+      <button class="back" onclick="show('home')">← 戻る</button>
       <span>勾配・斜距離</span>
       <button class="reset-btn" onclick="if(confirm('リセットしますか？')){document.getElementById('slopeH').value='';document.getElementById('slopeV').value='';try{var a=JSON.parse(localStorage.getItem('genbaCalc_v1')||'{}');a.slope={slopeH:'',slopeV:''};localStorage.setItem('genbaCalc_v1',JSON.stringify(a));}catch(e){}calcSlope();alert('reset ok');}">リセット</button>
-    </h2>
-    <div class="input-row">
-      <label>横寸法（mm）</label>
+    </div>
+
+    <div class="form-row">
+      <label>横（h, mm）</label>
       <input type="number" id="slopeH" inputmode="decimal" placeholder="例: 1000" oninput="calcSlope()">
     </div>
-    <div class="input-row">
-      <label>縦寸法（mm）</label>
+    <div class="form-row">
+      <label>縦（v, mm）</label>
       <input type="number" id="slopeV" inputmode="decimal" placeholder="例: 100" oninput="calcSlope()">
     </div>
+
     <div class="slope-fig">
       <svg id="slopeSvg" viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg"></svg>
     </div>
+
     <div class="result-box">
       <div class="result-row"><span class="lbl">斜距離</span><span class="val" id="rSlope">—</span></div>
       <div class="result-row"><span class="lbl">角度</span><span class="val" id="rAngle">—</span></div>
       <div class="result-row"><span class="lbl">勾配</span><span class="val" id="rPct">—</span></div>
-      <div class="result-row"><span class="lbl">分数表記</span><span class="val" id="rRatio">—</span></div>
+      <div class="result-row main"><span class="lbl">1/n</span><span class="val" id="rN">—</span></div>
     </div>
   </div>
 
+  <!-- ============================ 土間コン ============================ -->
   <div id="doma" class="screen">
-    <button class="back-btn" onclick="show('home')">← メニューに戻る</button>
-    <h2>
+    <div class="screen-header">
+      <button class="back" onclick="show('home')">← 戻る</button>
       <span>土間コン</span>
-      <button class="reset-btn" onclick="if(confirm('リセットしますか？')){document.getElementById('domaA').value='';document.getElementById('domaB').value='';document.getElementById('domaT').value='';document.getElementById('meshA').value='2000';document.getElementById('meshB').value='1000';document.getElementById('meshLap').value='100';try{var a=JSON.parse(localStorage.getItem('genbaCalc_v1')||'{}');a.doma={domaA:'',domaB:'',domaT:'',meshA:'2000',meshB:'1000',meshLap:'100'};localStorage.setItem('genbaCalc_v1',JSON.stringify(a));}catch(e){}calcDoma();alert('reset ok');}">リセット</button>
-    </h2>
-    <div class="grid-2">
-      <div class="input-row">
-        <label>縦（mm）</label>
-        <input type="number" id="domaA" inputmode="decimal" placeholder="例: 5000" oninput="calcDoma()">
-      </div>
-      <div class="input-row">
-        <label>横（mm）</label>
-        <input type="number" id="domaB" inputmode="decimal" placeholder="例: 4000" oninput="calcDoma()">
-      </div>
+      <button class="reset-btn" onclick="if(confirm('リセットしますか？')){['domaW','domaD','domaT','domaMW','domaMD','domaCover'].forEach(function(id){document.getElementById(id).value='';});try{var a=JSON.parse(localStorage.getItem('genbaCalc_v1')||'{}');a.doma={domaW:'',domaD:'',domaT:'',domaMW:'',domaMD:'',domaCover:''};localStorage.setItem('genbaCalc_v1',JSON.stringify(a));}catch(e){}calcDoma();alert('reset ok');}">リセット</button>
     </div>
-    <div class="input-row">
-      <label>厚み(mm)</label>
-      <input type="number" id="domaT" inputmode="decimal" placeholder="例: 100" oninput="calcDoma()">
+
+    <div class="grid-2">
+      <div class="form-row"><label>縦（mm）</label><input type="number" id="domaW" inputmode="decimal" oninput="calcDoma()"></div>
+      <div class="form-row"><label>横（mm）</label><input type="number" id="domaD" inputmode="decimal" oninput="calcDoma()"></div>
+    </div>
+    <div class="form-row">
+      <label>厚み（mm）</label>
+      <input type="number" id="domaT" inputmode="decimal" oninput="calcDoma()">
     </div>
     <div class="grid-2">
-      <div class="input-row">
-        <label>メッシュ縦(mm)</label>
-        <input type="number" id="meshA" inputmode="decimal" value="2000" oninput="calcDoma()">
-      </div>
-      <div class="input-row">
-        <label>メッシュ横(mm)</label>
-        <input type="number" id="meshB" inputmode="decimal" value="1000" oninput="calcDoma()">
-      </div>
+      <div class="form-row"><label>メッシュ縦（mm）</label><input type="number" id="domaMW" inputmode="decimal" placeholder="例: 2000" oninput="calcDoma()"></div>
+      <div class="form-row"><label>メッシュ横（mm）</label><input type="number" id="domaMD" inputmode="decimal" placeholder="例: 1000" oninput="calcDoma()"></div>
     </div>
-    <div class="input-row">
-      <label>被せ(mm)</label>
-      <input type="number" id="meshLap" inputmode="decimal" value="100" oninput="calcDoma()">
+    <div class="form-row">
+      <label>かぶせ（mm）</label>
+      <input type="number" id="domaCover" inputmode="decimal" placeholder="例: 100" oninput="calcDoma()">
     </div>
+
     <div class="result-box">
       <div class="result-row"><span class="lbl">面積</span><span class="val" id="rArea">—</span></div>
-      <div class="result-row"><span class="lbl">コンクリート体積</span><span class="val" id="rVol">—</span></div>
-      <div class="result-row"><span class="lbl">メッシュ枚数</span><span class="val" id="rMesh">—</span></div>
+      <div class="result-row"><span class="lbl">体積</span><span class="val" id="rVol">—</span></div>
+      <div class="result-row main"><span class="lbl">メッシュ枚数</span><span class="val" id="rMesh">—</span></div>
     </div>
-    <div class="note">※ 1枚目フルサイズ、2枚目以降は被せを差し引いた有効寸法で計算（縦×横方向それぞれ切り上げ）。ロス分は別途見込んでください。<br>※ 入力値は自動保存されます。</div>
   </div>
 
+  <!-- ============================ 重力式擁壁 ============================ -->
   <div id="wall" class="screen">
-    <button class="back-btn" onclick="show('home')">← メニューに戻る</button>
-    <h2>
-      <span>重力式擁壁 / セパ目安</span>
-      <button class="reset-btn" onclick="if(confirm('リセットしますか？')){document.getElementById('wallH').value='1200';document.getElementById('wallT').value='200';document.getElementById('wallSlope').value='0.3';document.getElementById('wallB').value='';document.getElementById('wallH1').value='';document.getElementById('wallH2').value='';document.getElementById('wallH3').value='';document.getElementById('wallL').value='';wallBManual=false;try{var a=JSON.parse(localStorage.getItem('genbaCalc_v1')||'{}');a.wall={wallH:'1200',wallT:'200',wallSlope:'0.3',wallB:'',wallH1:'',wallH2:'',wallH3:'',wallL:''};localStorage.setItem('genbaCalc_v1',JSON.stringify(a));}catch(e){}calcWall();document.getElementById('wallB').value='';try{var a2=JSON.parse(localStorage.getItem('genbaCalc_v1')||'{}');a2.wall={wallH:'1200',wallT:'200',wallSlope:'0.3',wallB:'',wallH1:'',wallH2:'',wallH3:'',wallL:''};localStorage.setItem('genbaCalc_v1',JSON.stringify(a2));}catch(e){}alert('reset ok');}">リセット</button>
-    </h2>
-
-    <div class="grid-2">
-      <div class="input-row">
-        <label>全高 H（mm）</label>
-        <input type="number" id="wallH" inputmode="decimal" placeholder="例: 1500" oninput="calcWall()">
-      </div>
-      <div class="input-row">
-        <label>天端幅 T（mm）</label>
-        <input type="number" id="wallT" inputmode="decimal" value="300" oninput="calcWall()">
-      </div>
+    <div class="screen-header">
+      <button class="back" onclick="show('home')">← 戻る</button>
+      <span>重力式擁壁</span>
+      <button class="reset-btn" onclick="if(confirm('リセットしますか？')){['wallH','wallT','wallSlope','wallB','wallH1','wallH2','wallH3','wallL'].forEach(function(id){var el=document.getElementById(id);if(el)el.value=(id==='wallT'?'300':(id==='wallSlope'?'0.3':''));});try{var a=JSON.parse(localStorage.getItem('genbaCalc_v1')||'{}');a.wall={wallH:'',wallT:'300',wallSlope:'0.3',wallB:'',wallBManual:false,wallH1:'',wallH2:'',wallH3:'',wallL:''};localStorage.setItem('genbaCalc_v1',JSON.stringify(a));}catch(e){}wallBManual=false;calcWall();document.getElementById('wallB').value='';try{var b=JSON.parse(localStorage.getItem('genbaCalc_v1')||'{}');if(!b.wall)b.wall={};b.wall.wallB='';b.wall.wallBManual=false;localStorage.setItem('genbaCalc_v1',JSON.stringify(b));}catch(e){}alert('reset ok');}">リセット</button>
     </div>
 
     <div class="grid-2">
-      <div class="input-row">
-        <label>勾配（例：0.3 = 3分）</label>
-        <input type="number" id="wallSlope" inputmode="decimal" value="0.3" step="0.01" oninput="onSlopeInput()">
-      </div>
-      <div class="input-row">
-        <label>底幅 B（mm）<span class="b-badge" id="bBadge">自動</span></label>
-        <input type="number" id="wallB" inputmode="decimal" placeholder="自動計算" oninput="onBInput()">
-      </div>
+      <div class="form-row"><label>高さ H（mm）</label><input type="number" id="wallH" inputmode="decimal" oninput="calcWall()"></div>
+      <div class="form-row"><label>天端 T（mm）</label><input type="number" id="wallT" inputmode="decimal" value="300" oninput="calcWall()"></div>
+    </div>
+    <div class="form-row">
+      <label>勾配（例：0.3 = 3分）</label>
+      <input type="number" id="wallSlope" inputmode="decimal" value="0.3" oninput="calcWall()">
+    </div>
+    <div class="form-row">
+      <label>底幅 B（mm）<span id="wallBBadge" class="auto-badge">自動</span></label>
+      <input type="number" id="wallB" inputmode="decimal" placeholder="自動計算: T + H × 勾配" oninput="onWallBInput()">
     </div>
 
     <div class="grid-2">
-      <div class="input-row">
-        <label>確認高さ h1（mm / 上端）</label>
-        <input type="number" id="wallH1" inputmode="decimal" placeholder="例: 300" oninput="calcWall()">
-      </div>
-      <div class="input-row">
-        <label>確認高さ h2（mm / 上端）</label>
-        <input type="number" id="wallH2" inputmode="decimal" placeholder="例: 800" oninput="calcWall()">
-      </div>
+      <div class="form-row"><label>h1（mm, 上から）</label><input type="number" id="wallH1" inputmode="decimal" oninput="calcWall()"></div>
+      <div class="form-row"><label>h2（mm, 上から）</label><input type="number" id="wallH2" inputmode="decimal" oninput="calcWall()"></div>
     </div>
-
     <div class="grid-2">
-      <div class="input-row">
-        <label>確認高さ h3（mm / 上端）</label>
-        <input type="number" id="wallH3" inputmode="decimal" placeholder="例: 1300" oninput="calcWall()">
-      </div>
-      <div class="input-row">
-        <label>延長 L（m / 任意）</label>
-        <input type="number" id="wallL" inputmode="decimal" placeholder="例: 10" oninput="calcWall()">
-      </div>
+      <div class="form-row"><label>h3（mm, 上から）</label><input type="number" id="wallH3" inputmode="decimal" oninput="calcWall()"></div>
+      <div class="form-row"><label>延長 L（m）</label><input type="number" id="wallL" inputmode="decimal" oninput="calcWall()"></div>
     </div>
 
     <div class="wall-fig">
-      <svg id="wallSvg" viewBox="0 0 280 220" xmlns="http://www.w3.org/2000/svg"></svg>
+      <svg id="wallSvg" viewBox="0 0 280 240" xmlns="http://www.w3.org/2000/svg"></svg>
     </div>
 
-    <div class="sepa-box">
-      <div class="sepa-title">セパ目安（高さごとの幅）</div>
-      <div class="sepa-list">
-        <div class="sepa-row h1"><span class="lbl">h1:</span><span class="val" id="rW1">—</span></div>
-        <div class="sepa-row h2"><span class="lbl">h2:</span><span class="val" id="rW2">—</span></div>
-        <div class="sepa-row h3"><span class="lbl">h3:</span><span class="val" id="rW3">—</span></div>
-      </div>
+    <div class="result-box">
+      <div class="result-row"><span class="lbl">底幅 B</span><span class="val" id="rWallB">—</span></div>
+      <div class="result-row"><span class="lbl">断面積</span><span class="val" id="rAreaSec">—</span></div>
+      <div class="result-row"><span class="lbl">体積</span><span class="val" id="rWallVol">—</span></div>
+      <div class="result-row sepa"><span class="lbl">セパ h1</span><span class="val" id="rSepaH1">—</span></div>
+      <div class="result-row sepa"><span class="lbl">セパ h2</span><span class="val" id="rSepaH2">—</span></div>
+      <div class="result-row sepa"><span class="lbl">セパ h3</span><span class="val" id="rSepaH3">—</span></div>
     </div>
 
-    <div class="vol-box">
-      <div class="vol-title">断面・コンクリート量（参考）</div>
-      <div class="vol-row"><span class="lbl">断面面積</span><span class="val" id="rAreaSec">— ㎡</span></div>
-      <div class="vol-row"><span class="lbl">延長1mあたり</span><span class="val" id="rVolPerM">— m³</span></div>
-      <div class="vol-row" id="rTotalRow" style="display:none;">
-        <span class="lbl">総コン量（L=<span id="rLshow">—</span>m）</span>
-        <span class="val" id="rVolTotal">— m³</span>
-      </div>
-    </div>
-
-    <div class="note">
+    <div class="info-card" style="margin-top:14px;">
       ※ 断面：前面垂直 / 背面のみ勾配。<br>
       ※ 底幅：B = T + H × 勾配（勾配0.3=3分）<br>
-      ※ セパ：W = T + (B − T) × (h / H)　（h は上端から）<br>
-      ※ コン量：(T + B) ÷ 2 × H × L（台形断面 × 延長）<br>
-      ※ 断面面積：(T + B) ÷ 2 × H（水抜きパイプ等の本数拾い参考）<br>
-      ※ 入力値は自動保存されます。次回開いたときに復元されます。<br>
-      ※ セパ・体積は<b style="color:#ffd266;">目安</b>です。実施工は<b style="color:#ffd266;">設計図・現場条件を優先</b>してください。
+      ※ セパ各高さは、上端からの距離で計算した断面位置の幅。
     </div>
   </div>
 
+  <!-- ============================ ブロックサポート ============================ -->
   <div id="block" class="screen">
-    <button class="back-btn" onclick="show('home')">← メニューに戻る</button>
-    <h2>
+    <div class="screen-header">
+      <button class="back" onclick="show('home')">← 戻る</button>
       <span>ブロックサポート</span>
-      <button class="reset-btn" onclick="if(confirm('リセットしますか？')){document.getElementById('blkL').value='';document.getElementById('blkN').value='';document.getElementById('blkLen').value='400';document.getElementById('blkVp').value='800';document.getElementById('blkHp').value='2';try{var a=JSON.parse(localStorage.getItem('genbaCalc_v1')||'{}');a.block={blkL:'',blkN:'',blkLen:'400',blkVp:'800',blkHp:'2'};localStorage.setItem('genbaCalc_v1',JSON.stringify(a));}catch(e){}calcBlock();alert('reset ok');}">リセット</button>
-    </h2>
+      <button class="reset-btn" onclick="if(confirm('リセットしますか？')){['blockL','blockN','blockBlk','blockTate','blockYoko'].forEach(function(id){var el=document.getElementById(id);if(el)el.value=(id==='blockBlk'?'400':(id==='blockTate'?'800':(id==='blockYoko'?'2':'')));});try{var a=JSON.parse(localStorage.getItem('genbaCalc_v1')||'{}');a.block={blockL:'',blockN:'',blockBlk:'400',blockTate:'800',blockYoko:'2'};localStorage.setItem('genbaCalc_v1',JSON.stringify(a));}catch(e){}calcBlock();alert('reset ok');}">リセット</button>
+    </div>
+
     <div class="grid-2">
-      <div class="input-row">
-        <label>延長(mm)</label>
-        <input type="number" id="blkL" inputmode="decimal" placeholder="例: 10000" oninput="calcBlock()">
-      </div>
-      <div class="input-row">
-        <label>段数</label>
-        <input type="number" id="blkN" inputmode="numeric" placeholder="例: 5" oninput="calcBlock()">
-      </div>
+      <div class="form-row"><label>延長（m）</label><input type="number" id="blockL" inputmode="decimal" oninput="calcBlock()"></div>
+      <div class="form-row"><label>段数</label><input type="number" id="blockN" inputmode="decimal" oninput="calcBlock()"></div>
     </div>
-    <div class="input-row">
-      <label>ブロック長さ(mm)</label>
-      <input type="number" id="blkLen" inputmode="numeric" value="400" oninput="calcBlock()">
+    <div class="form-row">
+      <label>ブロック長（mm）</label>
+      <input type="number" id="blockBlk" inputmode="decimal" value="400" oninput="calcBlock()">
     </div>
-    <div class="grid-2">
-      <div class="input-row">
-        <label>縦筋ピッチ(mm)</label>
-        <input type="number" id="blkVp" inputmode="numeric" value="800" oninput="calcBlock()">
-      </div>
-      <div class="input-row">
-        <label>横筋(◯段ごと)</label>
-        <input type="number" id="blkHp" inputmode="numeric" value="2" oninput="calcBlock()">
-      </div>
+    <div class="form-row">
+      <label>縦筋ピッチ（mm）</label>
+      <input type="number" id="blockTate" inputmode="decimal" value="800" oninput="calcBlock()">
     </div>
+    <div class="form-row">
+      <label>横筋（◯段ごと）</label>
+      <input type="number" id="blockYoko" inputmode="decimal" value="2" oninput="calcBlock()">
+    </div>
+
     <div class="result-box">
-      <div class="result-row"><span class="lbl">CB枚数</span><span class="val" id="rCb">—</span></div>
-      <div class="result-row"><span class="lbl">縦筋本数</span><span class="val" id="rVbar">—</span></div>
-      <div class="result-row"><span class="lbl">横筋本数</span><span class="val" id="rHbar">—</span></div>
+      <div class="result-row"><span class="lbl">ブロック数</span><span class="val" id="rBlk">—</span></div>
+      <div class="result-row"><span class="lbl">縦筋本数</span><span class="val" id="rTate">—</span></div>
+      <div class="result-row main"><span class="lbl">横筋段数</span><span class="val" id="rYoko">—</span></div>
     </div>
-    <div class="note">※ 構造計算ではなく材料拾いの参考値です。実施工は法令・設計図書を優先してください。<br>※ 入力値は自動保存されます。</div>
   </div>
 
-  <div id="grav" class="screen">
-    <button class="back-btn" onclick="show('home')">← メニューに戻る</button>
-    <h2>比重早見表</h2>
-    <div class="table-list">
-      <div class="row"><div><div class="name">コンクリート</div><div class="desc">普通コン</div></div><div class="val">約 2.3 t/m³</div></div>
-      <div class="row"><div><div class="name">アスファルト</div><div class="desc">舗装用</div></div><div class="val">約 2.3 t/m³</div></div>
-      <div class="row"><div><div class="name">残土</div><div class="desc">含水あり</div></div><div class="val">約 1.7 t/m³</div></div>
-      <div class="row"><div><div class="name">砕石</div><div class="desc">RC・C-40 など</div></div><div class="val">約 1.6 t/m³</div></div>
-      <div class="row"><div><div class="name">砂</div><div class="desc">山砂・川砂</div></div><div class="val">約 1.5 t/m³</div></div>
-      <div class="row"><div><div class="name">真砂土</div><div class="desc">埋戻し用</div></div><div class="val">約 1.4 t/m³</div></div>
+  <!-- ============================ 比重表 ============================ -->
+  <div id="density" class="screen">
+    <div class="screen-header">
+      <button class="back" onclick="show('home')">← 戻る</button>
+      <span>比重表</span>
+      <span style="width:60px;"></span>
     </div>
-    <div class="note">※ 含水率・締固め度合い等で変動します。トラック積載・処分量の概算用としてご利用ください。</div>
+
+    <table class="density-table">
+      <thead>
+        <tr><th>材料</th><th class="num">比重 (t/m³)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>普通コンクリート</td><td class="num">2.30</td></tr>
+        <tr><td>鉄筋コンクリート</td><td class="num">2.40</td></tr>
+        <tr><td>無筋コンクリート</td><td class="num">2.30</td></tr>
+        <tr><td>軽量コンクリート</td><td class="num">1.80</td></tr>
+        <tr><td>モルタル</td><td class="num">2.10</td></tr>
+        <tr><td>砂</td><td class="num">1.60</td></tr>
+        <tr><td>砕石（C-40）</td><td class="num">1.70</td></tr>
+        <tr><td>真砂土</td><td class="num">1.55</td></tr>
+        <tr><td>粘土</td><td class="num">1.70</td></tr>
+        <tr><td>アスファルト合材</td><td class="num">2.30</td></tr>
+        <tr><td>水</td><td class="num">1.00</td></tr>
+        <tr><td>鋼材</td><td class="num">7.85</td></tr>
+      </tbody>
+    </table>
   </div>
 
-  <div id="namacon" class="screen">
-    <button class="back-btn" onclick="show('home')">← メニューに戻る</button>
-    <h2>生コン配合 目安</h2>
-    <div class="table-list">
-      <div class="row"><div><div class="name">一般土間</div><div class="desc">住宅外構など</div></div><div class="val">21-12-20<br><span style="font-size:11px;color:#4ad9c2;">(AE)</span></div></div>
-      <div class="row"><div><div class="name">駐車場土間</div><div class="desc">乗用車程度</div></div><div class="val">24-12-20<br><span style="font-size:11px;color:#4ad9c2;">(AE)</span></div></div>
-      <div class="row"><div><div class="name">軽作業土間</div><div class="desc">物置下・通路</div></div><div class="val">18-12-20<br><span style="font-size:11px;color:#4ad9c2;">(AE)</span></div></div>
+  <!-- ============================ 生コン目安 ============================ -->
+  <div id="mix" class="screen">
+    <div class="screen-header">
+      <button class="back" onclick="show('home')">← 戻る</button>
+      <span>生コン目安</span>
+      <span style="width:60px;"></span>
     </div>
-    <div class="note" style="font-size:12px; line-height:1.7;">
-      ※ あくまで <b style="color:#ffd266;">目安・参考値</b> です。<br>
-      ※ 強度・スランプ・骨材寸法は <b style="color:#ffd266;">現場条件・プラント確認を優先</b> してください。<br>
-      ※ 表記は「呼び強度-スランプ-粗骨材最大寸法」。
+
+    <div class="info-card">
+      <div class="ttl">普通コンクリート（標準）</div>
+      <div class="desc">
+        強度：<strong>21 N/mm²</strong> 〜 <strong>27 N/mm²</strong><br>
+        スランプ：<strong>15cm 〜 18cm</strong><br>
+        粗骨材：<strong>25mm</strong> が一般的
+      </div>
+    </div>
+
+    <div class="info-card">
+      <div class="ttl">擁壁・基礎</div>
+      <div class="desc">
+        21-15-25 / 21-18-25<br>
+        構造物の規模・配筋状況で選定
+      </div>
+    </div>
+
+    <div class="info-card">
+      <div class="ttl">土間コン・捨てコン</div>
+      <div class="desc">
+        捨てコン：<strong>18-15-25</strong><br>
+        土間（一般）：<strong>21-15-25</strong>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <div class="ttl">表記の読み方</div>
+      <div class="desc">
+        例：<strong>21-18-25</strong><br>
+        ・21 = 設計基準強度（N/mm²）<br>
+        ・18 = スランプ（cm）<br>
+        ・25 = 粗骨材最大寸法（mm）
+      </div>
     </div>
   </div>
 
 </div>
 
 <a href="#" class="vending-btn" onclick="goVending(); return false;">
-  🐶 ワンコイン自販機を探す
+  <span class="vending-main">💧 水分補給する？</span>
+  <span class="vending-sub">WANCOIN MAP</span>
 </a>
 
 <script>
+/* ============================================================
+   storage
+============================================================ */
 const STORAGE_KEY = 'genbaCalc_v1';
-
-const SAVE_FIELDS = {
+const PERSIST_FIELDS = {
   slope: ['slopeH', 'slopeV'],
-  doma:  ['domaA', 'domaB', 'domaT', 'meshA', 'meshB', 'meshLap'],
-  wall:  ['wallH', 'wallT', 'wallSlope', 'wallB', 'wallH1', 'wallH2', 'wallH3', 'wallL'],
-  block: ['blkL', 'blkN', 'blkLen', 'blkVp', 'blkHp']
+  doma: ['domaW', 'domaD', 'domaT', 'domaMW', 'domaMD', 'domaCover'],
+  wall: ['wallH', 'wallT', 'wallSlope', 'wallB', 'wallH1', 'wallH2', 'wallH3', 'wallL'],
+  block: ['blockL', 'blockN', 'blockBlk', 'blockTate', 'blockYoko']
 };
 
-function saveSection(section) {
-  try {
-    const all = loadAll();
-    const data = {};
-    SAVE_FIELDS[section].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) data[id] = el.value;
-    });
-    all[section] = data;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
-  } catch (e) {}
-}
+let wallBManual = false;
 
-function loadAll() {
+function readState() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return {};
-    return JSON.parse(raw) || {};
+    return JSON.parse(raw);
   } catch (e) { return {}; }
 }
-
-function restoreSection(section) {
-  const all = loadAll();
-  const data = all[section];
-  if (!data) return;
-  SAVE_FIELDS[section].forEach(id => {
+function writeState(state) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+}
+function saveSection(section) {
+  const state = readState();
+  const fields = PERSIST_FIELDS[section];
+  if (!fields) return;
+  state[section] = state[section] || {};
+  fields.forEach(id => {
     const el = document.getElementById(id);
-    if (!el) return;
-    if (data[id] !== undefined && data[id] !== null && data[id] !== '') {
-      el.value = data[id];
+    if (el) state[section][id] = el.value;
+  });
+  if (section === 'wall') {
+    state.wall.wallBManual = wallBManual;
+  }
+  writeState(state);
+}
+function restoreSection(section) {
+  const state = readState();
+  if (!state[section]) return;
+  const fields = PERSIST_FIELDS[section] || [];
+  fields.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && state[section][id] !== undefined && state[section][id] !== '') {
+      el.value = state[section][id];
     }
   });
+  if (section === 'wall') {
+    wallBManual = !!state.wall.wallBManual;
+  }
 }
 
+/* ============================================================
+   Navigation
+============================================================ */
 function show(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0, 0);
 }
-function goVending() {
-  window.location.href = 'https://wanwancoin.jp';
+
+/* ============================================================
+   普通電卓
+============================================================ */
+let calcBuf = '0';
+function calcUpdate() {
+  document.getElementById('calcDisp').textContent = calcBuf;
 }
-let calcCur = '0';
-let calcPrev = '';
-let calcOp = null;
-let calcReset = false;
-function updateDisp() {
-  document.getElementById('calcDisp').textContent = formatDispNum(calcCur);
-  document.getElementById('calcSub').textContent =
-    calcPrev !== '' ? (formatDispNum(calcPrev) + ' ' + opSym(calcOp)) : '';
+function calcClear() {
+  calcBuf = '0';
+  calcUpdate();
 }
-function formatDispNum(s) {
-  if (s === '' || s === '-') return s || '0';
-  if (s.includes('.')) {
-    const [a, b] = s.split('.');
-    return Number(a).toLocaleString() + '.' + b;
+function calcInput(t) {
+  if (t === '⌫') {
+    if (calcBuf.length <= 1) calcBuf = '0';
+    else calcBuf = calcBuf.slice(0, -1);
+  } else if (t === '%') {
+    try {
+      const r = eval(calcBuf.replace(/×/g, '*').replace(/÷/g, '/'));
+      calcBuf = String(r / 100);
+    } catch (e) { calcBuf = 'Err'; }
+  } else {
+    if (calcBuf === '0' && /[0-9.]/.test(t)) calcBuf = t;
+    else if (calcBuf === 'Err') calcBuf = /[0-9.]/.test(t) ? t : '0';
+    else calcBuf += t;
   }
-  return Number(s).toLocaleString();
+  calcUpdate();
 }
-function opSym(op) { return ({'+':'＋','-':'−','*':'×','/':'÷','%':'%'})[op] || ''; }
-function cIn(v) {
-  if (calcReset) { calcCur = '0'; calcReset = false; }
-  if (v === '.') { if (!calcCur.includes('.')) calcCur += '.'; }
-  else if (v === '00') { if (calcCur === '0') return; calcCur += '00'; }
-  else { if (calcCur === '0') calcCur = v; else calcCur += v; }
-  updateDisp();
-}
-function cClear() { calcCur='0'; calcPrev=''; calcOp=null; calcReset=false; updateDisp(); }
-function cBack() {
-  if (calcReset) return;
-  if (calcCur.length <= 1 || (calcCur.length === 2 && calcCur.startsWith('-'))) calcCur = '0';
-  else calcCur = calcCur.slice(0, -1);
-  updateDisp();
-}
-function cOp(op) {
-  if (calcOp && !calcReset) cEq();
-  calcPrev = calcCur; calcOp = op; calcReset = true;
-  updateDisp();
-}
-function cEq() {
-  if (calcOp === null) return;
-  const a = parseFloat(calcPrev), b = parseFloat(calcCur);
-  let r = 0;
-  switch (calcOp) {
-    case '+': r = a + b; break;
-    case '-': r = a - b; break;
-    case '*': r = a * b; break;
-    case '/': r = b === 0 ? 0 : a / b; break;
-    case '%': r = a * b / 100; break;
+function calcEq() {
+  try {
+    const expr = calcBuf.replace(/×/g, '*').replace(/÷/g, '/');
+    const r = eval(expr);
+    calcBuf = (Math.round(r * 1e10) / 1e10).toString();
+  } catch (e) {
+    calcBuf = 'Err';
   }
-  r = Math.round(r * 1e10) / 1e10;
-  calcCur = String(r); calcPrev = ''; calcOp = null; calcReset = true;
-  updateDisp();
+  calcUpdate();
 }
 
+/* ============================================================
+   勾配・斜距離
+============================================================ */
 function calcSlope() {
   const h = parseFloat(document.getElementById('slopeH').value);
   const v = parseFloat(document.getElementById('slopeV').value);
-  if (!isFinite(h) || !isFinite(v) || h <= 0 || v < 0) {
+  if (!isFinite(h) || !isFinite(v) || h <= 0 || v <= 0) {
     document.getElementById('rSlope').textContent = '—';
     document.getElementById('rAngle').textContent = '—';
     document.getElementById('rPct').textContent = '—';
-    document.getElementById('rRatio').textContent = '—';
-    drawSlopeSvg(null, null, null, null, null);
+    document.getElementById('rN').textContent = '—';
+    drawSlopeSvg(NaN, NaN);
     saveSection('slope');
     return;
   }
   const slope = Math.sqrt(h * h + v * v);
   const angle = Math.atan2(v, h) * 180 / Math.PI;
   const pct = (v / h) * 100;
-  const ratio = v === 0 ? '∞' : (h / v).toFixed(1);
+  const n = h / v;
   document.getElementById('rSlope').textContent = slope.toFixed(1) + ' mm';
   document.getElementById('rAngle').textContent = angle.toFixed(2) + ' °';
   document.getElementById('rPct').textContent = pct.toFixed(2) + ' %';
-  document.getElementById('rRatio').textContent = '1/' + ratio;
+  document.getElementById('rN').textContent = '1 / ' + n.toFixed(2);
   drawSlopeSvg(h, v, slope, angle, pct);
   saveSection('slope');
 }
-
 function drawSlopeSvg(h, v, slope, angle, pct) {
   const svg = document.getElementById('slopeSvg');
   if (!svg) return;
-
-  const VB_W = 320, VB_H = 200;
-  const padL = 30, padR = 100, padT = 30, padB = 40;
-  const drawW = VB_W - padL - padR;
-  const drawH = VB_H - padT - padB;
-
-  const valid = isFinite(h) && isFinite(v) && h > 0 && v >= 0;
-
-  if (!valid) {
-    svg.innerHTML = `<text x="${VB_W/2}" y="${VB_H/2}" fill="#4ad9c2" font-size="12" font-family="monospace" text-anchor="middle">横・縦を入力してください</text>`;
+  if (!isFinite(h) || !isFinite(v) || h <= 0 || v <= 0) {
+    svg.innerHTML = `<text x="140" y="100" fill="#4ad9c2" font-size="12" font-family="monospace" text-anchor="middle">h・v を入力してください</text>`;
     return;
   }
-
-  const scale = Math.min(drawW / h, drawH / Math.max(v, 1));
-  const x0 = padL;
-  const y0 = VB_H - padB;
-  const x1 = x0 + h * scale;
+  const VB_W = 280, VB_H = 200;
+  const padX = 30, padY = 30;
+  const maxW = VB_W - padX * 2;
+  const maxH = VB_H - padY * 2;
+  const scale = Math.min(maxW / h, maxH / v);
+  const drawH = h * scale;
+  const drawV = v * scale;
+  const x0 = padX;
+  const y0 = VB_H - padY;
+  const x1 = x0 + drawH;
   const y1 = y0;
   const x2 = x1;
-  const y2 = y0 - v * scale;
-
-  svg.innerHTML = `
-    <line x1="${x0}" y1="${y0}" x2="${x1}" y2="${y1}" stroke="#00ffd5" stroke-width="5" stroke-linecap="square"/>
-    <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#00ffd5" stroke-width="5" stroke-linecap="square"/>
-    <line x1="${x0}" y1="${y0}" x2="${x2}" y2="${y2}" stroke="#00ffd5" stroke-width="5" stroke-linecap="square"/>
-    <rect x="${x0}" y="${y0 - 18}" width="18" height="18" fill="none" stroke="#00ffd5" stroke-width="4"/>
-    <text x="${(x0 + x1) / 2}" y="${y0 + 22}" fill="#4ad9c2" font-size="11" font-family="monospace" text-anchor="middle">横 ${Math.round(h)}</text>
-    <text x="${x2 + 8}" y="${(y1 + y2) / 2}" fill="#4ad9c2" font-size="11" font-family="monospace">縦 ${Math.round(v)}</text>
-    <text x="${(x0 + x2) / 2 - 8}" y="${(y0 + y2) / 2 - 8}" fill="#00ffd5" font-size="11" font-family="monospace" text-anchor="middle">${Math.round(slope)}mm</text>
-  `;
+  const y2 = y0 - drawV;
+  let html = '';
+  html += `<line x1="${x0}" y1="${y0}" x2="${x1}" y2="${y1}" stroke="#00ffd5" stroke-width="2"/>`;
+  html += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#00ffd5" stroke-width="2"/>`;
+  html += `<line x1="${x0}" y1="${y0}" x2="${x2}" y2="${y2}" stroke="#00ff88" stroke-width="2.5"/>`;
+  html += `<polyline points="${x1 - 8},${y1} ${x1 - 8},${y1 - 8} ${x1},${y1 - 8}" fill="none" stroke="#00ffd5" stroke-width="1.5"/>`;
+  html += `<text x="${(x0 + x1) / 2}" y="${y0 + 18}" fill="#4ad9c2" font-size="11" font-family="monospace" text-anchor="middle">横 ${Math.round(h)}mm</text>`;
+  html += `<text x="${x1 + 8}" y="${(y1 + y2) / 2 + 4}" fill="#4ad9c2" font-size="11" font-family="monospace">縦 ${Math.round(v)}mm</text>`;
+  html += `<text x="${(x0 + x2) / 2 - 8}" y="${(y0 + y2) / 2 - 8}" fill="#00ffd5" font-size="11" font-family="monospace" text-anchor="middle">${Math.round(slope)}mm</text>`;
+  if (isFinite(angle)) {
+    html += `<text x="${x0 + 12}" y="${y0 - 6}" fill="#ffd266" font-size="10" font-family="monospace">${angle.toFixed(1)}°</text>`;
+  }
+  if (isFinite(pct)) {
+    html += `<text x="${x2 + 4}" y="${y2 + 12}" fill="#ffd266" font-size="10" font-family="monospace">${pct.toFixed(1)}%</text>`;
+  }
+  svg.innerHTML = html;
 }
 
+/* ============================================================
+   土間コン
+============================================================ */
 function calcDoma() {
-  const a_mm  = parseFloat(document.getElementById('domaA').value);
-  const b_mm  = parseFloat(document.getElementById('domaB').value);
-  const t_mm  = parseFloat(document.getElementById('domaT').value);
-  const ma_mm = parseFloat(document.getElementById('meshA').value);
-  const mb_mm = parseFloat(document.getElementById('meshB').value);
-  const lap_mm = parseFloat(document.getElementById('meshLap').value);
-
-  const a   = isFinite(a_mm)  ? a_mm  / 1000 : NaN;
-  const b   = isFinite(b_mm)  ? b_mm  / 1000 : NaN;
-  const ma  = isFinite(ma_mm) ? ma_mm / 1000 : NaN;
-  const mb  = isFinite(mb_mm) ? mb_mm / 1000 : NaN;
-  const t   = t_mm;
-  const lap = lap_mm;
-
-  if (!isFinite(a) || !isFinite(b) || a <= 0 || b <= 0) {
+  const w = parseFloat(document.getElementById('domaW').value);
+  const d = parseFloat(document.getElementById('domaD').value);
+  const t = parseFloat(document.getElementById('domaT').value);
+  const mw = parseFloat(document.getElementById('domaMW').value);
+  const md = parseFloat(document.getElementById('domaMD').value);
+  const cover = parseFloat(document.getElementById('domaCover').value);
+  if (!isFinite(w) || !isFinite(d) || !isFinite(t) || w <= 0 || d <= 0 || t <= 0) {
     document.getElementById('rArea').textContent = '—';
     document.getElementById('rVol').textContent = '—';
     document.getElementById('rMesh').textContent = '—';
     saveSection('doma');
     return;
   }
-  const area = a * b;
+  const area = (w / 1000) * (d / 1000);
+  const vol = area * (t / 1000);
   document.getElementById('rArea').textContent = area.toFixed(2) + ' ㎡';
-
-  if (isFinite(t) && t > 0) {
-    document.getElementById('rVol').textContent = (area * (t / 1000)).toFixed(2) + ' m³';
-  } else {
-    document.getElementById('rVol').textContent = '—';
-  }
-
-  if (isFinite(ma) && isFinite(mb) && ma > 0 && mb > 0 && isFinite(lap) && lap >= 0) {
-    const lapM = lap / 1000;
-    let nA, nB;
-    if (a <= ma) nA = 1;
-    else { const eff = ma - lapM; nA = eff <= 0 ? Infinity : 1 + Math.ceil((a - ma) / eff); }
-    if (b <= mb) nB = 1;
-    else { const eff = mb - lapM; nB = eff <= 0 ? Infinity : 1 + Math.ceil((b - mb) / eff); }
-    document.getElementById('rMesh').textContent =
-      (!isFinite(nA) || !isFinite(nB)) ? '—' : (nA * nB) + ' 枚';
+  document.getElementById('rVol').textContent = vol.toFixed(3) + ' m³';
+  if (isFinite(mw) && isFinite(md) && isFinite(cover) && mw > 0 && md > 0 && cover > 0) {
+    const effW = mw - cover;
+    const effD = md - cover;
+    if (effW > 0 && effD > 0) {
+      const nw = Math.ceil(w / effW);
+      const nd = Math.ceil(d / effD);
+      document.getElementById('rMesh').textContent = (nw * nd) + ' 枚';
+    } else {
+      document.getElementById('rMesh').textContent = '—';
+    }
   } else {
     document.getElementById('rMesh').textContent = '—';
   }
-
   saveSection('doma');
 }
 
-let wallBManual = false;
-
-function onSlopeInput() {
-  wallBManual = false;
-  const bEl = document.getElementById('wallB');
-  if (bEl) bEl.value = '';
+/* ============================================================
+   重力式擁壁
+============================================================ */
+function onWallBInput() {
+  wallBManual = true;
   calcWall();
 }
-
-function onBInput() {
-  const bEl = document.getElementById('wallB');
-  const v = bEl ? bEl.value.trim() : '';
-  wallBManual = (v !== '');
-  calcWall();
-}
-
 function calcWall() {
-  const H      = parseFloat(document.getElementById('wallH').value);
-  const T      = parseFloat(document.getElementById('wallT').value);
+  const H = parseFloat(document.getElementById('wallH').value);
+  const T = parseFloat(document.getElementById('wallT').value);
   const slope  = parseFloat(document.getElementById('wallSlope').value);
-  const Binput = parseFloat(document.getElementById('wallB').value);
-  const h1     = parseFloat(document.getElementById('wallH1').value);
-  const h2     = parseFloat(document.getElementById('wallH2').value);
-  const h3     = parseFloat(document.getElementById('wallH3').value);
-  const L      = parseFloat(document.getElementById('wallL').value);
+  const Bin = parseFloat(document.getElementById('wallB').value);
+  const h1 = parseFloat(document.getElementById('wallH1').value);
+  const h2 = parseFloat(document.getElementById('wallH2').value);
+  const h3 = parseFloat(document.getElementById('wallH3').value);
+  const L  = parseFloat(document.getElementById('wallL').value);
 
-  let B = null;
-  const bEl = document.getElementById('wallB');
-  const bBadge = document.getElementById('bBadge');
-
-  if (wallBManual && isFinite(Binput) && Binput > 0) {
-    B = Binput;
-    if (bBadge) {
-      bBadge.textContent = '手入力';
-      bBadge.classList.add('manual');
-    }
+  let B;
+  const badge = document.getElementById('wallBBadge');
+  if (wallBManual && isFinite(Bin) && Bin > 0) {
+    B = Bin;
+    badge.textContent = '手入力';
+    badge.classList.add('manual');
   } else {
     if (isFinite(H) && isFinite(T) && isFinite(slope) && H > 0 && T > 0 && slope >= 0) {
       B = T + H * slope;
+      const el = document.getElementById('wallB');
+      if (!wallBManual) el.value = '';
     }
-    if (bBadge) {
-      bBadge.textContent = '自動';
-      bBadge.classList.remove('manual');
-    }
-    if (bEl && document.activeElement !== bEl) {
-      bEl.value = (B === null) ? '' : Math.round(B);
-    }
+    badge.textContent = '自動';
+    badge.classList.remove('manual');
   }
 
-  function widthAt(h) {
-    if (B === null || H <= 0) return null;
-    if (!isFinite(h) || h < 0 || h > H) return null;
-    return T + (B - T) * (h / H);
+  if (isFinite(B) && B > 0) {
+    document.getElementById('rWallB').textContent = Math.round(B) + ' mm';
+  } else {
+    document.getElementById('rWallB').textContent = '—';
   }
-  const w1 = widthAt(h1);
-  const w2 = widthAt(h2);
-  const w3 = widthAt(h3);
 
-  document.getElementById('rW1').textContent = w1 === null ? '—' : Math.round(w1) + 'mm';
-  document.getElementById('rW2').textContent = w2 === null ? '—' : Math.round(w2) + 'mm';
-  document.getElementById('rW3').textContent = w3 === null ? '—' : Math.round(w3) + 'mm';
-
-  const areaSecEl  = document.getElementById('rAreaSec');
-  const volPerEl   = document.getElementById('rVolPerM');
-  const totalRowEl = document.getElementById('rTotalRow');
-  const volTotalEl = document.getElementById('rVolTotal');
-  const lShowEl    = document.getElementById('rLshow');
-
-  if (B !== null) {
-    const areaSec = ((T + B) / 2 / 1000) * (H / 1000);
-    areaSecEl.textContent = areaSec.toFixed(3) + ' ㎡';
-    volPerEl.textContent = areaSec.toFixed(3) + ' m³';
-
+  if (isFinite(H) && isFinite(T) && isFinite(B) && H > 0 && T > 0 && B > 0) {
+    const areaSec = (T + B) * H / 2 / 1e6;
+    document.getElementById('rAreaSec').textContent = areaSec.toFixed(3) + ' ㎡';
     if (isFinite(L) && L > 0) {
-      lShowEl.textContent = L;
-      volTotalEl.textContent = (areaSec * L).toFixed(2) + ' m³';
-      totalRowEl.style.display = 'flex';
+      const vol = areaSec * L;
+      document.getElementById('rWallVol').textContent = vol.toFixed(3) + ' m³';
     } else {
-      totalRowEl.style.display = 'none';
+      document.getElementById('rWallVol').textContent = '—';
     }
   } else {
-    areaSecEl.textContent = '— ㎡';
-    volPerEl.textContent = '— m³';
-    totalRowEl.style.display = 'none';
+    document.getElementById('rAreaSec').textContent = '—';
+    document.getElementById('rWallVol').textContent = '—';
   }
 
-  drawWallSvg(H, T, B, [
-    { h: h1, w: w1, label: 'h1' },
-    { h: h2, w: w2, label: 'h2' },
-    { h: h3, w: w3, label: 'h3' }
-  ]);
+  ['rSepaH1', 'rSepaH2', 'rSepaH3'].forEach(id => document.getElementById(id).textContent = '—');
+  if (isFinite(H) && isFinite(T) && isFinite(B) && H > 0 && T > 0 && B > 0) {
+    [['rSepaH1', h1], ['rSepaH2', h2], ['rSepaH3', h3]].forEach(([id, h]) => {
+      if (isFinite(h) && h >= 0 && h <= H) {
+        const w = T + (B - T) * (h / H);
+        document.getElementById(id).textContent = Math.round(w) + ' mm';
+      }
+    });
+  }
 
+  drawWallSvg(H, T, B, h1, h2, h3);
   saveSection('wall');
 }
-
-function drawWallSvg(H, T, B, marks) {
+function drawWallSvg(H, T, B, h1, h2, h3) {
   const svg = document.getElementById('wallSvg');
-  const VB_W = 280, VB_H = 220;
-  const padL = 30, padR = 90, padT = 20, padB = 30;
-  const drawW = VB_W - padL - padR;
-  const drawH = VB_H - padT - padB;
-
-  const valid = isFinite(H) && isFinite(T) && B !== null && isFinite(B) && H > 0 && T > 0 && B > 0;
-  const refMax = valid ? Math.max(B, T) : 100;
-  const px = (mm) => (mm / refMax) * drawW;
-
-  const xLeft   = padL;
-  const yBottom = padT + drawH;
-  const yTop    = padT;
-  const wBottom = valid ? px(B) : drawW * 0.6;
-  const wTop    = valid ? px(T) : drawW * 0.3;
-
-  const pBL = [xLeft, yBottom];
-  const pBR = [xLeft + wBottom, yBottom];
-  const pTR = [xLeft + wTop, yTop];
-  const pTL = [xLeft, yTop];
-
+  if (!svg) return;
+  const VB_W = 280, VB_H = 240;
   let html = '';
-  html += `<line x1="5" y1="${yBottom}" x2="${VB_W - 5}" y2="${yBottom}" stroke="#4ad9c2" stroke-width="1.2" stroke-dasharray="3 3"/>`;
-  html += `<polygon points="${pBL.join(',')} ${pBR.join(',')} ${pTR.join(',')} ${pTL.join(',')}"
-            fill="#13332e" stroke="#00ffd5" stroke-width="2" stroke-linejoin="round"/>`;
-
-  if (valid) {
-    html += `<text x="${xLeft - 4}" y="${yTop + drawH / 2 + 4}" fill="#7ae6ff" font-size="9" font-family="monospace" text-anchor="end">前面</text>`;
-    html += `<text x="${xLeft + (wTop + wBottom) / 2 + 6}" y="${yTop + drawH / 2}" fill="#7ae6ff" font-size="9" font-family="monospace">背面</text>`;
-    html += `<text x="${xLeft + wTop / 2}" y="${yTop - 6}" fill="#00ffd5" font-size="10" font-family="monospace" text-anchor="middle">T=${Math.round(T)}</text>`;
-    html += `<text x="${xLeft + wBottom / 2}" y="${yBottom + 16}" fill="#00ffd5" font-size="10" font-family="monospace" text-anchor="middle">B=${Math.round(B)}</text>`;
-    html += `<line x1="${xLeft - 12}" y1="${yTop}" x2="${xLeft - 12}" y2="${yBottom}" stroke="#00ff88" stroke-width="1"/>`;
-    html += `<line x1="${xLeft - 16}" y1="${yTop}" x2="${xLeft - 8}" y2="${yTop}" stroke="#00ff88" stroke-width="1"/>`;
-    html += `<line x1="${xLeft - 16}" y1="${yBottom}" x2="${xLeft - 8}" y2="${yBottom}" stroke="#00ff88" stroke-width="1"/>`;
-    html += `<text x="${xLeft - 14}" y="${yTop + drawH / 2}" fill="#00ff88" font-size="10" font-family="monospace" text-anchor="end" transform="rotate(-90 ${xLeft - 14} ${yTop + drawH / 2})">H=${Math.round(H)}</text>`;
-  }
-
-  if (valid) {
-    const colors = ['#ff7eb0', '#ffb968', '#7ae6ff'];
-    marks.forEach((m, i) => {
-      if (m.w === null) return;
-      const y = yTop + (m.h / H) * drawH;
-      const xR = xLeft + px(m.w);
-      html += `<line x1="${xLeft}" y1="${y}" x2="${xR}" y2="${y}" stroke="${colors[i]}" stroke-width="1.6" stroke-dasharray="4 3"/>`;
-      html += `<text x="${xR + 6}" y="${y + 4}" fill="${colors[i]}" font-size="11" font-family="monospace" font-weight="bold">${m.label}: ${Math.round(m.w)}mm</text>`;
-      html += `<text x="${xLeft + 4}" y="${y - 3}" fill="${colors[i]}" font-size="9" font-family="monospace">↓${Math.round(m.h)}</text>`;
-    });
-  } else {
+  if (!isFinite(H) || !isFinite(T) || !isFinite(B) || H <= 0 || T <= 0 || B <= 0) {
     html += `<text x="${VB_W / 2}" y="${VB_H / 2}" fill="#4ad9c2" font-size="11" font-family="monospace" text-anchor="middle">H・T・勾配 を入力してください</text>`;
+    svg.innerHTML = html;
+    return;
   }
-
+  const padX = 30, padY = 20;
+  const maxW = VB_W - padX * 2;
+  const maxH = VB_H - padY * 2;
+  const scale = Math.min(maxW / B, maxH / H);
+  const drawB = B * scale;
+  const drawT = T * scale;
+  const drawH = H * scale;
+  const xCenter = VB_W / 2;
+  const xBL = xCenter - drawB / 2;
+  const xBR = xCenter + drawB / 2;
+  const yB = VB_H - padY;
+  const xTL = xBL;
+  const xTR = xBL + drawT;
+  const yT = yB - drawH;
+  html += `<polygon points="${xBL},${yB} ${xBR},${yB} ${xTR},${yT} ${xTL},${yT}" fill="#0a3d39" stroke="#00ffd5" stroke-width="1.5"/>`;
+  html += `<text x="${(xBL + xBR) / 2}" y="${yB + 14}" fill="#4ad9c2" font-size="10" font-family="monospace" text-anchor="middle">B ${Math.round(B)}</text>`;
+  html += `<text x="${(xTL + xTR) / 2}" y="${yT - 4}" fill="#4ad9c2" font-size="10" font-family="monospace" text-anchor="middle">T ${Math.round(T)}</text>`;
+  html += `<text x="${xBL - 4}" y="${(yB + yT) / 2}" fill="#4ad9c2" font-size="10" font-family="monospace" text-anchor="end">H ${Math.round(H)}</text>`;
+  [[h1, '#ff7eb0'], [h2, '#ffb968'], [h3, '#7ae6ff']].forEach(([h, col]) => {
+    if (isFinite(h) && h >= 0 && h <= H) {
+      const yLine = yT + (h / H) * drawH;
+      const wAtH = T + (B - T) * (h / H);
+      const drawWH = wAtH * scale;
+      const xL = xCenter - drawWH / 2;
+      const xR = xCenter + drawWH / 2;
+      html += `<line x1="${xL}" y1="${yLine}" x2="${xR}" y2="${yLine}" stroke="${col}" stroke-width="1.5" stroke-dasharray="4,3"/>`;
+    }
+  });
   svg.innerHTML = html;
 }
 
+/* ============================================================
+   ブロックサポート
+============================================================ */
 function calcBlock() {
-  const L_mm = parseFloat(document.getElementById('blkL').value);
-  const N    = parseFloat(document.getElementById('blkN').value);
-  const len  = parseFloat(document.getElementById('blkLen').value);
-  const vp   = parseFloat(document.getElementById('blkVp').value);
-  const hp   = parseFloat(document.getElementById('blkHp').value);
-
-  const cbEl   = document.getElementById('rCb');
-  const vbarEl = document.getElementById('rVbar');
-  const hbarEl = document.getElementById('rHbar');
-
-  if (!isFinite(L_mm) || !isFinite(N) || !isFinite(len) || L_mm <= 0 || N <= 0 || len <= 0) {
-    cbEl.textContent = '—';
-    vbarEl.textContent = '—';
-    hbarEl.textContent = '—';
+  const L = parseFloat(document.getElementById('blockL').value);
+  const N = parseFloat(document.getElementById('blockN').value);
+  const blk = parseFloat(document.getElementById('blockBlk').value);
+  const tate = parseFloat(document.getElementById('blockTate').value);
+  const yoko = parseFloat(document.getElementById('blockYoko').value);
+  if (!isFinite(L) || !isFinite(N) || !isFinite(blk) || L <= 0 || N <= 0 || blk <= 0) {
+    document.getElementById('rBlk').textContent = '—';
+    document.getElementById('rTate').textContent = '—';
+    document.getElementById('rYoko').textContent = '—';
     saveSection('block');
     return;
   }
-
-  const perRow = Math.ceil(L_mm / len);
-  cbEl.textContent = (perRow * N).toLocaleString() + ' 枚';
-
-  if (isFinite(vp) && vp > 0) {
-    vbarEl.textContent = (Math.ceil(L_mm / vp) + 1) + ' 本';
+  const Lmm = L * 1000;
+  const blkPerRow = Math.ceil(Lmm / blk);
+  const totalBlk = blkPerRow * N;
+  document.getElementById('rBlk').textContent = totalBlk + ' 個';
+  if (isFinite(tate) && tate > 0) {
+    const tateCount = Math.floor(Lmm / tate) + 1;
+    document.getElementById('rTate').textContent = tateCount + ' 本';
   } else {
-    vbarEl.textContent = '—';
+    document.getElementById('rTate').textContent = '—';
   }
-
-  if (isFinite(hp) && hp > 0) {
-    hbarEl.textContent = (Math.ceil(N / hp) * perRow).toLocaleString() + ' 本';
+  if (isFinite(yoko) && yoko > 0) {
+    const yokoRows = Math.floor(N / yoko);
+    document.getElementById('rYoko').textContent = yokoRows + ' 段';
   } else {
-    hbarEl.textContent = '—';
+    document.getElementById('rYoko').textContent = '—';
   }
-
   saveSection('block');
 }
 
+/* ============================================================
+   vending
+============================================================ */
+function goVending() {
+  alert('ワンコイン自販機マップは準備中です。');
+}
+
+/* ============================================================
+   起動
+============================================================ */
 function bootRestore() {
-  restoreSection('slope');
-  restoreSection('doma');
-  restoreSection('wall');
-  restoreSection('block');
-
-  const bEl = document.getElementById('wallB');
-  const Bval = bEl ? parseFloat(bEl.value) : NaN;
-  const Hv = parseFloat(document.getElementById('wallH').value);
-  const Tv = parseFloat(document.getElementById('wallT').value);
-  const Sv = parseFloat(document.getElementById('wallSlope').value);
-  if (isFinite(Bval) && Bval > 0) {
-    if (isFinite(Hv) && isFinite(Tv) && isFinite(Sv) && Hv > 0 && Tv > 0 && Sv >= 0) {
-      const autoB = Math.round(Tv + Hv * Sv);
-      wallBManual = (Math.round(Bval) !== autoB);
-    } else {
-      wallBManual = true;
-    }
-  } else {
-    wallBManual = false;
-  }
-
+  ['slope', 'doma', 'wall', 'block'].forEach(restoreSection);
   calcSlope();
   calcDoma();
   calcWall();
   calcBlock();
 }
-
-updateDisp();
 bootRestore();
 </script>
 </body>
