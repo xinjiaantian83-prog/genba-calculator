@@ -438,6 +438,86 @@
     grid-template-columns: 1fr 1fr;
     gap: 10px;
   }
+  .feature-request-entry {
+    width: 100%;
+    margin-top: 14px;
+    border: 1px solid #00ffd570;
+    border-radius: 12px;
+    background: linear-gradient(160deg, #0d2926, #061613);
+    color: #00ffd5;
+    padding: 15px;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: .5px;
+    cursor: pointer;
+  }
+  .feature-request-entry:active { background: #103631; }
+  .feature-request-lead {
+    margin: 0 0 14px;
+    color: #8dbab0;
+    font-size: 13px;
+    line-height: 1.65;
+  }
+  .feature-request-form label {
+    display: block;
+    margin-bottom: 12px;
+    color: #4ad9c2;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .feature-request-form label span {
+    margin-left: 6px;
+    color: #ffd266;
+    font-size: 10px;
+  }
+  .feature-request-form label small {
+    display: block;
+    margin-top: 2px;
+    color: #6a8a85;
+    font-weight: 500;
+  }
+  .feature-request-form input,
+  .feature-request-form textarea {
+    width: 100%;
+    margin-top: 5px;
+    border: 1px solid #008c7a;
+    border-radius: 8px;
+    background: #061613;
+    color: #e0fff8;
+    padding: 12px;
+    font: inherit;
+    font-size: 16px;
+    line-height: 1.5;
+    resize: vertical;
+    -webkit-appearance: none;
+  }
+  .feature-request-form input:focus,
+  .feature-request-form textarea:focus {
+    outline: none;
+    border-color: #00ffd5;
+    box-shadow: 0 0 0 2px #00ffd530;
+  }
+  .feature-request-submit {
+    width: 100%;
+    min-height: 50px;
+    border: 1px solid #00ff88;
+    border-radius: 10px;
+    background: #00ff88;
+    color: #00130e;
+    font-size: 15px;
+    font-weight: 900;
+    cursor: pointer;
+  }
+  .feature-request-submit:disabled { opacity: .6; }
+  .feature-request-status {
+    min-height: 42px;
+    margin: 12px 0 0;
+    color: #8dbab0;
+    font-size: 12px;
+    line-height: 1.6;
+  }
+  .feature-request-status.error { color: #ff9d9d; }
+  .feature-request-status.success { color: #83ffc0; }
 </style>
 </head>
 <body>
@@ -537,6 +617,27 @@
         <span class="label">生コン目安</span>
       </button>
     </div>
+    <button class="feature-request-entry" type="button" onclick="openFeatureRequest()">＋ 欲しい機能を送る</button>
+  </div>
+
+  <div id="featureRequest" class="screen">
+    <button class="back-btn" type="button" onclick="show('home')">← メニューに戻る</button>
+    <h2>欲しい機能を送る</h2>
+    <p class="feature-request-lead">現場で役立つ新しい計算ツール・機能のご要望を募集しています。</p>
+    <form id="featureRequestForm" class="feature-request-form" action="https://usebasin.com/f/13a5335914bd" method="POST" novalidate>
+      <input type="hidden" name="フォーム種別" value="GENBA TOOLBOX 機能要望">
+      <input id="featureSource" type="hidden" name="source" value="">
+      <input id="featureSentAt" type="hidden" name="送信日時" value="">
+      <input id="featurePageUrl" type="hidden" name="現在ページURL" value="">
+      <input id="featureAppVersion" type="hidden" name="アプリバージョン" value="unknown">
+      <input id="featureOs" type="hidden" name="OS" value="">
+      <label>欲しい機能・計算内容<span>必須</span><textarea id="featureContent" name="欲しい機能・計算内容" rows="5" required maxlength="2000" placeholder="例：階段の段数と蹴上げを計算したい"></textarea></label>
+      <label>どんな場面で使うか<textarea name="どんな場面で使うか" rows="3" maxlength="2000" placeholder="例：現調時にその場で確認したい"></textarea></label>
+      <label>職種<input name="職種" type="text" maxlength="100" autocomplete="organization-title" placeholder="例：外構、土木、建設"></label>
+      <label>メールアドレス<small>任意・返信希望者のみ</small><input name="email" type="email" inputmode="email" autocomplete="email" maxlength="254" placeholder="name@example.com"></label>
+      <button id="featureRequestSubmit" class="feature-request-submit" type="submit">送信する</button>
+      <p id="featureRequestStatus" class="feature-request-status" role="status" aria-live="polite"></p>
+    </form>
   </div>
 
   <div id="calc" class="screen">
@@ -874,6 +975,103 @@ function show(id) {
   document.getElementById(id).classList.add('active');
   window.scrollTo(0, 0);
 }
+
+const FEATURE_EVENT_KEY = 'genbaFeatureRequestEvents_v1';
+
+function getAppPlatform() {
+  try {
+    if (window.Capacitor && typeof window.Capacitor.getPlatform === 'function') {
+      const platform = window.Capacitor.getPlatform();
+      if (platform === 'ios' || platform === 'android') return platform;
+    }
+  } catch (e) {}
+  const ua = navigator.userAgent || '';
+  if (/iPhone|iPad|iPod/i.test(ua)) return 'ios';
+  if (/Android/i.test(ua)) return 'android';
+  return 'web';
+}
+
+function trackFeatureRequest(eventName, source) {
+  const record = {
+    event: eventName,
+    source: source,
+    at: new Date().toISOString()
+  };
+  try {
+    const history = JSON.parse(localStorage.getItem(FEATURE_EVENT_KEY) || '[]');
+    history.push(record);
+    localStorage.setItem(FEATURE_EVENT_KEY, JSON.stringify(history.slice(-50)));
+  } catch (e) {}
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push(record);
+}
+
+async function resolveAppVersion() {
+  let version = document.querySelector('meta[name="app-version"]')?.content || window.GENBA_APP_VERSION || 'unknown';
+  try {
+    const appPlugin = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App;
+    if (appPlugin && typeof appPlugin.getInfo === 'function') {
+      const info = await appPlugin.getInfo();
+      version = info.version || version;
+    }
+  } catch (e) {}
+  document.getElementById('featureAppVersion').value = version;
+  return version;
+}
+
+function openFeatureRequest() {
+  const source = getAppPlatform();
+  document.getElementById('featureSource').value = source;
+  document.getElementById('featureOs').value = navigator.userAgent || source;
+  resolveAppVersion();
+  trackFeatureRequest('feature_request_open', source);
+  show('featureRequest');
+  setTimeout(() => document.getElementById('featureContent')?.focus(), 50);
+}
+
+const featureRequestForm = document.getElementById('featureRequestForm');
+featureRequestForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const status = document.getElementById('featureRequestStatus');
+  const submit = document.getElementById('featureRequestSubmit');
+  status.className = 'feature-request-status';
+  if (!featureRequestForm.reportValidity()) {
+    status.textContent = '必須項目を入力してください。';
+    status.classList.add('error');
+    return;
+  }
+
+  const source = getAppPlatform();
+  document.getElementById('featureSource').value = source;
+  document.getElementById('featureSentAt').value = new Date().toISOString();
+  document.getElementById('featurePageUrl').value = window.location.href;
+  document.getElementById('featureOs').value = navigator.userAgent || source;
+  await resolveAppVersion();
+  status.textContent = '送信中です…';
+  submit.disabled = true;
+
+  try {
+    const response = await fetch(featureRequestForm.action, {
+      method: 'POST',
+      body: new FormData(featureRequestForm),
+      headers: { Accept: 'application/json' }
+    });
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok || result.success === false) throw new Error('request failed');
+    trackFeatureRequest('feature_request_submit', source);
+    featureRequestForm.reset();
+    document.getElementById('featureSource').value = source;
+    status.textContent = 'ありがとうございます。今後の開発候補として参考にさせていただきます。';
+    status.classList.add('success');
+  } catch (e) {
+    status.textContent = navigator.onLine
+      ? '送信に失敗しました。時間をおいて再度お試しください。'
+      : '通信できません。接続を確認して再度お試しください。';
+    status.classList.add('error');
+  } finally {
+    submit.disabled = false;
+  }
+});
 function goVending() {
   window.location.href = 'https://wanwancoin.jp';
 }
