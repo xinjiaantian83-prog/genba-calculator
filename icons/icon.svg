@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <rect width="1024" height="1024" rx="192" fill="#252b28"/>
+  <rect x="92" y="92" width="840" height="840" rx="148" fill="#303834" stroke="#ffc857" stroke-width="34"/>
+  <path d="M286 290h452v128H286zM286 478h452v104H286zM286 646h452v88H286z" fill="#f3fbf7"/>
+  <path d="M182 250h96v524h-96zM746 250h96v524h-96z" fill="#7dffb2"/>
+  <text x="512" y="884" text-anchor="middle" font-family="Arial, sans-serif" font-size="92" font-weight="900" fill="#ffc857">現場</text>
+</svg>

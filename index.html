@@ -2,559 +2,48 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<link rel="apple-touch-icon" href="icon.png">
-<link rel="icon" href="icon.png">
+<link rel="apple-touch-icon" href="icons/icon.png">
+<link rel="icon" href="icons/icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>現場電卓</title>
-<style>
-  * {
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
-  }
-  html, body {
-    margin: 0;
-    padding: 0;
-    background: #0a0e0d;
-    color: #e0fff8;
-    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
-    overscroll-behavior: none;
-  }
-  body {
-    min-height: 100vh;
-    padding-bottom: 76px;
-  }
-  .app {
-    max-width: 480px;
-    margin: 0 auto;
-    padding: 14px 14px 14px;
-  }
-  .header {
-    text-align: center;
-    padding: 8px 0 14px;
-    border-bottom: 1px solid #0c3d3a;
-    margin-bottom: 14px;
-  }
-  .header h1 {
-    margin: 0;
-    font-size: 22px;
-    font-weight: 800;
-    letter-spacing: 2px;
-    color: #00ffd5;
-    text-shadow: 0 0 8px #00ffd560, 0 0 16px #00ffd530;
-  }
-  .header .sub {
-    margin-top: 2px;
-    font-size: 11px;
-    color: #4ad9c2;
-    letter-spacing: 1px;
-  }
-  .back-btn {
-    display: inline-block;
-    background: #0c1f1d;
-    color: #00ffd5;
-    border: 1px solid #008c7a;
-    padding: 10px 14px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-    margin-bottom: 14px;
-  }
-  .back-btn:active { background: #103631; }
-
-  .reset-btn {
-    display: inline-block;
-    background: #2a0e0e;
-    color: #ff7a7a;
-    border: 1px solid #ff7a7a55;
-    padding: 6px 10px;
-    border-radius: 6px;
-    font-size: 11px;
-    font-weight: 700;
-    cursor: pointer;
-    margin-left: 8px;
-    vertical-align: middle;
-  }
-  .reset-btn:active { background: #3a1010; }
-
-  .home-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
-  .home-btn {
-    background: linear-gradient(160deg, #0d2926, #061613);
-    border: 1px solid #00ffd540;
-    color: #e0fff8;
-    border-radius: 14px;
-    padding: 22px 8px;
-    text-align: center;
-    cursor: pointer;
-    box-shadow: inset 0 0 12px #00ffd510, 0 2px 6px #000;
-    transition: transform .08s;
-  }
-  .home-btn:active {
-    transform: scale(0.97);
-    background: #103631;
-  }
-  .home-btn .ico {
-    display: block;
-    margin-bottom: 6px;
-  }
-  .home-svg {
-    width: 44px;
-    height: 44px;
-    display: block;
-    margin: 0 auto 8px;
-  }
-  .home-svg * {
-    stroke: #00ffd5;
-    stroke-width: 8;
-    fill: none;
-    stroke-linecap: square;
-    stroke-linejoin: miter;
-  }
-  .home-btn .label {
-    font-size: 14px;
-    font-weight: 700;
-    color: #00ffd5;
-    letter-spacing: 1px;
-  }
-  .home-btn .num {
-    display: block;
-    font-size: 10px;
-    color: #4ad9c2;
-    margin-bottom: 4px;
-  }
-
-  .screen { display: none; }
-  .screen.active { display: block; }
-
-  .screen h2 {
-    color: #00ffd5;
-    font-size: 18px;
-    margin: 0 0 12px 0;
-    text-shadow: 0 0 6px #00ffd540;
-    border-left: 4px solid #00ff88;
-    padding-left: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .input-row {
-    margin-bottom: 10px;
-  }
-  .input-row label {
-    display: block;
-    font-size: 13px;
-    color: #4ad9c2;
-    margin-bottom: 4px;
-    font-weight: 600;
-  }
-  .input-row input {
-    width: 100%;
-    background: #061613;
-    border: 1px solid #008c7a;
-    color: #00ffd5;
-    padding: 12px;
-    border-radius: 8px;
-    font-size: 18px;
-    font-weight: 700;
-    -webkit-appearance: none;
-  }
-  .input-row input:focus {
-    outline: none;
-    border-color: #00ffd5;
-    box-shadow: 0 0 0 2px #00ffd530;
-  }
-  .b-badge {
-    display: inline-block;
-    font-size: 10px;
-    margin-left: 6px;
-    padding: 1px 6px;
-    border-radius: 4px;
-    border: 1px solid #ffd26688;
-    color: #ffd266;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    vertical-align: middle;
-  }
-  .b-badge.manual {
-    color: #ff7eb0;
-    border-color: #ff7eb088;
-  }
-
-  .result-box {
-    background: #061613;
-    border: 1px solid #00ff8855;
-    border-radius: 12px;
-    padding: 14px;
-    margin-top: 14px;
-    box-shadow: inset 0 0 12px #00ff8810;
-  }
-  .result-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    padding: 8px 0;
-    border-bottom: 1px dashed #0c3d3a;
-  }
-  .result-row:last-child { border-bottom: none; }
-  .result-row .lbl {
-    font-size: 13px;
-    color: #4ad9c2;
-  }
-  .result-row .val {
-    font-size: 22px;
-    font-weight: 800;
-    color: #00ff88;
-    text-shadow: 0 0 8px #00ff8850;
-    font-family: "SF Mono", Menlo, monospace;
-  }
-  .note {
-    font-size: 11px;
-    color: #6a8a85;
-    margin-top: 8px;
-    line-height: 1.5;
-  }
-
-  .calc-display {
-    background: #061613;
-    border: 1px solid #008c7a;
-    border-radius: 10px;
-    padding: 16px;
-    text-align: right;
-    font-size: 36px;
-    font-weight: 800;
-    color: #00ffd5;
-    text-shadow: 0 0 8px #00ffd540;
-    margin-bottom: 10px;
-    word-break: break-all;
-    min-height: 64px;
-    font-family: "SF Mono", Menlo, monospace;
-  }
-  .calc-sub {
-    font-size: 14px;
-    color: #4ad9c2;
-    min-height: 18px;
-    text-align: right;
-    margin-top: -6px;
-    margin-bottom: 6px;
-  }
-  .calc-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
-  }
-  .calc-btn {
-    aspect-ratio: 1 / 0.85;
-    background: #102e2a;
-    border: 1px solid #00ffd530;
-    color: #e0fff8;
-    border-radius: 12px;
-    font-size: 22px;
-    font-weight: 700;
-    cursor: pointer;
-  }
-  .calc-btn:active {
-    background: #1a4540;
-    transform: scale(0.96);
-  }
-  .calc-btn.op {
-    background: #0a2622;
-    color: #00ffd5;
-    border-color: #00ffd580;
-  }
-  .calc-btn.eq {
-    background: linear-gradient(160deg, #00cc88, #008855);
-    color: #001613;
-    border-color: #00ff88;
-    font-weight: 900;
-  }
-  .calc-btn.fn {
-    background: #2a0e0e;
-    color: #ff7a7a;
-    border-color: #ff7a7a55;
-  }
-
-  .table-list {
-    background: #061613;
-    border: 1px solid #00ff8855;
-    border-radius: 12px;
-    padding: 6px 12px;
-  }
-  .table-list .row {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    padding: 12px 0;
-    border-bottom: 1px dashed #0c3d3a;
-  }
-  .table-list .row:last-child { border-bottom: none; }
-  .table-list .row .name {
-    font-size: 15px;
-    color: #e0fff8;
-    font-weight: 600;
-  }
-  .table-list .row .val {
-    font-size: 18px;
-    color: #00ff88;
-    font-weight: 800;
-    font-family: "SF Mono", Menlo, monospace;
-  }
-  .table-list .row .desc {
-    font-size: 12px;
-    color: #6a8a85;
-    margin-top: 2px;
-  }
-
-  .wall-fig, .slope-fig {
-    background: #0a1f1c;
-    border: 1px solid #00ffd540;
-    border-radius: 12px;
-    padding: 14px;
-    text-align: center;
-    margin: 14px 0;
-  }
-  .wall-fig svg, .slope-fig svg {
-    max-width: 100%;
-    height: auto;
-  }
-
-  .sepa-box {
-    background: #061613;
-    border: 1px solid #00ffd540;
-    border-radius: 10px;
-    padding: 8px 12px;
-    margin-top: 10px;
-  }
-  .sepa-box .sepa-title {
-    color: #4ad9c2;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    margin-bottom: 6px;
-  }
-  .sepa-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px 14px;
-    align-items: baseline;
-  }
-  .sepa-row {
-    display: inline-flex;
-    align-items: baseline;
-    gap: 4px;
-    padding: 0;
-    border: none;
-  }
-  .sepa-row .lbl {
-    font-size: 12px;
-    font-weight: 600;
-  }
-  .sepa-row .val {
-    font-size: 19px;
-    font-weight: 500;
-    color: #cfeee8;
-    font-family: "SF Mono", Menlo, monospace;
-    letter-spacing: 0.3px;
-  }
-  .sepa-row.h1 .lbl { color: #ff7eb0; }
-  .sepa-row.h2 .lbl { color: #ffb968; }
-  .sepa-row.h3 .lbl { color: #7ae6ff; }
-
-  .vol-box {
-    background: #061613;
-    border: 1px solid #00ff8855;
-    border-radius: 10px;
-    padding: 10px 12px;
-    margin-top: 10px;
-  }
-  .vol-box .vol-title {
-    font-size: 12px;
-    color: #4ad9c2;
-    font-weight: 700;
-    margin-bottom: 4px;
-  }
-  .vol-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    padding: 4px 0;
-  }
-  .vol-row .lbl {
-    font-size: 12px;
-    color: #6a8a85;
-  }
-  .vol-row .val {
-    font-size: 16px;
-    color: #00ff88;
-    font-weight: 700;
-    font-family: "SF Mono", Menlo, monospace;
-  }
-
-  .vending-btn {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: linear-gradient(180deg, #0a1f1c, #061613);
-    color: #4ad9c2;
-    text-align: center;
-    padding: 14px 12px;
-    font-size: 15px;
-    font-weight: 700;
-    border: none;
-    border-top: 1px solid #00ffd540;
-    cursor: pointer;
-    box-shadow: 0 -4px 16px #00ffd520, inset 0 1px 0 #00ffd510;
-    z-index: 100;
-    letter-spacing: 1px;
-    text-decoration: none;
-    display: block;
-    line-height: 1.3;
-  }
-  .vending-btn .vending-main {
-    color: #00ffd5;
-    text-shadow: 0 0 6px #00ffd540;
-  }
-  .vending-btn .vending-sub {
-    display: block;
-    margin-top: 2px;
-    font-size: 10px;
-    font-weight: 600;
-    color: #4ad9c2;
-    letter-spacing: 2px;
-    opacity: 0.75;
-  }
-  .vending-btn:active {
-    background: linear-gradient(180deg, #0d2926, #0a1f1c);
-    filter: brightness(1.05);
-  }
-
-  .grid-2 {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-  }
-  .feature-request-entry {
-    width: 100%;
-    margin-top: 14px;
-    border: 1px solid #00ffd570;
-    border-radius: 12px;
-    background: linear-gradient(160deg, #0d2926, #061613);
-    color: #00ffd5;
-    padding: 15px;
-    font-size: 14px;
-    font-weight: 800;
-    letter-spacing: .5px;
-    cursor: pointer;
-  }
-  .feature-request-entry:active { background: #103631; }
-  .feature-request-lead {
-    margin: 0 0 14px;
-    color: #8dbab0;
-    font-size: 13px;
-    line-height: 1.65;
-  }
-  .feature-request-form label {
-    display: block;
-    margin-bottom: 12px;
-    color: #4ad9c2;
-    font-size: 13px;
-    font-weight: 700;
-  }
-  .feature-request-form label span {
-    margin-left: 6px;
-    color: #ffd266;
-    font-size: 10px;
-  }
-  .feature-request-form label small {
-    display: block;
-    margin-top: 2px;
-    color: #6a8a85;
-    font-weight: 500;
-  }
-  .feature-request-form input,
-  .feature-request-form textarea {
-    width: 100%;
-    margin-top: 5px;
-    border: 1px solid #008c7a;
-    border-radius: 8px;
-    background: #061613;
-    color: #e0fff8;
-    padding: 12px;
-    font: inherit;
-    font-size: 16px;
-    line-height: 1.5;
-    resize: vertical;
-    -webkit-appearance: none;
-  }
-  .feature-request-form input:focus,
-  .feature-request-form textarea:focus {
-    outline: none;
-    border-color: #00ffd5;
-    box-shadow: 0 0 0 2px #00ffd530;
-  }
-  .feature-request-submit {
-    width: 100%;
-    min-height: 50px;
-    border: 1px solid #00ff88;
-    border-radius: 10px;
-    background: #00ff88;
-    color: #00130e;
-    font-size: 15px;
-    font-weight: 900;
-    cursor: pointer;
-  }
-  .feature-request-submit:disabled { opacity: .6; }
-  .feature-request-status {
-    min-height: 42px;
-    margin: 12px 0 0;
-    color: #8dbab0;
-    font-size: 12px;
-    line-height: 1.6;
-  }
-  .feature-request-status.error { color: #ff9d9d; }
-  .feature-request-status.success { color: #83ffc0; }
-</style>
+<link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 <div class="app">
 
   <div id="home" class="screen active">
-    <div class="header">
-      <h1>⚙ 現場電卓</h1>
-      <div class="sub">GENBA TOOLBOX</div>
+    <div class="header home-header">
+      <img class="home-header-icon" src="icons/icon.png" alt="" aria-hidden="true">
+      <div class="home-header-copy">
+        <h1>現場電卓</h1>
+        <div class="sub">GENBA TOOLBOX</div>
+      </div>
     </div>
 
     <div class="home-grid">
-      <button class="home-btn" onclick="show('calc')">
+      <button class="home-btn home-primary" data-menu-id="slope" onclick="show('slope')">
         <span class="num">01</span>
-        <span class="ico">
-          <svg class="home-svg" viewBox="0 0 100 100">
-            <rect x="22" y="18" width="56" height="64"/>
-            <line x1="22" y1="42" x2="78" y2="42"/>
-            <line x1="40" y1="42" x2="40" y2="82"/>
-            <line x1="60" y1="42" x2="60" y2="82"/>
-          </svg>
-        </span>
-        <span class="label">普通電卓</span>
-      </button>
-
-      <button class="home-btn" onclick="show('slope')">
-        <span class="num">02</span>
         <span class="ico">
           <svg class="home-svg" viewBox="0 0 100 100">
             <polyline points="22,78 78,78 78,28 22,78"/>
             <polyline points="60,78 60,60 78,60" fill="none"/>
           </svg>
         </span>
-        <span class="label">勾配・斜距離</span>
+        <span class="label">勾配・<br>カーポート</span>
       </button>
 
-      <button class="home-btn" onclick="show('doma')">
+      <button class="home-btn home-primary" data-menu-id="radiusCircle" onclick="show('rlength')">
+        <span class="num">02</span>
+        <span class="ico">
+          <svg class="home-svg" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="26"/>
+            <path d="M24 50h52"/>
+          </svg>
+        </span>
+        <span class="label">R / 円</span>
+      </button>
+
+      <button class="home-btn home-primary" data-menu-id="doma" onclick="show('doma')">
         <span class="num">03</span>
         <span class="ico">
           <svg class="home-svg" viewBox="0 0 100 100">
@@ -564,60 +53,126 @@
             <line x1="60" y1="30" x2="60" y2="72"/>
           </svg>
         </span>
-        <span class="label">土間コン</span>
+        <span class="label">土間</span>
       </button>
 
-      <button class="home-btn" onclick="show('wall')">
+      <button class="home-btn home-primary" data-menu-id="gravityWall" onclick="show('wall')">
         <span class="num">04</span>
         <span class="ico">
           <svg class="home-svg" viewBox="0 0 100 100">
             <polygon points="28,78 78,78 62,26 28,26"/>
           </svg>
         </span>
-        <span class="label">重力式擁壁</span>
-      </button>
-
-      <button class="home-btn" onclick="show('block')">
-        <span class="num">05</span>
-        <span class="ico">
-          <svg class="home-svg" viewBox="0 0 100 100">
-            <rect x="18" y="30" width="64" height="42"/>
-            <line x1="18" y1="51" x2="82" y2="51"/>
-            <line x1="50" y1="30" x2="50" y2="72"/>
-          </svg>
-        </span>
-        <span class="label">ブロックサポート</span>
-      </button>
-
-      <button class="home-btn" onclick="show('grav')">
-        <span class="num">06</span>
-        <span class="ico">
-          <svg class="home-svg" viewBox="0 0 100 100">
-            <line x1="50" y1="18" x2="50" y2="82"/>
-            <line x1="26" y1="38" x2="74" y2="38"/>
-            <line x1="34" y1="38" x2="22" y2="66"/>
-            <line x1="66" y1="38" x2="78" y2="66"/>
-            <line x1="34" y1="82" x2="66" y2="82"/>
-          </svg>
-        </span>
-        <span class="label">比重表</span>
-      </button>
-
-      <button class="home-btn" onclick="show('namacon')" style="grid-column: span 2;">
-        <span class="num">07</span>
-        <span class="ico">
-          <svg class="home-svg" viewBox="0 0 100 100">
-            <rect x="16" y="48" width="46" height="24"/>
-            <circle cx="30" cy="76" r="6"/>
-            <circle cx="58" cy="76" r="6"/>
-            <line x1="64" y1="48" x2="82" y2="34"/>
-            <line x1="82" y1="34" x2="82" y2="72"/>
-          </svg>
-        </span>
-        <span class="label">生コン目安</span>
+        <span class="label">重力</span>
       </button>
     </div>
-    <button class="feature-request-entry" type="button" onclick="openFeatureRequest()">＋ 欲しい機能を送る</button>
+
+    <div class="top-edit-row">
+      <button id="customizeMenuBtn" class="customize-button" type="button" aria-haspopup="dialog" aria-controls="customizeDialog">
+        <span aria-hidden="true">⚙</span>
+        <span>トップを編集</span>
+      </button>
+    </div>
+
+    <details class="home-tools">
+      <summary class="home-tools-summary">
+        <span>その他ツール</span>
+      </summary>
+
+      <div class="home-actions" aria-label="その他ツール">
+        <button class="home-btn home-secondary" data-menu-id="ordinary" onclick="show('calc')">
+          <span class="num">05</span>
+          <span class="ico">
+            <svg class="home-svg" viewBox="0 0 100 100">
+              <rect x="22" y="18" width="56" height="64"/>
+              <line x1="22" y1="42" x2="78" y2="42"/>
+              <line x1="40" y1="42" x2="40" y2="82"/>
+              <line x1="60" y1="42" x2="60" y2="82"/>
+            </svg>
+          </span>
+          <span class="label">普通</span>
+        </button>
+
+        <button class="home-btn home-secondary" data-menu-id="rebar" onclick="show('rebar')">
+          <span class="num">06</span>
+          <span class="ico">
+            <svg class="home-svg" viewBox="0 0 100 100">
+              <line x1="24" y1="24" x2="76" y2="76"/>
+              <line x1="36" y1="18" x2="82" y2="64"/>
+              <line x1="18" y1="36" x2="64" y2="82"/>
+              <line x1="24" y1="68" x2="68" y2="24"/>
+            </svg>
+          </span>
+          <span class="label">鉄筋</span>
+        </button>
+
+        <button class="home-btn home-secondary" data-menu-id="blockSupport" onclick="show('block')">
+          <span class="num">07</span>
+          <span class="ico">
+            <svg class="home-svg" viewBox="0 0 100 100">
+              <rect x="18" y="30" width="64" height="42"/>
+              <line x1="18" y1="51" x2="82" y2="51"/>
+              <line x1="50" y1="30" x2="50" y2="72"/>
+            </svg>
+          </span>
+          <span class="label">ブロック</span>
+        </button>
+
+        <button class="home-btn home-secondary" data-menu-id="density" onclick="show('grav')">
+          <span class="num">08</span>
+          <span class="ico">
+            <svg class="home-svg" viewBox="0 0 100 100">
+              <line x1="50" y1="18" x2="50" y2="82"/>
+              <line x1="26" y1="38" x2="74" y2="38"/>
+              <line x1="34" y1="38" x2="22" y2="66"/>
+              <line x1="66" y1="38" x2="78" y2="66"/>
+              <line x1="34" y1="82" x2="66" y2="82"/>
+            </svg>
+          </span>
+          <span class="label">比重</span>
+        </button>
+
+        <button class="home-btn home-secondary" data-menu-id="notes" onclick="show('memo')">
+          <span class="num">09</span>
+          <span class="ico">
+            <svg class="home-svg" viewBox="0 0 100 100">
+              <rect x="24" y="18" width="52" height="64"/>
+              <line x1="34" y1="36" x2="66" y2="36"/>
+              <line x1="34" y1="50" x2="66" y2="50"/>
+              <line x1="34" y1="64" x2="56" y2="64"/>
+            </svg>
+          </span>
+          <span class="label">メモ</span>
+        </button>
+      </div>
+    </details>
+
+    <button id="featureRequestEntry" class="feature-request-entry" type="button">
+      ＋ 欲しい機能を送る
+    </button>
+
+    <div id="customizeDialog" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="customizeTitle" hidden>
+      <section class="modal-panel">
+        <div class="modal-head">
+          <div>
+            <div class="sub">HOME TOOLS</div>
+            <h2 id="customizeTitle">トップに表示するツール</h2>
+          </div>
+          <button id="closeCustomizeBtn" class="icon-button" type="button" aria-label="閉じる">×</button>
+        </div>
+        <p class="customize-help">よく使う4つのツールを、自分好みにカスタマイズできます。</p>
+        <div id="menuCustomizeList" class="customize-list"></div>
+        <p id="customizeNotice" class="customize-notice" role="status" aria-live="polite"></p>
+        <div class="customize-actions">
+          <button id="resetCustomizeBtn" class="customize-reset" type="button">初期設定に戻す</button>
+          <button id="saveCustomizeBtn" class="customize-save" type="button">保存する</button>
+        </div>
+      </section>
+    </div>
+
+    <button class="privacy-link" type="button" onclick="openPrivacyPolicy()">
+      プライバシーポリシー
+    </button>
   </div>
 
   <div id="featureRequest" class="screen">
@@ -640,14 +195,112 @@
     </form>
   </div>
 
+  <div id="rlength" class="screen">
+    <button class="back-btn" onclick="show('home')">← メニューに戻る</button>
+    <h2>R / 円</h2>
+
+    <nav class="r-mode-tabs" aria-label="計算モード">
+      <button type="button" class="r-mode-tab active" id="rArcModeBtn" data-r-mode="arc">アール</button>
+      <button type="button" class="r-mode-tab" id="rCircleModeBtn" data-r-mode="circle">真円</button>
+    </nav>
+
+    <section class="r-mode-panel active" id="rArcMode">
+      <section class="r-panel" aria-label="アール入力">
+        <div class="grid-2">
+          <div class="input-row">
+            <label for="rChord">弦長 mm</label>
+            <input id="rChord" type="number" inputmode="decimal" placeholder="5000" oninput="calcRArc()">
+          </div>
+          <div class="input-row">
+            <label for="rSagitta">矢高 mm</label>
+            <input id="rSagitta" type="number" inputmode="decimal" placeholder="300" oninput="calcRArc()">
+          </div>
+        </div>
+        <div class="r-actions">
+          <button type="button" onclick="sampleRArc()">サンプル</button>
+          <button type="button" onclick="clearRArc()">クリア</button>
+        </div>
+        <div class="r-message" id="rMessage"></div>
+      </section>
+
+      <section class="r-panel" aria-label="アール計算結果">
+        <div class="r-hero-result">
+          <div class="lbl">R実長</div>
+          <div class="val" id="rArcLength">—</div>
+        </div>
+        <div class="r-result-grid">
+          <div class="r-result-card wide">
+            <div class="lbl">みなしR</div>
+            <div class="val" id="rRadius">—</div>
+          </div>
+          <div class="r-result-card">
+            <div class="lbl">中心角</div>
+            <div class="val" id="rAngleOut">—</div>
+          </div>
+          <div class="r-result-card">
+            <div class="lbl">弦長との差</div>
+            <div class="val" id="rDiff">—</div>
+          </div>
+          <div class="r-result-card wide">
+            <div class="lbl">円周参考</div>
+            <div class="val" id="rCircumference">—</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="r-figure" aria-label="アール簡易図">
+        <svg id="rFig" viewBox="0 0 360 190" role="img" aria-label="R実長の簡易図"></svg>
+      </section>
+
+      <div class="note">※参考値です。実施工・型枠条件・材料の曲げ許容等は現場判断を優先してください。</div>
+    </section>
+
+    <section class="r-mode-panel" id="rCircleMode">
+      <section class="r-panel" aria-label="真円入力">
+        <div class="input-row">
+          <label for="rDiameter">直径 mm</label>
+          <input id="rDiameter" type="number" inputmode="decimal" placeholder="1000" oninput="calcRCircle()">
+        </div>
+        <div class="r-actions">
+          <button type="button" onclick="sampleRCircle()">サンプル</button>
+          <button type="button" onclick="clearRCircle()">クリア</button>
+        </div>
+        <div class="r-message" id="rCircleMessage"></div>
+      </section>
+
+      <section class="r-panel" aria-label="真円計算結果">
+        <div class="r-hero-result">
+          <div class="lbl">円周</div>
+          <div class="val" id="rCircleCircumference">—</div>
+        </div>
+        <div class="r-result-grid">
+          <div class="r-result-card">
+            <div class="lbl">半径</div>
+            <div class="val" id="rCircleRadius">—</div>
+          </div>
+          <div class="r-result-card">
+            <div class="lbl">面積</div>
+            <div class="val" id="rCircleArea">—</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="r-figure" aria-label="真円簡易図">
+        <svg id="rCircleFig" viewBox="0 0 360 190" role="img" aria-label="真円の簡易図"></svg>
+      </section>
+
+      <div class="note">※参考値です。実施工・型枠条件・材料の曲げ許容等は現場判断を優先してください。</div>
+    </section>
+  </div>
+
   <div id="calc" class="screen">
     <button class="back-btn" onclick="show('home')">← メニューに戻る</button>
     <h2>普通電卓</h2>
     <div class="calc-sub" id="calcSub"></div>
     <div class="calc-display" id="calcDisp">0</div>
     <div class="calc-grid">
-      <button class="calc-btn fn" onclick="cClear()">C</button>
-      <button class="calc-btn fn" onclick="cBack()">⌫</button>
+      <button class="calc-btn fn delete" aria-label="1文字削除" onclick="cBack()">⌫</button>
+      <button class="calc-btn fn clear" aria-label="全消去" onclick="cClear()">AC</button>
       <button class="calc-btn op" onclick="cOp('%')">%</button>
       <button class="calc-btn op" onclick="cOp('/')">÷</button>
       <button class="calc-btn" onclick="cIn('7')">7</button>
@@ -662,8 +315,7 @@
       <button class="calc-btn" onclick="cIn('2')">2</button>
       <button class="calc-btn" onclick="cIn('3')">3</button>
       <button class="calc-btn op" onclick="cOp('+')">＋</button>
-      <button class="calc-btn" onclick="cIn('00')">00</button>
-      <button class="calc-btn" onclick="cIn('0')">0</button>
+      <button class="calc-btn zero" onclick="cIn('0')">0</button>
       <button class="calc-btn" onclick="cIn('.')">.</button>
       <button class="calc-btn eq" onclick="cEq()">=</button>
     </div>
@@ -672,25 +324,70 @@
   <div id="slope" class="screen">
     <button class="back-btn" onclick="show('home')">← メニューに戻る</button>
     <h2>
-      <span>勾配・斜距離</span>
-      <button class="reset-btn" onclick="if(confirm('リセットしますか？')){document.getElementById('slopeH').value='';document.getElementById('slopeV').value='';try{var a=JSON.parse(localStorage.getItem('genbaCalc_v1')||'{}');a.slope={slopeH:'',slopeV:''};localStorage.setItem('genbaCalc_v1',JSON.stringify(a));}catch(e){}calcSlope();alert('reset ok');}">リセット</button>
+      <span>勾配・カーポート</span>
+      <button class="reset-btn" onclick="resetSlope()">リセット</button>
     </h2>
-    <div class="input-row">
-      <label>横寸法（mm）</label>
-      <input type="number" id="slopeH" inputmode="decimal" placeholder="例: 1000" oninput="calcSlope()">
+    <div class="mode-tabs slope-mode-tabs" aria-label="計算方法切り替え">
+      <button type="button" class="mode-tab active" id="slopeHeightModeBtn" onclick="setSlopeMode('height')">高さから計算</button>
+      <button type="button" class="mode-tab" id="slopeCarportModeBtn" onclick="setSlopeMode('carport')">カーポート</button>
     </div>
-    <div class="input-row">
-      <label>縦寸法（mm）</label>
-      <input type="number" id="slopeV" inputmode="decimal" placeholder="例: 100" oninput="calcSlope()">
+    <input type="hidden" id="slopeMode" value="height">
+
+    <div id="slopeHeightPanel">
+      <div class="input-row">
+        <label>横寸法（mm）</label>
+        <input type="number" id="slopeH" inputmode="decimal" placeholder="例: 1000" oninput="calcSlope()">
+      </div>
+      <div class="input-row" id="slopeHeightInput">
+        <label>縦寸法（mm）</label>
+        <input type="number" id="slopeV" inputmode="decimal" placeholder="例: 100" oninput="calcSlope()">
+      </div>
+      <div class="slope-fig">
+        <svg id="slopeSvg" viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+      <div class="result-box">
+        <div class="result-row slope-primary-result"><span class="lbl" id="rSlopePrimaryLabel">斜距離</span><span class="val" id="rSlope">—</span></div>
+        <div class="result-row"><span class="lbl" id="rSlopeSecondLabel">角度</span><span class="val" id="rAngle">—</span></div>
+        <div class="result-row"><span class="lbl">勾配</span><span class="val" id="rPct">—</span></div>
+        <div class="result-row"><span class="lbl">分数表記</span><span class="val" id="rRatio">—</span></div>
+      </div>
     </div>
-    <div class="slope-fig">
-      <svg id="slopeSvg" viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg"></svg>
-    </div>
-    <div class="result-box">
-      <div class="result-row"><span class="lbl">斜距離</span><span class="val" id="rSlope">—</span></div>
-      <div class="result-row"><span class="lbl">角度</span><span class="val" id="rAngle">—</span></div>
-      <div class="result-row"><span class="lbl">勾配</span><span class="val" id="rPct">—</span></div>
-      <div class="result-row"><span class="lbl">分数表記</span><span class="val" id="rRatio">—</span></div>
+
+    <div id="slopeCarportPanel" hidden>
+      <div class="grid-2 carport-input-grid">
+        <div class="input-row">
+          <label>柱間寸法（mm）</label>
+          <input type="number" id="carportSpanMm" inputmode="decimal" value="2900" oninput="calcSlope()">
+        </div>
+        <div class="input-row">
+          <label>勾配（°）</label>
+          <input type="number" id="carportSlopeDeg" inputmode="decimal" value="4" step="0.1" oninput="calcSlope()">
+        </div>
+      </div>
+      <div class="slope-fig carport-fig">
+        <svg id="carportSvg" viewBox="0 0 430 215" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="フラットタイプカーポート側面図">
+          <line x1="30" y1="156" x2="360" y2="156" class="carport-ground"/>
+          <line id="carportLowPost" x1="92" y1="98" x2="92" y2="180" class="carport-post"/>
+          <line id="carportHighPost" x1="298" y1="64" x2="298" y2="180" class="carport-post"/>
+          <line id="carportRoofLine" x1="70" y1="99" x2="320" y2="62" class="carport-roof"/>
+          <line id="carportSpanLine" x1="92" y1="192" x2="298" y2="192" class="carport-measure"/>
+          <line id="carportSpanLeftTick" x1="92" y1="185" x2="92" y2="199" class="carport-measure"/>
+          <line id="carportSpanRightTick" x1="298" y1="185" x2="298" y2="199" class="carport-measure"/>
+          <text x="195" y="209" text-anchor="middle" class="carport-label" id="carportSpanLabel">柱間寸法 2,900mm</text>
+          <line id="carportDropTopGuide" x1="298" y1="72" x2="340" y2="72" class="carport-guide"/>
+          <line id="carportDropBottomGuide" x1="92" y1="107" x2="340" y2="107" class="carport-guide"/>
+          <line id="carportDropLine" x1="340" y1="72" x2="340" y2="107" class="carport-measure"/>
+          <line id="carportDropTopTick" x1="326" y1="72" x2="354" y2="72" class="carport-measure"/>
+          <line id="carportDropBottomTick" x1="326" y1="107" x2="354" y2="107" class="carport-measure"/>
+          <text id="carportDropLabel" x="356" y="92" class="carport-label">柱高低差 203mm</text>
+        </svg>
+      </div>
+      <div class="result-box carport-result-box">
+        <div class="result-row carport-primary-result"><span class="lbl">柱高低差</span><span class="val" id="carportDropMm">203 mm</span></div>
+        <div class="result-row"><span class="lbl">勾配</span><span class="val" id="carportSlopeResult">4°</span></div>
+        <div class="result-row"><span class="lbl">柱間寸法</span><span class="val" id="carportSpanResult">2,900 mm</span></div>
+        <p class="note carport-note">※参考値です<br>※フラットタイプカーポート専用です<br>※実施工時はメーカー取扱説明書の寸法値をご確認ください</p>
+      </div>
     </div>
   </div>
 
@@ -904,563 +601,248 @@
 </div>
  </div>
     </div>
-  <div id="namacon" class="screen">
+  <div id="memo" class="screen">
     <button class="back-btn" onclick="show('home')">← メニューに戻る</button>
-    <h2>生コン配合 目安</h2>
-    <div class="table-list">
-      <div class="row"><div><div class="name">一般土間</div><div class="desc">住宅外構など</div></div><div class="val">21-12-20<br><span style="font-size:11px;color:#4ad9c2;">(AE)</span></div></div>
-      <div class="row"><div><div class="name">駐車場土間</div><div class="desc">乗用車程度</div></div><div class="val">24-12-20<br><span style="font-size:11px;color:#4ad9c2;">(AE)</span></div></div>
-      <div class="row"><div><div class="name">軽作業土間</div><div class="desc">物置下・通路</div></div><div class="val">18-12-20<br><span style="font-size:11px;color:#4ad9c2;">(AE)</span></div></div>
+    <h2>
+      <span>現場メモ</span>
+      <button class="reset-btn" onclick="clearMemo()">全消去</button>
+    </h2>
+    <textarea id="memoText" class="memo-textarea" rows="14" placeholder="現場で忘れたくないこと、寸法、材料、連絡事項などをメモ"></textarea>
+    <div class="note">※ 入力内容はこの端末に自動保存されます。</div>
+  </div>
+
+
+  <div id="rebar" class="screen rebar-mode-wall">
+    <button class="back-btn" onclick="show('home')">← メニューに戻る</button>
+<div class="rebar-content">
+
+  <div class="header">
+    <h1>📐 鉄筋拾い</h1>
+    <div class="sub">REBAR ESTIMATOR</div>
+  </div>
+
+  <!-- モード切替 -->
+  <div class="mode-tabs">
+    <button class="mode-tab active" id="tabWall" onclick="switchRebarMode('wall')">直壁</button>
+    <button class="mode-tab" id="tabL" onclick="switchRebarMode('L')">L型擁壁</button>
+  </div>
+
+  <!-- ============================================================
+       直壁モード
+  ============================================================ -->
+  <section id="modeWall" class="mode-section active">
+
+    <div class="card">
+      <div class="card-title">直壁寸法</div>
+      <div class="input-grid">
+        <div class="input-row">
+          <label>総延長 L(mm)</label>
+          <div class="input-with-clear">
+            <input type="number" id="cL" inputmode="decimal" placeholder="例: 10000">
+            <button type="button" class="input-clear-btn" aria-label="クリア" onclick="clearRebarField('cL')">×</button>
+          </div>
+        </div>
+        <div class="input-row">
+          <label>高さ H(mm)</label>
+          <div class="input-with-clear">
+            <input type="number" id="cH" inputmode="decimal" placeholder="例: 1500">
+            <button type="button" class="input-clear-btn" aria-label="クリア" onclick="clearRebarField('cH')">×</button>
+          </div>
+        </div>
+
+        <div class="input-row">
+          <label>横筋ピッチ @(mm)</label>
+          <input type="number" id="cPitchY" inputmode="decimal" value="200">
+        </div>
+        <div class="input-row">
+          <label>縦筋ピッチ @(mm)</label>
+          <input type="number" id="cPitchT" inputmode="decimal" value="200">
+        </div>
+
+        <div class="input-row">
+          <label>かぶり(mm) ※縦筋用</label>
+          <input type="number" id="cCover" inputmode="decimal" value="40">
+        </div>
+        <div class="input-row">
+          <label>定尺長(mm)</label>
+          <input type="number" id="cStock" inputmode="decimal" value="5000">
+        </div>
+
+        <div class="input-row" style="grid-column: 1 / -1; margin-bottom:0;">
+          <label>鉄筋径</label>
+          <div class="dia-row" id="wallDiaRow">
+            <button class="dia-btn active" data-dia="D10" onclick="setRebarDiaWall('D10')">D10</button>
+            <button class="dia-btn" data-dia="D13" onclick="setRebarDiaWall('D13')">D13</button>
+            <button class="dia-btn" data-dia="D16" onclick="setRebarDiaWall('D16')">D16</button>
+            <button class="dia-btn" data-dia="D19" onclick="setRebarDiaWall('D19')">D19</button>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="note" style="font-size:12px; line-height:1.7;">
-      ※ あくまで <b style="color:#ffd266;">目安・参考値</b> です。<br>
-      ※ 強度・スランプ・骨材寸法は <b style="color:#ffd266;">現場条件・プラント確認を優先</b> してください。<br>
-      ※ 表記は「呼び強度-スランプ-粗骨材最大寸法」。
+
+    <div class="result-grid">
+
+      <div>
+        <div class="section-title">① 横筋</div>
+        <div class="result-box">
+          <div class="result-row"><span class="lbl">横筋段数</span><span class="val" id="yRows">—</span></div>
+          <div class="result-row"><span class="lbl">1段あたり鉄筋本数</span><span class="val" id="yPerRow">—</span></div>
+          <div class="result-row"><span class="lbl">1段あたり必要長さ</span><span class="val" id="yPerLen">—</span></div>
+          <div class="result-row"><span class="lbl">総延長</span><span class="val" id="yTotal">—</span></div>
+          <div class="result-row main"><span class="lbl">総重量</span><span class="val" id="yWeight">—</span></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-title">② 縦筋</div>
+        <div class="result-box">
+          <div class="result-row"><span class="lbl">縦筋本数</span><span class="val" id="tCount">—</span></div>
+          <div class="result-row"><span class="lbl">1本長さ</span><span class="val" id="tPerLen">—</span></div>
+          <div class="result-row"><span class="lbl">1本から取れる本数</span><span class="val" id="tPerStock">—</span></div>
+          <div class="result-row"><span class="lbl">定尺必要本数</span><span class="val" id="tStockCount">—</span></div>
+          <div class="result-row"><span class="lbl">総延長</span><span class="val" id="tTotal">—</span></div>
+          <div class="result-row main"><span class="lbl">総重量</span><span class="val" id="tWeight">—</span></div>
+          <div class="result-row scrap" id="tRowScrapPer"><span class="lbl">1本あたり余り</span><span class="val" id="tScrapPer">—</span></div>
+          <div class="result-row scrap" id="tRowScrapTotal"><span class="lbl">総余り</span><span class="val" id="tScrapTotal">—</span></div>
+        </div>
+        <div class="stock-warn" id="tStockWarn" style="display:none;">
+          ※ 定尺不足(このサイズでは取れません)
+        </div>
+      </div>
+
+      <div class="total-result">
+        <div class="total-box">
+          <div class="lbl">合計重量(横+縦)</div>
+          <div class="val" id="sumWeight">— kg</div>
+        </div>
+      </div>
+
     </div>
+
+  </section>
+
+  <!-- ============================================================
+       L型擁壁モード
+  ============================================================ -->
+  <section id="modeL" class="mode-section">
+
+    <div class="card">
+      <div class="card-title">L型擁壁寸法</div>
+      <div class="input-grid">
+        <div class="input-row">
+          <label>総延長 L(mm)</label>
+          <div class="input-with-clear">
+            <input type="number" id="LcL" inputmode="decimal" placeholder="例: 10000">
+            <button type="button" class="input-clear-btn" aria-label="クリア" onclick="clearRebarField('LcL')">×</button>
+          </div>
+        </div>
+        <div class="input-row">
+          <label>立上り高さ H(mm)</label>
+          <div class="input-with-clear">
+            <input type="number" id="LcH" inputmode="decimal" placeholder="例: 1500">
+            <button type="button" class="input-clear-btn" aria-label="クリア" onclick="clearRebarField('LcH')">×</button>
+          </div>
+        </div>
+
+        <div class="input-row">
+          <label>ベース幅 B(mm)</label>
+          <div class="input-with-clear">
+            <input type="number" id="LcB" inputmode="decimal" placeholder="例: 600">
+            <button type="button" class="input-clear-btn" aria-label="クリア" onclick="clearRebarField('LcB')">×</button>
+          </div>
+        </div>
+        <div class="input-row">
+          <label>かぶり(mm) ※縦筋用</label>
+          <input type="number" id="LcCover" inputmode="decimal" value="40">
+        </div>
+
+        <div class="input-row">
+          <label>縦筋ピッチ @(mm)</label>
+          <input type="number" id="LcPitchT" inputmode="decimal" value="200">
+        </div>
+        <div class="input-row">
+          <label>横筋ピッチ @(mm)</label>
+          <input type="number" id="LcPitchY" inputmode="decimal" value="200">
+        </div>
+
+        <div class="input-row">
+          <label>定尺長(mm)</label>
+          <input type="number" id="LcStock" inputmode="decimal" value="5000">
+        </div>
+        <div class="input-row" style="margin-bottom:0;">
+          <label>鉄筋径</label>
+          <div class="dia-row" id="lDiaRow">
+            <button class="dia-btn active" data-dia="D10" onclick="setRebarDiaL('D10')">D10</button>
+            <button class="dia-btn" data-dia="D13" onclick="setRebarDiaL('D13')">D13</button>
+            <button class="dia-btn" data-dia="D16" onclick="setRebarDiaL('D16')">D16</button>
+            <button class="dia-btn" data-dia="D19" onclick="setRebarDiaL('D19')">D19</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="result-grid">
+
+      <div>
+        <div class="section-title">① L型 縦筋</div>
+
+        <div class="rebar-fig">
+          <svg id="LtFig" viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet"></svg>
+        </div>
+
+        <div class="result-box">
+          <div class="result-row"><span class="lbl">L型縦筋本数</span><span class="val" id="LtCount">—</span></div>
+          <div class="result-row"><span class="lbl">1本長さ</span><span class="val" id="LtPerLen">—</span></div>
+          <div class="result-row"><span class="lbl">1本から取れる本数</span><span class="val" id="LtPerStock">—</span></div>
+          <div class="result-row"><span class="lbl">定尺必要本数</span><span class="val" id="LtStockCount">—</span></div>
+          <div class="result-row"><span class="lbl">総延長</span><span class="val" id="LtTotal">—</span></div>
+          <div class="result-row main"><span class="lbl">総重量</span><span class="val" id="LtWeight">—</span></div>
+          <div class="result-row scrap" id="LtRowScrapPer"><span class="lbl">1本あたり余り</span><span class="val" id="LtScrapPer">—</span></div>
+          <div class="result-row scrap" id="LtRowScrapTotal"><span class="lbl">総余り</span><span class="val" id="LtScrapTotal">—</span></div>
+        </div>
+        <div class="stock-warn" id="LtStockWarn" style="display:none;">
+          ※ 定尺不足(このサイズでは取れません)
+        </div>
+      </div>
+
+      <div>
+        <div class="section-title">② L型 横筋</div>
+        <div class="result-box">
+          <div class="result-row"><span class="lbl">L型横筋本数</span><span class="val" id="LyCount">—</span></div>
+          <div class="result-row"><span class="lbl">1段あたり必要本数</span><span class="val" id="LyPerRow">—</span></div>
+          <div class="result-row"><span class="lbl">総定尺本数</span><span class="val" id="LyStockCount">—</span></div>
+          <div class="result-row"><span class="lbl">実施工延長</span><span class="val" id="LyRealTotal">—</span></div>
+          <div class="result-row"><span class="lbl">定尺総延長</span><span class="val" id="LyTotal">—</span></div>
+          <div class="result-row main"><span class="lbl">総重量</span><span class="val" id="LyWeight">—</span></div>
+        </div>
+      </div>
+
+      <div class="total-result">
+        <div class="total-box">
+          <div class="lbl">合計重量(縦+横)</div>
+          <div class="val" id="LsumWeight">— kg</div>
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+
+</div>
+
+<div class="rebar-disclaimer">※参考値です。実施工・構造条件・定着条件等は現場判断を優先してください。</div>
+
+<div class="action-wrap">
+  <button type="button" class="action-btn" onclick="resetRebarAllInputs()">⟲ 全リセット</button>
+</div>
+
+
   </div>
 
 </div>
 
-<a href="#" class="vending-btn" onclick="goVending(); return false;">
-  <span class="vending-main">💧 水分補給する？</span>
-  <span class="vending-sub">WANCOIN MAP</span>
-</a>
+<!-- Future ad/announcement area can be added here. Keep hidden until implemented. -->
 
-<script>
-const STORAGE_KEY = 'genbaCalc_v1';
-
-const SAVE_FIELDS = {
-  slope: ['slopeH', 'slopeV'],
-  doma:  ['domaA', 'domaB', 'domaT', 'meshA', 'meshB', 'meshLap'],
-  wall:  ['wallH', 'wallT', 'wallSlope', 'wallB', 'wallH1', 'wallH2', 'wallH3', 'wallL'],
-  block: ['blkL', 'blkN', 'blkLen', 'blkVp', 'blkHp']
-};
-
-function saveSection(section) {
-  try {
-    const all = loadAll();
-    const data = {};
-    SAVE_FIELDS[section].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) data[id] = el.value;
-    });
-    all[section] = data;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
-  } catch (e) {}
-}
-
-function loadAll() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return {};
-    return JSON.parse(raw) || {};
-  } catch (e) { return {}; }
-}
-
-function restoreSection(section) {
-  const all = loadAll();
-  const data = all[section];
-  if (!data) return;
-  SAVE_FIELDS[section].forEach(id => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    if (data[id] !== undefined && data[id] !== null && data[id] !== '') {
-      el.value = data[id];
-    }
-  });
-}
-
-function show(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  window.scrollTo(0, 0);
-}
-
-const FEATURE_EVENT_KEY = 'genbaFeatureRequestEvents_v1';
-
-function getAppPlatform() {
-  try {
-    if (window.Capacitor && typeof window.Capacitor.getPlatform === 'function') {
-      const platform = window.Capacitor.getPlatform();
-      if (platform === 'ios' || platform === 'android') return platform;
-    }
-  } catch (e) {}
-  const ua = navigator.userAgent || '';
-  if (/iPhone|iPad|iPod/i.test(ua)) return 'ios';
-  if (/Android/i.test(ua)) return 'android';
-  return 'web';
-}
-
-function trackFeatureRequest(eventName, source) {
-  const record = {
-    event: eventName,
-    source: source,
-    at: new Date().toISOString()
-  };
-  try {
-    const history = JSON.parse(localStorage.getItem(FEATURE_EVENT_KEY) || '[]');
-    history.push(record);
-    localStorage.setItem(FEATURE_EVENT_KEY, JSON.stringify(history.slice(-50)));
-  } catch (e) {}
-  window.dataLayer = window.dataLayer || [];
-  window.dataLayer.push(record);
-}
-
-async function resolveAppVersion() {
-  let version = document.querySelector('meta[name="app-version"]')?.content || window.GENBA_APP_VERSION || 'unknown';
-  try {
-    const appPlugin = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App;
-    if (appPlugin && typeof appPlugin.getInfo === 'function') {
-      const info = await appPlugin.getInfo();
-      version = info.version || version;
-    }
-  } catch (e) {}
-  document.getElementById('featureAppVersion').value = version;
-  return version;
-}
-
-function openFeatureRequest() {
-  const source = getAppPlatform();
-  document.getElementById('featureSource').value = source;
-  document.getElementById('featureOs').value = navigator.userAgent || source;
-  resolveAppVersion();
-  trackFeatureRequest('feature_request_open', source);
-  show('featureRequest');
-  setTimeout(() => document.getElementById('featureContent')?.focus(), 50);
-}
-
-const featureRequestForm = document.getElementById('featureRequestForm');
-featureRequestForm.addEventListener('submit', async (event) => {
-  event.preventDefault();
-  const status = document.getElementById('featureRequestStatus');
-  const submit = document.getElementById('featureRequestSubmit');
-  status.className = 'feature-request-status';
-  if (!featureRequestForm.reportValidity()) {
-    status.textContent = '必須項目を入力してください。';
-    status.classList.add('error');
-    return;
-  }
-
-  const source = getAppPlatform();
-  document.getElementById('featureSource').value = source;
-  document.getElementById('featureSentAt').value = new Date().toISOString();
-  document.getElementById('featurePageUrl').value = window.location.href;
-  document.getElementById('featureOs').value = navigator.userAgent || source;
-  await resolveAppVersion();
-  status.textContent = '送信中です…';
-  submit.disabled = true;
-
-  try {
-    const response = await fetch(featureRequestForm.action, {
-      method: 'POST',
-      body: new FormData(featureRequestForm),
-      headers: { Accept: 'application/json' }
-    });
-    const result = await response.json().catch(() => ({}));
-    if (!response.ok || result.success === false) throw new Error('request failed');
-    trackFeatureRequest('feature_request_submit', source);
-    featureRequestForm.reset();
-    document.getElementById('featureSource').value = source;
-    status.textContent = 'ありがとうございます。今後の開発候補として参考にさせていただきます。';
-    status.classList.add('success');
-  } catch (e) {
-    status.textContent = navigator.onLine
-      ? '送信に失敗しました。時間をおいて再度お試しください。'
-      : '通信できません。接続を確認して再度お試しください。';
-    status.classList.add('error');
-  } finally {
-    submit.disabled = false;
-  }
-});
-function goVending() {
-  window.location.href = 'https://wanwancoin.jp';
-}
-let calcCur = '0';
-let calcPrev = '';
-let calcOp = null;
-let calcReset = false;
-function updateDisp() {
-  document.getElementById('calcDisp').textContent = formatDispNum(calcCur);
-  document.getElementById('calcSub').textContent =
-    calcPrev !== '' ? (formatDispNum(calcPrev) + ' ' + opSym(calcOp)) : '';
-}
-function formatDispNum(s) {
-  if (s === '' || s === '-') return s || '0';
-  if (s.includes('.')) {
-    const [a, b] = s.split('.');
-    return Number(a).toLocaleString() + '.' + b;
-  }
-  return Number(s).toLocaleString();
-}
-function opSym(op) { return ({'+':'＋','-':'−','*':'×','/':'÷','%':'%'})[op] || ''; }
-function cIn(v) {
-  if (calcReset) { calcCur = '0'; calcReset = false; }
-  if (v === '.') { if (!calcCur.includes('.')) calcCur += '.'; }
-  else if (v === '00') { if (calcCur === '0') return; calcCur += '00'; }
-  else { if (calcCur === '0') calcCur = v; else calcCur += v; }
-  updateDisp();
-}
-function cClear() { calcCur='0'; calcPrev=''; calcOp=null; calcReset=false; updateDisp(); }
-function cBack() {
-  if (calcReset) return;
-  if (calcCur.length <= 1 || (calcCur.length === 2 && calcCur.startsWith('-'))) calcCur = '0';
-  else calcCur = calcCur.slice(0, -1);
-  updateDisp();
-}
-function cOp(op) {
-  if (calcOp && !calcReset) cEq();
-  calcPrev = calcCur; calcOp = op; calcReset = true;
-  updateDisp();
-}
-function cEq() {
-  if (calcOp === null) return;
-  const a = parseFloat(calcPrev), b = parseFloat(calcCur);
-  let r = 0;
-  switch (calcOp) {
-    case '+': r = a + b; break;
-    case '-': r = a - b; break;
-    case '*': r = a * b; break;
-    case '/': r = b === 0 ? 0 : a / b; break;
-    case '%': r = a * b / 100; break;
-  }
-  r = Math.round(r * 1e10) / 1e10;
-  calcCur = String(r); calcPrev = ''; calcOp = null; calcReset = true;
-  updateDisp();
-}
-
-function calcSlope() {
-  const h = parseFloat(document.getElementById('slopeH').value);
-  const v = parseFloat(document.getElementById('slopeV').value);
-  if (!isFinite(h) || !isFinite(v) || h <= 0 || v < 0) {
-    document.getElementById('rSlope').textContent = '—';
-    document.getElementById('rAngle').textContent = '—';
-    document.getElementById('rPct').textContent = '—';
-    document.getElementById('rRatio').textContent = '—';
-    drawSlopeSvg(null, null, null, null, null);
-    saveSection('slope');
-    return;
-  }
-  const slope = Math.sqrt(h * h + v * v);
-  const angle = Math.atan2(v, h) * 180 / Math.PI;
-  const pct = (v / h) * 100;
-  const ratio = v === 0 ? '∞' : (h / v).toFixed(1);
-  document.getElementById('rSlope').textContent = slope.toFixed(1) + ' mm';
-  document.getElementById('rAngle').textContent = angle.toFixed(2) + ' °';
-  document.getElementById('rPct').textContent = pct.toFixed(2) + ' %';
-  document.getElementById('rRatio').textContent = '1/' + ratio;
-  drawSlopeSvg(h, v, slope, angle, pct);
-  saveSection('slope');
-}
-
-function drawSlopeSvg(h, v, slope, angle, pct) {
-  const svg = document.getElementById('slopeSvg');
-  if (!svg) return;
-
-  const VB_W = 320, VB_H = 200;
-  const padL = 30, padR = 100, padT = 30, padB = 40;
-  const drawW = VB_W - padL - padR;
-  const drawH = VB_H - padT - padB;
-
-  const valid = isFinite(h) && isFinite(v) && h > 0 && v >= 0;
-
-  if (!valid) {
-    svg.innerHTML = `<text x="${VB_W/2}" y="${VB_H/2}" fill="#4ad9c2" font-size="12" font-family="monospace" text-anchor="middle">横・縦を入力してください</text>`;
-    return;
-  }
-
-  const scale = Math.min(drawW / h, drawH / Math.max(v, 1));
-  const x0 = padL;
-  const y0 = VB_H - padB;
-  const x1 = x0 + h * scale;
-  const y1 = y0;
-  const x2 = x1;
-  const y2 = y0 - v * scale;
-
-  svg.innerHTML = `
-    <line x1="${x0}" y1="${y0}" x2="${x1}" y2="${y1}" stroke="#00ffd5" stroke-width="3" stroke-linecap="square"/>
-    <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#00ffd5" stroke-width="3" stroke-linecap="square"/>
-    <line x1="${x0}" y1="${y0}" x2="${x2}" y2="${y2}" stroke="#00ffd5" stroke-width="3" stroke-linecap="square"/>
-    <polyline points="${x1 - 6},${y1} ${x1 - 6},${y1 - 6} ${x1},${y1 - 6}" fill="none" stroke="#00ffd5" stroke-width="3"/>
-    <text x="${(x0 + x1) / 2}" y="${y0 + 22}" fill="#4ad9c2" font-size="11" font-family="monospace" text-anchor="middle">横 ${Math.round(h)}</text>
-    <text x="${x2 + 8}" y="${(y1 + y2) / 2}" fill="#4ad9c2" font-size="11" font-family="monospace">縦 ${Math.round(v)}</text>
-    <text x="${(x0 + x2) / 2 - 8}" y="${(y0 + y2) / 2 - 8}" fill="#00ffd5" font-size="11" font-family="monospace" text-anchor="middle">${Math.round(slope)}mm</text>
-  `;
-}
-
-function calcDoma() {
-  const a_mm  = parseFloat(document.getElementById('domaA').value);
-  const b_mm  = parseFloat(document.getElementById('domaB').value);
-  const t_mm  = parseFloat(document.getElementById('domaT').value);
-  const ma_mm = parseFloat(document.getElementById('meshA').value);
-  const mb_mm = parseFloat(document.getElementById('meshB').value);
-  const lap_mm = parseFloat(document.getElementById('meshLap').value);
-
-  const a   = isFinite(a_mm)  ? a_mm  / 1000 : NaN;
-  const b   = isFinite(b_mm)  ? b_mm  / 1000 : NaN;
-  const ma  = isFinite(ma_mm) ? ma_mm / 1000 : NaN;
-  const mb  = isFinite(mb_mm) ? mb_mm / 1000 : NaN;
-  const t   = t_mm;
-  const lap = lap_mm;
-
-  if (!isFinite(a) || !isFinite(b) || a <= 0 || b <= 0) {
-    document.getElementById('rArea').textContent = '—';
-    document.getElementById('rVol').textContent = '—';
-    document.getElementById('rMesh').textContent = '—';
-    saveSection('doma');
-    return;
-  }
-  const area = a * b;
-  document.getElementById('rArea').textContent = area.toFixed(2) + ' ㎡';
-
-  if (isFinite(t) && t > 0) {
-    document.getElementById('rVol').textContent = (area * (t / 1000)).toFixed(2) + ' m³';
-  } else {
-    document.getElementById('rVol').textContent = '—';
-  }
-
-  if (isFinite(ma) && isFinite(mb) && ma > 0 && mb > 0 && isFinite(lap) && lap >= 0) {
-    const lapM = lap / 1000;
-    let nA, nB;
-    if (a <= ma) nA = 1;
-    else { const eff = ma - lapM; nA = eff <= 0 ? Infinity : 1 + Math.ceil((a - ma) / eff); }
-    if (b <= mb) nB = 1;
-    else { const eff = mb - lapM; nB = eff <= 0 ? Infinity : 1 + Math.ceil((b - mb) / eff); }
-    document.getElementById('rMesh').textContent =
-      (!isFinite(nA) || !isFinite(nB)) ? '—' : (nA * nB) + ' 枚';
-  } else {
-    document.getElementById('rMesh').textContent = '—';
-  }
-
-  saveSection('doma');
-}
-
-let wallBManual = false;
-
-function onSlopeInput() {
-  wallBManual = false;
-  const bEl = document.getElementById('wallB');
-  if (bEl) bEl.value = '';
-  calcWall();
-}
-
-function onBInput() {
-  const bEl = document.getElementById('wallB');
-  const v = bEl ? bEl.value.trim() : '';
-  wallBManual = (v !== '');
-  calcWall();
-}
-
-function calcWall() {
-  const H      = parseFloat(document.getElementById('wallH').value);
-  const T      = parseFloat(document.getElementById('wallT').value);
-  const slope  = parseFloat(document.getElementById('wallSlope').value);
-  const Binput = parseFloat(document.getElementById('wallB').value);
-  const h1     = parseFloat(document.getElementById('wallH1').value);
-  const h2     = parseFloat(document.getElementById('wallH2').value);
-  const h3     = parseFloat(document.getElementById('wallH3').value);
-  const L      = parseFloat(document.getElementById('wallL').value);
-
-  let B = null;
-  const bEl = document.getElementById('wallB');
-  const bBadge = document.getElementById('bBadge');
-
-  if (wallBManual && isFinite(Binput) && Binput > 0) {
-    B = Binput;
-    if (bBadge) {
-      bBadge.textContent = '手入力';
-      bBadge.classList.add('manual');
-    }
-  } else {
-    if (isFinite(H) && isFinite(T) && isFinite(slope) && H > 0 && T > 0 && slope >= 0) {
-      B = T + H * slope;
-    }
-    if (bBadge) {
-      bBadge.textContent = '自動';
-      bBadge.classList.remove('manual');
-    }
-    if (bEl && document.activeElement !== bEl) {
-      bEl.value = (B === null) ? '' : Math.round(B);
-    }
-  }
-
-  function widthAt(h) {
-    if (B === null || H <= 0) return null;
-    if (!isFinite(h) || h < 0 || h > H) return null;
-    return T + (B - T) * (h / H);
-  }
-  const w1 = widthAt(h1);
-  const w2 = widthAt(h2);
-  const w3 = widthAt(h3);
-
-  document.getElementById('rW1').textContent = w1 === null ? '—' : Math.round(w1) + 'mm';
-  document.getElementById('rW2').textContent = w2 === null ? '—' : Math.round(w2) + 'mm';
-  document.getElementById('rW3').textContent = w3 === null ? '—' : Math.round(w3) + 'mm';
-
-  const areaSecEl  = document.getElementById('rAreaSec');
-  const volPerEl   = document.getElementById('rVolPerM');
-  const totalRowEl = document.getElementById('rTotalRow');
-  const volTotalEl = document.getElementById('rVolTotal');
-  const lShowEl    = document.getElementById('rLshow');
-
-  if (B !== null) {
-    const areaSec = ((T + B) / 2 / 1000) * (H / 1000);
-    areaSecEl.textContent = areaSec.toFixed(3) + ' ㎡';
-    volPerEl.textContent = areaSec.toFixed(3) + ' m³';
-
-    if (isFinite(L) && L > 0) {
-      lShowEl.textContent = L;
-      volTotalEl.textContent = (areaSec * L).toFixed(2) + ' m³';
-      totalRowEl.style.display = 'flex';
-    } else {
-      totalRowEl.style.display = 'none';
-    }
-  } else {
-    areaSecEl.textContent = '— ㎡';
-    volPerEl.textContent = '— m³';
-    totalRowEl.style.display = 'none';
-  }
-
-  drawWallSvg(H, T, B, [
-    { h: h1, w: w1, label: 'h1' },
-    { h: h2, w: w2, label: 'h2' },
-    { h: h3, w: w3, label: 'h3' }
-  ]);
-
-  saveSection('wall');
-}
-
-function drawWallSvg(H, T, B, marks) {
-  const svg = document.getElementById('wallSvg');
-
-  const valid = isFinite(H) && isFinite(T) && B !== null && isFinite(B) && H > 0 && T > 0 && B > 0;
-
-  if (!valid) {
-    svg.setAttribute('viewBox', '0 0 280 220');
-    svg.innerHTML = `<text x="140" y="110" fill="#4ad9c2" font-size="11" font-family="monospace" text-anchor="middle">H・T・勾配 を入力してください</text>`;
-    return;
-  }
-
-  // 描画可能エリア
-  const maxDrawW = 300;
-  const maxDrawH = 300;
-
-  // スケール
-  const scale = Math.min(maxDrawW / B, maxDrawH / H);
-
-  // 実寸 × scale
-  const drawH = H * scale;
-  const drawB = B * scale;
-  const drawT = T * scale;
-
-  // パディング(ラベル領域)
-  const padL = 40, padR = 100, padT = 24, padB = 30;
-  const VB_W = drawB + padL + padR;
-  const VB_H = drawH + padT + padB;
-
-  // 4点 (左下基準)
-  const xLeft   = padL;
-  const yBottom = padT + drawH;
-  const yTop    = padT;
-  const pBL = [xLeft, yBottom];
-  const pBR = [xLeft + drawB, yBottom];
-  const pTR = [xLeft + drawT, yTop];
-  const pTL = [xLeft, yTop];
-
-  let html = '';
-  html += `<line x1="5" y1="${yBottom}" x2="${VB_W - 5}" y2="${yBottom}" stroke="#4ad9c2" stroke-width="1.2" stroke-dasharray="3 3"/>`;
-  html += `<polygon points="${pBL.join(',')} ${pBR.join(',')} ${pTR.join(',')} ${pTL.join(',')}"
-            fill="#13332e" stroke="#00ffd5" stroke-width="2" stroke-linejoin="round"/>`;
-
-  html += `<text x="${xLeft - 4}" y="${yTop + drawH / 2 + 4}" fill="#7ae6ff" font-size="9" font-family="monospace" text-anchor="end">前面</text>`;
-  html += `<text x="${xLeft + (drawT + drawB) / 2 + 6}" y="${yTop + drawH / 2}" fill="#7ae6ff" font-size="9" font-family="monospace">背面</text>`;
-  html += `<text x="${xLeft + drawT / 2}" y="${yTop - 6}" fill="#00ffd5" font-size="10" font-family="monospace" text-anchor="middle">T=${Math.round(T)}</text>`;
-  html += `<text x="${xLeft + drawB / 2}" y="${yBottom + 16}" fill="#00ffd5" font-size="10" font-family="monospace" text-anchor="middle">B=${Math.round(B)}</text>`;
-  html += `<line x1="${xLeft - 12}" y1="${yTop}" x2="${xLeft - 12}" y2="${yBottom}" stroke="#00ff88" stroke-width="1"/>`;
-  html += `<line x1="${xLeft - 16}" y1="${yTop}" x2="${xLeft - 8}" y2="${yTop}" stroke="#00ff88" stroke-width="1"/>`;
-  html += `<line x1="${xLeft - 16}" y1="${yBottom}" x2="${xLeft - 8}" y2="${yBottom}" stroke="#00ff88" stroke-width="1"/>`;
-  html += `<text x="${xLeft - 14}" y="${yTop + drawH / 2}" fill="#00ff88" font-size="10" font-family="monospace" text-anchor="end" transform="rotate(-90 ${xLeft - 14} ${yTop + drawH / 2})">H=${Math.round(H)}</text>`;
-
-  const colors = ['#ff7eb0', '#ffb968', '#7ae6ff'];
-  marks.forEach((m, i) => {
-    if (m.w === null) return;
-    const y = yTop + (m.h / H) * drawH;
-    const xR = xLeft + m.w * scale;
-    html += `<line x1="${xLeft}" y1="${y}" x2="${xR}" y2="${y}" stroke="${colors[i]}" stroke-width="1.6" stroke-dasharray="4 3"/>`;
-    html += `<text x="${xR + 6}" y="${y + 4}" fill="${colors[i]}" font-size="11" font-family="monospace" font-weight="bold">${m.label}: ${Math.round(m.w)}mm</text>`;
-    html += `<text x="${xLeft + 4}" y="${y - 3}" fill="${colors[i]}" font-size="9" font-family="monospace">↓${Math.round(m.h)}</text>`;
-  });
-
-  svg.setAttribute('viewBox', `0 0 ${VB_W} ${VB_H}`);
-  svg.innerHTML = html;
-}
-
-function calcBlock() {
-  const L_mm = parseFloat(document.getElementById('blkL').value);
-  const N    = parseFloat(document.getElementById('blkN').value);
-  const len  = parseFloat(document.getElementById('blkLen').value);
-  const vp   = parseFloat(document.getElementById('blkVp').value);
-  const hp   = parseFloat(document.getElementById('blkHp').value);
-
-  const cbEl   = document.getElementById('rCb');
-  const vbarEl = document.getElementById('rVbar');
-  const hbarEl = document.getElementById('rHbar');
-
-  if (!isFinite(L_mm) || !isFinite(N) || !isFinite(len) || L_mm <= 0 || N <= 0 || len <= 0) {
-    cbEl.textContent = '—';
-    vbarEl.textContent = '—';
-    hbarEl.textContent = '—';
-    saveSection('block');
-    return;
-  }
-
-  const perRow = Math.ceil(L_mm / len);
-  cbEl.textContent = (perRow * N).toLocaleString() + ' 枚';
-
-  if (isFinite(vp) && vp > 0) {
-    vbarEl.textContent = (Math.ceil(L_mm / vp) + 1) + ' 本';
-  } else {
-    vbarEl.textContent = '—';
-  }
-
-  if (isFinite(hp) && hp > 0) {
-    hbarEl.textContent = (Math.ceil(N / hp) * perRow).toLocaleString() + ' 本';
-  } else {
-    hbarEl.textContent = '—';
-  }
-
-  saveSection('block');
-}
-
-function bootRestore() {
-  restoreSection('slope');
-  restoreSection('doma');
-  restoreSection('wall');
-  restoreSection('block');
-
-  const bEl = document.getElementById('wallB');
-  const Bval = bEl ? parseFloat(bEl.value) : NaN;
-  const Hv = parseFloat(document.getElementById('wallH').value);
-  const Tv = parseFloat(document.getElementById('wallT').value);
-  const Sv = parseFloat(document.getElementById('wallSlope').value);
-  if (isFinite(Bval) && Bval > 0) {
-    if (isFinite(Hv) && isFinite(Tv) && isFinite(Sv) && Hv > 0 && Tv > 0 && Sv >= 0) {
-      const autoB = Math.round(Tv + Hv * Sv);
-      wallBManual = (Math.round(Bval) !== autoB);
-    } else {
-      wallBManual = true;
-    }
-  } else {
-    wallBManual = false;
-  }
-
-  calcSlope();
-  calcDoma();
-  calcWall();
-  calcBlock();
-}
-
-updateDisp();
-bootRestore();
-</script>
+<script src="js/app.js"></script>
 </body>
 </html>

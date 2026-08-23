@@ -1,0 +1,28 @@
+{
+  "name": "genba-calculator",
+  "version": "1.0.0",
+  "description": "現場職人向けのスマホ現場電卓Webアプリ",
+  "main": "index.js",
+  "scripts": {
+    "build": "node scripts/build-static.mjs",
+    "assets:native": "python3 scripts/generate-native-assets.py",
+    "start": "npm run build && python3 -m http.server 3003 -d dist",
+    "cap:init": "cap init \"現場電卓\" \"jp.genba.calculator\" --web-dir dist",
+    "cap:sync": "npm run build && cap sync",
+    "cap:sync:ios": "npm run build && cap sync ios",
+    "cap:sync:android": "npm run build && cap sync android",
+    "cap:open:ios": "cap open ios",
+    "cap:open:android": "cap open android"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@capacitor/android": "^8.3.1",
+    "@capacitor/app": "^8.1.1",
+    "@capacitor/cli": "^8.3.1",
+    "@capacitor/core": "^8.3.1",
+    "@capacitor/ios": "^8.3.1"
+  }
+}

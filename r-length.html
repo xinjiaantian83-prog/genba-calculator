@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>R実長計算</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    margin: 0;
+    min-height: 100%;
+    background: #202523;
+    color: #f3fbf7;
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
+  }
+  body {
+    padding: calc(18px + env(safe-area-inset-top)) 12px 18px;
+  }
+  .app {
+    width: min(100%, 480px);
+    margin: 0 auto;
+  }
+  .header {
+    padding: 8px 0 14px;
+    border-bottom: 1px solid #4c5b55;
+    margin-bottom: 14px;
+  }
+  h1 {
+    margin: 0;
+    font-size: 27px;
+    line-height: 1.08;
+    font-weight: 900;
+    color: #f6fffb;
+    letter-spacing: 0;
+  }
+  .sub {
+    margin-top: 6px;
+    color: #86ffb8;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.6px;
+  }
+  .panel {
+    background: #252b28;
+    border: 2px solid #65756e;
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: 0 2px 0 #111, inset 0 1px 0 #ffffff12;
+    margin-bottom: 12px;
+  }
+  .mode-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .mode-tab {
+    background: #303834;
+    color: #d3e6df;
+    border: 2px solid #65756e;
+    border-radius: 10px;
+    min-height: 44px;
+    font-size: 14px;
+    font-weight: 900;
+  }
+  .mode-tab.active {
+    color: #0b1511;
+    background: #86ffb8;
+    border-color: #86ffb8;
+  }
+  .mode-panel { display: none; }
+  .mode-panel.active { display: block; }
+  .input-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  label {
+    display: block;
+    color: #d3e6df;
+    font-size: 12px;
+    font-weight: 800;
+    margin-bottom: 5px;
+  }
+  input {
+    width: 100%;
+    min-height: 48px;
+    background: #151a18;
+    border: 2px solid #60736b;
+    color: #ffffff;
+    border-radius: 9px;
+    padding: 10px 11px;
+    font-size: 18px;
+    font-weight: 800;
+    font-family: "SF Mono", Menlo, monospace;
+    outline: none;
+  }
+  input:focus {
+    border-color: #86ffb8;
+    box-shadow: 0 0 0 2px #86ffb830;
+  }
+  .actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  button {
+    min-height: 44px;
+    border-radius: 9px;
+    border: 2px solid #788a82;
+    background: #303834;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 900;
+    cursor: pointer;
+  }
+  button:active { background: #45504a; border-color: #86ffb8; }
+  .hero-result {
+    background: linear-gradient(180deg, #303834, #252b28);
+    border: 2px solid #86ffb8;
+    border-radius: 12px;
+    padding: 13px 12px;
+    margin-bottom: 10px;
+  }
+  .hero-result .label {
+    color: #b9cbc4;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1px;
+  }
+  .hero-result .value {
+    margin-top: 3px;
+    color: #86ffb8;
+    font-size: 34px;
+    line-height: 1.05;
+    font-weight: 950;
+    font-family: "SF Mono", Menlo, monospace;
+  }
+  .result-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .result-card {
+    background: #151a18;
+    border: 2px solid #5d7068;
+    border-radius: 10px;
+    padding: 9px 10px;
+    min-height: 64px;
+  }
+  .result-card.wide { grid-column: 1 / -1; }
+  .result-card .label {
+    color: #d0e1da;
+    font-size: 11px;
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
+  .result-card .value {
+    color: #f6fffb;
+    font-size: 18px;
+    font-weight: 900;
+    font-family: "SF Mono", Menlo, monospace;
+  }
+  .figure {
+    background:
+      linear-gradient(rgba(92, 132, 112, 0.075) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(92, 132, 112, 0.075) 1px, transparent 1px),
+      #151a18;
+    background-size: 18px 18px;
+    border: 2px solid #5d7068;
+    border-radius: 12px;
+    padding: 8px;
+    margin-bottom: 12px;
+  }
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    min-height: 160px;
+  }
+  .arc { fill: none; stroke: #86ffb8; stroke-width: 7; stroke-linecap: round; }
+  .chord { stroke: #f6fffb; stroke-width: 4; stroke-linecap: round; }
+  .sagitta { stroke: #ffc857; stroke-width: 4; stroke-linecap: round; stroke-dasharray: 8 7; }
+  .guide { stroke: #789088; stroke-width: 2; stroke-dasharray: 5 7; }
+  .svg-label {
+    fill: #d3e6df;
+    font-size: 13px;
+    font-weight: 800;
+  }
+  .svg-label.accent { fill: #86ffb8; }
+  .svg-label.warn { fill: #ffc857; }
+  .circle { fill: rgba(134, 255, 184, 0.07); stroke: #86ffb8; stroke-width: 6; }
+  .diameter { stroke: #f6fffb; stroke-width: 4; stroke-linecap: round; }
+  .radius-line { stroke: #ffc857; stroke-width: 4; stroke-linecap: round; stroke-dasharray: 8 7; }
+  .message {
+    min-height: 20px;
+    color: #ffc857;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.45;
+    margin-top: 8px;
+  }
+  .note {
+    color: #b9cbc4;
+    font-size: 12px;
+    line-height: 1.55;
+    opacity: 0.86;
+    padding: 0 2px;
+  }
+  @media (max-width: 360px) {
+    .hero-result .value { font-size: 30px; }
+    .result-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<main class="app">
+  <header class="header">
+    <h1>R実長計算</h1>
+    <div class="sub">ARC LENGTH QUICK CHECK</div>
+  </header>
+
+  <nav class="mode-tabs" aria-label="計算モード">
+    <button type="button" class="mode-tab active" id="arcModeBtn" data-mode="arc">アール</button>
+    <button type="button" class="mode-tab" id="circleModeBtn" data-mode="circle">真円</button>
+  </nav>
+
+  <section class="mode-panel active" id="arcMode">
+    <section class="panel" aria-label="アール入力">
+      <div class="input-grid">
+        <div>
+          <label for="chord">弦長 mm</label>
+          <input id="chord" type="number" inputmode="decimal" placeholder="5000">
+        </div>
+        <div>
+          <label for="sagitta">矢高 mm</label>
+          <input id="sagitta" type="number" inputmode="decimal" placeholder="300">
+        </div>
+      </div>
+      <div class="actions">
+        <button type="button" id="sampleBtn">サンプル</button>
+        <button type="button" id="clearBtn">クリア</button>
+      </div>
+      <div class="message" id="message"></div>
+    </section>
+
+    <section class="panel" aria-label="アール計算結果">
+      <div class="hero-result">
+        <div class="label">R実長</div>
+        <div class="value" id="arcLength">—</div>
+      </div>
+      <div class="result-grid">
+        <div class="result-card wide">
+          <div class="label">みなしR</div>
+          <div class="value" id="radius">—</div>
+        </div>
+        <div class="result-card">
+          <div class="label">中心角</div>
+          <div class="value" id="angle">—</div>
+        </div>
+        <div class="result-card">
+          <div class="label">弦長との差</div>
+          <div class="value" id="diff">—</div>
+        </div>
+        <div class="result-card wide">
+          <div class="label">円周参考</div>
+          <div class="value" id="circumference">—</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="figure" aria-label="アール簡易図">
+      <svg id="fig" viewBox="0 0 360 190" role="img" aria-label="R実長の簡易図"></svg>
+    </section>
+
+    <div class="note">※参考値です。実施工・型枠条件・材料の曲げ許容等は現場判断を優先してください。</div>
+  </section>
+
+  <section class="mode-panel" id="circleMode">
+    <section class="panel" aria-label="真円入力">
+      <div>
+        <label for="diameter">直径 mm</label>
+        <input id="diameter" type="number" inputmode="decimal" placeholder="1000">
+      </div>
+      <div class="actions">
+        <button type="button" id="circleSampleBtn">サンプル</button>
+        <button type="button" id="circleClearBtn">クリア</button>
+      </div>
+      <div class="message" id="circleMessage"></div>
+    </section>
+
+    <section class="panel" aria-label="真円計算結果">
+      <div class="hero-result">
+        <div class="label">円周</div>
+        <div class="value" id="circleCircumference">—</div>
+      </div>
+      <div class="result-grid">
+        <div class="result-card">
+          <div class="label">半径</div>
+          <div class="value" id="circleRadius">—</div>
+        </div>
+        <div class="result-card">
+          <div class="label">面積</div>
+          <div class="value" id="circleArea">—</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="figure" aria-label="真円簡易図">
+      <svg id="circleFig" viewBox="0 0 360 190" role="img" aria-label="真円の簡易図"></svg>
+    </section>
+
+    <div class="note">※参考値です。実施工・型枠条件・材料の曲げ許容等は現場判断を優先してください。</div>
+  </section>
+</main>
+
+<script>
+(() => {
+  const chordInput = document.getElementById('chord');
+  const sagittaInput = document.getElementById('sagitta');
+  const diameterInput = document.getElementById('diameter');
+  const message = document.getElementById('message');
+  const circleMessage = document.getElementById('circleMessage');
+  const out = {
+    arcLength: document.getElementById('arcLength'),
+    radius: document.getElementById('radius'),
+    angle: document.getElementById('angle'),
+    diff: document.getElementById('diff'),
+    circumference: document.getElementById('circumference'),
+  };
+  const circleOut = {
+    circumference: document.getElementById('circleCircumference'),
+    radius: document.getElementById('circleRadius'),
+    area: document.getElementById('circleArea'),
+  };
+  const fig = document.getElementById('fig');
+  const circleFig = document.getElementById('circleFig');
+
+  function fmt(n, suffix = ' mm') {
+    if (!Number.isFinite(n)) return '—';
+    return n.toLocaleString('ja-JP', { maximumFractionDigits: 1, minimumFractionDigits: 1 }) + suffix;
+  }
+
+  function resetResults() {
+    Object.values(out).forEach(el => { el.textContent = '—'; });
+  }
+
+  function resetCircleResults() {
+    Object.values(circleOut).forEach(el => { el.textContent = '—'; });
+  }
+
+  function drawEmpty() {
+    fig.innerHTML = `
+      <line class="guide" x1="44" y1="132" x2="316" y2="132"></line>
+      <path class="arc" d="M44 132 Q180 78 316 132"></path>
+      <line class="sagitta" x1="180" y1="132" x2="180" y2="78"></line>
+      <text class="svg-label" x="180" y="154" text-anchor="middle">弦長</text>
+      <text class="svg-label warn" x="192" y="106">矢高</text>
+      <text class="svg-label accent" x="180" y="58" text-anchor="middle">R実長</text>
+    `;
+  }
+
+  function drawFigure(c, h, arcText) {
+    const leftX = 42;
+    const rightX = 318;
+    const baseY = 136;
+    const midX = 180;
+    const maxRise = 88;
+    const rise = Math.max(18, Math.min(maxRise, (h / c) * 460));
+    const topY = baseY - rise;
+
+    fig.innerHTML = `
+      <line class="guide" x1="${leftX}" y1="${baseY}" x2="${rightX}" y2="${baseY}"></line>
+      <path class="arc" d="M${leftX} ${baseY} Q${midX} ${topY - rise * 0.18} ${rightX} ${baseY}"></path>
+      <line class="chord" x1="${leftX}" y1="${baseY}" x2="${rightX}" y2="${baseY}"></line>
+      <line class="sagitta" x1="${midX}" y1="${baseY}" x2="${midX}" y2="${topY}"></line>
+      <text class="svg-label" x="${midX}" y="161" text-anchor="middle">弦長 ${fmt(c, '')}mm</text>
+      <text class="svg-label warn" x="${midX + 10}" y="${(baseY + topY) / 2 + 4}">矢高 ${fmt(h, '')}mm</text>
+      <text class="svg-label accent" x="${midX}" y="${Math.max(24, topY - 16)}" text-anchor="middle">R実長 ${arcText}</text>
+    `;
+  }
+
+  function drawCircleEmpty() {
+    circleFig.innerHTML = `
+      <circle class="circle" cx="180" cy="94" r="58"></circle>
+      <line class="diameter" x1="122" y1="94" x2="238" y2="94"></line>
+      <line class="radius-line" x1="180" y1="94" x2="238" y2="94"></line>
+      <text class="svg-label" x="180" y="171" text-anchor="middle">直径</text>
+      <text class="svg-label warn" x="204" y="82">半径</text>
+    `;
+  }
+
+  function drawCircleFigure(d, radiusText, circumferenceText) {
+    circleFig.innerHTML = `
+      <circle class="circle" cx="180" cy="92" r="62"></circle>
+      <line class="diameter" x1="118" y1="92" x2="242" y2="92"></line>
+      <line class="radius-line" x1="180" y1="92" x2="242" y2="92"></line>
+      <text class="svg-label" x="180" y="170" text-anchor="middle">直径 ${fmt(d, '')}mm</text>
+      <text class="svg-label warn" x="204" y="80">${radiusText}</text>
+      <text class="svg-label accent" x="180" y="25" text-anchor="middle">円周 ${circumferenceText}</text>
+    `;
+  }
+
+  function calculate() {
+    const c = Number(chordInput.value);
+    const h = Number(sagittaInput.value);
+    message.textContent = '';
+
+    if (!chordInput.value || !sagittaInput.value) {
+      resetResults();
+      drawEmpty();
+      return;
+    }
+    if (c <= 0 || !Number.isFinite(c)) {
+      resetResults();
+      drawEmpty();
+      message.textContent = '弦長は0より大きい数値を入力してください。';
+      return;
+    }
+    if (h <= 0 || !Number.isFinite(h)) {
+      resetResults();
+      drawEmpty();
+      message.textContent = '矢高は0より大きい数値を入力してください。';
+      return;
+    }
+
+    const r = (c * c / (8 * h)) + (h / 2);
+    const ratio = c / (2 * r);
+    if (ratio > 1 || !Number.isFinite(r)) {
+      resetResults();
+      drawEmpty();
+      message.textContent = '入力値を確認してください。Rが成立しません。';
+      return;
+    }
+
+    const theta = 2 * Math.asin(ratio);
+    const arc = r * theta;
+    const angleDeg = theta * 180 / Math.PI;
+    const difference = arc - c;
+    const circumference = 2 * Math.PI * r;
+
+    out.arcLength.textContent = fmt(arc);
+    out.radius.textContent = fmt(r);
+    out.angle.textContent = fmt(angleDeg, '°');
+    out.diff.textContent = fmt(difference);
+    out.circumference.textContent = fmt(circumference);
+
+    if (h > c * 0.35) {
+      message.textContent = '矢高が大きめです。現場寸法やR形状を確認してください。';
+    }
+
+    drawFigure(c, h, fmt(arc));
+  }
+
+  function calculateCircle() {
+    const d = Number(diameterInput.value);
+    circleMessage.textContent = '';
+
+    if (!diameterInput.value) {
+      resetCircleResults();
+      drawCircleEmpty();
+      return;
+    }
+    if (d <= 0 || !Number.isFinite(d)) {
+      resetCircleResults();
+      drawCircleEmpty();
+      circleMessage.textContent = '直径は0より大きい数値を入力してください。';
+      return;
+    }
+
+    const r = d / 2;
+    const circumference = Math.PI * d;
+    const area = Math.PI * r * r;
+    circleOut.circumference.textContent = fmt(circumference);
+    circleOut.radius.textContent = fmt(r);
+    circleOut.area.textContent = fmt(area, ' mm²');
+    drawCircleFigure(d, '半径 ' + fmt(r), fmt(circumference));
+  }
+
+  function switchMode(mode) {
+    document.querySelectorAll('.mode-tab').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.mode === mode);
+    });
+    document.getElementById('arcMode').classList.toggle('active', mode === 'arc');
+    document.getElementById('circleMode').classList.toggle('active', mode === 'circle');
+  }
+
+  chordInput.addEventListener('input', calculate);
+  sagittaInput.addEventListener('input', calculate);
+  diameterInput.addEventListener('input', calculateCircle);
+  document.getElementById('arcModeBtn').addEventListener('click', () => switchMode('arc'));
+  document.getElementById('circleModeBtn').addEventListener('click', () => switchMode('circle'));
+  document.getElementById('sampleBtn').addEventListener('click', () => {
+    chordInput.value = '5000';
+    sagittaInput.value = '300';
+    calculate();
+  });
+  document.getElementById('clearBtn').addEventListener('click', () => {
+    chordInput.value = '';
+    sagittaInput.value = '';
+    message.textContent = '';
+    resetResults();
+    drawEmpty();
+  });
+  document.getElementById('circleSampleBtn').addEventListener('click', () => {
+    diameterInput.value = '1000';
+    calculateCircle();
+  });
+  document.getElementById('circleClearBtn').addEventListener('click', () => {
+    diameterInput.value = '';
+    circleMessage.textContent = '';
+    resetCircleResults();
+    drawCircleEmpty();
+  });
+
+  drawEmpty();
+  drawCircleEmpty();
+})();
+</script>
+</body>
+</html>
