@@ -12,7 +12,9 @@
     "cap:sync:ios": "npm run build && cap sync ios",
     "cap:sync:android": "npm run build && cap sync android",
     "cap:open:ios": "cap open ios",
-    "cap:open:android": "cap open android"
+    "cap:open:android": "cap open android",
+    "monetization:ids": "node scripts/configure-monetization-ids.mjs",
+    "monetization:app-ads": "node scripts/generate-app-ads.mjs"
   },
   "keywords": [],
   "author": "",

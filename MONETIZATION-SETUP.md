@@ -41,3 +41,5 @@
 6. `testMode: false`、`monetizationEnabled: true` にしてストア提出
 
 計測イベント: `ad_banner_loaded`, `ad_banner_failed`, `ad_banner_impression`, `ad_banner_click`, `remove_ads_viewed`, `remove_ads_purchase_started`, `remove_ads_purchase_success`, `remove_ads_purchase_failed`, `restore_purchase_started`, `restore_purchase_success`, `restore_purchase_empty`, `restore_purchase_failed`。
+
+管理画面でしか行えない作業と登録文言は `MONETIZATION-CONSOLE-CHECKLIST.md`、実機検証は `MONETIZATION-DEVICE-TEST-CHECKLIST.md` を参照してください。ID反映とapp-ads.txt生成は同チェックリスト記載のスクリプトで実行できます。
