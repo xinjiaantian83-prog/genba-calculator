@@ -2277,3 +2277,22 @@ body {
 
 .feature-request-status.error { color: #ff9d9d; }
 .feature-request-status.success { color: #83ffc0; }
+
+.monetization-panel {
+  margin: 18px 0 6px;
+  padding: 15px;
+  border: 1px solid #286a5d;
+  border-radius: 12px;
+  background: #071a16;
+}
+.monetization-panel[hidden] { display: none !important; }
+.monetization-title { margin-bottom: 8px; color: #effffb; font-weight: 900; }
+.monetization-panel p { color: #a9c8c0; font-size: 12px; line-height: 1.5; }
+.monetization-panel button { width: 100%; min-height: 46px; margin-top: 8px; border-radius: 9px; font: inherit; font-weight: 800; }
+.monetization-primary { border: 1px solid #00ff88; background: #00ff88; color: #00130e; }
+.monetization-secondary { border: 1px solid #357d70; background: #0d2923; color: #effffb; }
+.monetization-link { border: 0; background: transparent; color: #7fffd8; text-decoration: underline; }
+.monetization-panel button:disabled { opacity: .55; }
+.monetization-status { min-height: 18px; margin: 9px 0 0; }
+.monetization-status[data-kind="error"] { color: #ff9d9d; }
+.monetization-status[data-kind="success"] { color: #83ffc0; }

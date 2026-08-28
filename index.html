@@ -163,6 +163,16 @@
         <p class="customize-help">よく使う4つのツールを、自分好みにカスタマイズできます。</p>
         <div id="menuCustomizeList" class="customize-list"></div>
         <p id="customizeNotice" class="customize-notice" role="status" aria-live="polite"></p>
+        <section id="monetizationPanel" class="monetization-panel" hidden>
+          <div class="monetization-title">広告と購入</div>
+          <p data-pro-only hidden>広告削除が有効です。</p>
+          <button class="monetization-primary" type="button" data-purchase="removeAds" data-free-only>
+            広告を削除 <span data-price="removeAds"></span>
+          </button>
+          <button class="monetization-secondary" type="button" data-restore-purchases>購入を復元</button>
+          <button class="monetization-link" type="button" data-privacy-options>広告プライバシー設定</button>
+          <p id="monetizationStatus" class="monetization-status" role="status" aria-live="polite"></p>
+        </section>
         <div class="customize-actions">
           <button id="resetCustomizeBtn" class="customize-reset" type="button">初期設定に戻す</button>
           <button id="saveCustomizeBtn" class="customize-save" type="button">保存する</button>
@@ -843,6 +853,8 @@
 
 <!-- Future ad/announcement area can be added here. Keep hidden until implemented. -->
 
+<script src="js/monetization-config.js"></script>
+<script src="js/monetization.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>
